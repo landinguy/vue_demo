@@ -85,4 +85,33 @@ export default [
       }
     ]
   },
+  {
+    path: '/template',
+    name: 'template',
+    meta: {
+      icon: 'ios-navigate',
+      title: '模板管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'create_template',
+        name: 'create_template',
+        meta: {
+          icon: 'ios-navigate',
+          title: '新建模板'
+        },
+        component: () => import('@/components/template/CreateTemplate')
+      },
+      {
+        path: 'template_list',
+        name: 'template_list',
+        meta: {
+          icon: 'ios-navigate',
+          title: '我的模板'
+        },
+        component: () => import('@/components/template/TemplateList')
+      }
+    ]
+  },
 ]

@@ -6,17 +6,19 @@ import router from './router'
 import store from './store'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
+import '../static/common.less'
 require('@/mock')
 
-Vue.use(iView)
+Vue.use(iView);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+Vue.prototype.baseUrl = "";
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {App},
   template: '<App/>'
 })

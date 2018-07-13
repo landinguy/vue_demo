@@ -36,7 +36,7 @@ class httpRequest {
   // 请求实例
   request (options) {
     var instance = this.create()
-    this.interceptors(instance, options.url)
+    // this.interceptors(instance, options.url)
     options = Object.assign({}, options)
     this.queue[options.url] = instance
     return instance(options)

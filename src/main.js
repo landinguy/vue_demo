@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
-import '../static/common.less'
+// import '../static/common.less'
 require('@/mock')
 
 Vue.use(iView);

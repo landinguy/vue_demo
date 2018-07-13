@@ -1,5 +1,6 @@
 import Main from '@/components/main/Main'
 import HelloWorld from '@/components/HelloWorld'
+import Account from '@/components/account/Account'
 
 export default [
   {
@@ -72,19 +73,51 @@ export default [
           icon: 'ios-navigate',
           title: '账户信息'
         },
-        component: () => import('@/components/account/account-info.vue')
+        component: () => import('@/components/account/Account.vue')
       },
       {
         path: 'child_account',
         name: 'child_account',
         meta: {
+          // access:['show'],
           icon: 'ios-navigate',
           title: '子账户管理'
         },
-        component: () => import('@/components/account/child-account.vue')
+        component: () => import('@/components/account/SubAccount.vue')
       }
     ]
   },
+
+  {
+    path: '/data',
+    name: 'statistics',
+    meta: {
+      icon: 'ios-navigate',
+      title: '数据统计'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'data_statistics',
+        name: 'data_statistics',
+        meta: {
+          icon: 'ios-navigate',
+          title: '发送统计'
+        },
+        component: () => import('@/components/statistics/Statistics.vue')
+      },
+      {
+        path: 'data_details',
+        name: 'data_details',
+        meta: {
+          icon: 'ios-navigate',
+          title: '发送详单'
+        },
+        component: () => import('@/components/statistics/Details.vue')
+      }
+    ]
+  },
+  
   {
     path: '/template',
     name: 'template',

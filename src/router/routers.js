@@ -147,4 +147,44 @@ export default [
       }
     ]
   },
+  {
+    path: '/send',
+    name: 'send',
+    meta: {
+      icon: 'ios-navigate',
+      title: '发送管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'new_task',
+        name: 'new_task',
+        meta: {
+          icon: 'ios-navigate',
+          title: '新建任务'
+        },
+        component: () => import('@/components/task/Task.vue')
+      },
+      {
+        path: 'send_record',
+        name: 'send_record',
+        meta: {
+          icon: 'ios-navigate',
+          title: '发送记录'
+        },
+        component: () => import('@/components/task/Record.vue')
+      },
+      {
+        path: 'task_detail',
+        name: 'task_detail',
+        meta: {
+          icon: 'ios-navigate',
+          title: '发送记录详情',
+          hideInMenu: true,
+          notCache: true
+        },
+        component: () => import('@/components/task/TaskDetail.vue')
+      }
+    ]
+  },
 ]

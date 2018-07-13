@@ -1,0 +1,371 @@
+<template>
+  <div>
+    <Form id='task' ref="task" :model="task" :rules="ruleValidate" label-position="right" :label-width="100">
+      <FormItem label="发送任务名称" prop="name">
+        <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength"></Input>
+      </FormItem>
+      <FormItem label="发送模板" prop="template">
+        <Row>
+          <Col span="10">
+          <Input v-model="task.template" placeholder="请选择模板" disabled></Input>
+          </Col>
+          <Col span="10" style="margin-left: 10px">
+          <Button type="primary" @click="showChooseTemplateModal">选择模板</Button>
+          <Button type="ghost" @click="newTemplate">新建模板</Button>
+          </Col>
+        </Row>
+      </FormItem>
+      <FormItem label="收件人" prop="receiver">
+        <Row>
+          <Col span="10">
+          <Input v-model="task.receiver" placeholder="选择收件人" disabled></Input>
+          </Col>
+          <Col span="10" style="margin-left: 10px">
+          <Button type="primary" @click="showChooseReceiverModal">选择收件人</Button>
+          <Button type="ghost" @click="newReceiverModal = true">新建收件人</Button>
+          </Col>
+        </Row>
+      </FormItem>
+      <FormItem label="提交数量" prop="number">
+        <Input v-model="task.number" placeholder="----" disabled></Input>
+      </FormItem>
+
+      <br/>
+
+      <FormItem label="发送时间" prop="sendTime">
+        <RadioGroup v-model="task.sendTime" type="button">
+          <Radio label="rightNow">立即发送</Radio>
+          <Radio label="sometime">定时发送</Radio>
+        </RadioGroup>
+      </FormItem>
+
+      <FormItem v-if="task.sendTime === 'sometime'" prop="customSendTime">
+        <DatePicker v-model="task.customSendTime" :options="dateOption" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请输入发送时间" style="width: 200px"></DatePicker>
+      </FormItem>
+
+      <FormItem label="发送时段" prop="sendPeriod">
+        <RadioGroup v-model="task.sendPeriod" type="button">
+          <Radio label="dayTime">白天时段</Radio>
+          <Radio label="customTime">自定义时段</Radio>
+        </RadioGroup>
+      </FormItem>
+
+      <FormItem v-if="task.sendPeriod === 'customTime'" prop="customSendPeriod">
+        <TimePicker v-model="task.customSendPeriod" confirm format="HH:mm" :steps="[1, 60]" placeholder="选择时段" style="width: 112px"></TimePicker>
+      </FormItem>
+
+      <FormItem label="发送控速" prop="sendSpeed">
+        <RadioGroup v-model="task.sendSpeed" type="button">
+          <Radio label="defaultSpeed">默认速度</Radio>
+          <Radio label="customSpeed">自定义速度</Radio>
+        </RadioGroup>
+      </FormItem>
+
+      <FormItem v-if="task.sendSpeed === 'customSpeed'" prop="customSendSpeed">
+        <Input v-model="task.customSendSpeed" placeholder="请输入正整数" number>
+        <span slot="append">条/秒</span>
+        </Input>
+      </FormItem>
+
+      <FormItem label="单日发送上限" prop="daySendLimit">
+        <RadioGroup v-model="task.daySendLimit" type="button">
+          <Radio label="notLimit">不限制</Radio>
+          <Radio label="customLimit">自定义上限</Radio>
+        </RadioGroup>
+      </FormItem>
+
+      <FormItem v-if="task.daySendLimit === 'customLimit'" prop="customDaySendLimit">
+        <Input v-model="task.customDaySendLimit" placeholder="请输入正整数" number>
+        <span slot="append">条/天</span>
+        </Input>
+      </FormItem>
+
+      <FormItem label="发送地域" prop="sendArea">
+        <RadioGroup v-model="task.sendArea" type="button">
+          <Radio label="everywhere">不限制</Radio>
+          <Radio label="customArea">自定义省市</Radio>
+          <Radio label="excludeArea">屏蔽省市</Radio>
+        </RadioGroup>
+      </FormItem>
+
+      <FormItem v-if="task.sendArea === 'customArea'">
+        <div style="max-height: 250px;overflow-y: scroll">
+          <Tree :data="cityTree" ref="customAreaRef" show-checkbox multiple></Tree>
+        </div>
+      </FormItem>
+
+      <FormItem v-if="task.sendArea === 'excludeArea'">
+        <div style="max-height: 250px;overflow-y: scroll">
+          <Tree :data="cityTree" ref="excludeAreaRef" show-checkbox multiple></Tree>
+        </div>
+      </FormItem>
+
+      <FormItem>
+        <Button type="primary" @click="handleSubmit('task')">提交</Button>
+        <Button type="ghost" @click="handleReset('task')" style="margin-left: 8px">取消</Button>
+      </FormItem>
+    </Form>
+
+    <Modal v-model="chooseTemplateModal" width="800">
+      <p slot="header">
+        <Icon type="information-circled"></Icon>
+        <span>选择模板</span>
+      </p>
+
+      <Table height="200" :columns="chooseTemplateModalColumns" :data="templateData"></Table>
+
+      <div slot="footer">
+      </div>
+    </Modal>
+
+    <Modal v-model="chooseReceiverModal" width="800">
+      <p slot="header">
+        <Icon type="information-circled"></Icon>
+        <span>选择收件人</span>
+      </p>
+
+      <Table height="200" :columns="chooseReceiverModalColumns" :data="receiverRS"></Table>
+
+      <div slot="footer">
+      </div>
+    </Modal>
+
+    <Modal
+      v-model="newReceiverModal">
+      <p slot="header">
+        <Icon type="information-circled"></Icon>
+        <span>新建收件人</span>
+      </p>
+
+      <div v-if="!uploadComplete">
+        <Upload
+          :before-upload="handleBeforeUpload"
+          action="//jsonplaceholder.typicode.com/posts/">
+          <Button type="ghost" icon="ios-cloud-upload-outline">点击从本地选择文件</Button>
+        </Upload>
+        <div v-if="file !== null" style="margin-top: 20px">待上传文件: {{ file.name }}</div>
+        <p style="margin-top: 20px">请上传 TXT、CSV、XLS、XLSX文件，第1列填手机号，2-5列填参数，最多使用5个参数，无参数留空，文件不多于10万行数据。</p>
+        <Checkbox v-model="saveToContacts" style="margin-top: 20px">保存至我的联系人</Checkbox>
+      </div>
+
+      <div v-if="uploadComplete" style="text-align: center">
+        <p>识别到正确号码并提交成功</p>
+        <h1 style="display: inline-block">{{uploadRightNumber}}</h1>个
+        <div v-if="uploadWrongNumber > 0">
+          <hr style="margin-top: 20px;margin-bottom: 20px">
+          <p>识别到错误信息{{uploadWrongNumber}}个，点击下载 <a href="#">《错误详单》</a></p>
+        </div>
+      </div>
+
+      <div slot="footer">
+        <Button v-if="!uploadComplete" type="primary" size="large" long :loading="loadingStatus" @click="upload">{{ loadingStatus ? '上传中' : '点击上传' }}</Button>
+        <Button v-if="uploadComplete" type="primary" size="large" long @click="upload">完成</Button>
+      </div>
+    </Modal>
+  </div>
+
+</template>
+
+<script>
+  import axios from 'axios';
+  import citytree from '../../api/citytree';
+  export default {
+    name: "Task",
+    data() {
+      const validateNumber = (rule, value, callback) => {
+        if (!value) {return callback(new Error('不能为空!'));}
+        if (!Number.isInteger(value)) {callback(new Error('请输入数字!'));}
+        else {if (value <= 0) {callback(new Error('请输入正整数'));} else {callback();}}
+      };
+      return {
+        maxLength:20,
+        file: null,
+        loadingStatus: false,
+        chooseTemplateModal:false,
+        chooseReceiverModal:false,
+        newReceiverModal:false,
+        saveToContacts: true,
+        uploadComplete:false,
+        uploadRightNumber:10000,
+        uploadWrongNumber:1000,
+        cityTree:citytree,
+        chooseTemplateModalColumns: [],
+        chooseReceiverModalColumns: [],
+        templateData: [],
+        receiverRS: [],
+        dateOption: {
+          disabledDate (date) {
+            if(date === '') {
+              return date;
+            }
+            let dayBefore = date.valueOf() < Date.now() - 86400000;
+            let dayAfter = date.valueOf() > Date.now() + 86400000*15;
+            return dayBefore || dayAfter;
+          }
+        },
+        task: {
+          name: '',
+          template: '',
+          receiver: '',
+          number: 0,
+          sendTime: 'rightNow',
+          sendSpeed: 'defaultSpeed',
+          sendPeriod: 'dayTime',
+          daySendLimit: 'notLimit',
+          sendArea: 'everywhere',
+          customSendTime: '',
+          customSendPeriod:'',
+          customSendSpeed:'',
+          customDaySendLimit: '',
+          customSendArea:[],
+          customExcludeArea:[],
+        },
+        ruleValidate: {
+          name:[{ required: true, message: '发送任务名称不能为空', trigger: 'blur' }],
+          template:[{ required: true, message: '发送模板不能为空', trigger: 'blur' }],
+          receiver:[{ required: true, message: '收件人不能为空', trigger: 'blur' }],
+          number:[{ validator: validateNumber, trigger: 'blur' }],
+          sendTime: [{ required: true, message: '发送时间不能为空', trigger: 'change' }],
+          sendPeriod: [{ required: true, message: '发送时段不能为空', trigger: 'change' }],
+          sendSpeed: [{ required: true, message: '发送控速不能为空', trigger: 'change' }],
+          daySendLimit: [{ required: true, message: '请选择单日发送上限', trigger: 'change' }],
+          sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],
+
+          customSendTime:[
+            // { required: true, message: '发送时间不能为空', trigger: 'change' },
+            {validator(rule, value, callback, source, options) {
+                let errors = [];
+                if (value === '') {
+                  callback('发送时间不能为空');
+                }
+                callback(errors);
+              }}
+          ],
+          customSendPeriod:[{ required: true, message: '发送时段不能为空', trigger: 'blur' },],
+          customSendSpeed: [{ validator: validateNumber, trigger: 'blur' }],
+          customDaySendLimit: [{ validator: validateNumber, trigger: 'blur' }],
+        }
+      };
+    },
+    methods: {
+      newTemplate() {
+        this.$router.push({name:'create_template'})
+      },
+      handleSubmit (name) {
+        console.log(1111)
+        this.$refs[name].validate((valid) => {
+          if (this.task.sendArea === 'customArea') {
+            console.log(JSON.stringify(this.$refs.customAreaRef.getCheckedNodes()));
+          }
+          console.log(JSON.stringify(this.task.customSendArea));
+          if (valid) {
+            this.$Message.success('Success!');
+          } else {
+            this.$Message.error('请填写必要信息!');
+          }
+        })
+      },
+      handleReset (name) {
+        this.$refs[name].resetFields();
+      },
+      handleBeforeUpload (file) {
+        let fileName = file.name;
+        if (fileName.endsWith(".txt") || fileName.endsWith(".csv") || fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
+          this.file = file;
+        } else {
+          this.$Notice.warning({
+            title: '文件格式不正确',
+            desc: file.name + '文件格式不正确, 请选择txt、csv、xls、xlsx格式的文件!'
+          });
+        }
+        return false;
+      },
+      upload () {
+        if (this.file !== null) {
+          this.loadingStatus = true;
+          setTimeout(() => {
+            this.file = null;
+            this.loadingStatus = false;
+            this.uploadComplete = true;
+            this.$Message.success('Success')
+          }, 1500);
+        } else {
+          this.$Message.info('请选择文件!');
+        }
+      },
+      showChooseTemplateModal() {
+        this.chooseTemplateModal = true;
+        let vue = this;
+        axios.post("/tmpls")
+          .then(function (response) {
+            console.log(response.data.data);
+            vue.templateData = response.data.data;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      showChooseReceiverModal() {
+        this.chooseReceiverModal = true;
+        let vue = this;
+        axios.post("/send/receiver/get/{subaccountNumber}")
+          .then(function (response) {
+            // console.log(response.data.receiverRS);
+            vue.receiverRS = response.data.receiverRS;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      },
+      chooseTemlate (index) {
+        console.log(index);
+        this.chooseTemplateModal = false;
+        this.task.template = this.templateData[index].name;
+      },
+      chooseReceiver (index) {
+        console.log(index);
+        this.chooseReceiverModal = false;
+        this.task.receiver = this.receiverRS[index].name;
+        this.task.number = this.receiverRS[index].cover;
+      },
+      geTemplateTableColumns () {
+        return [
+          {title: '模板编号', key: 'id',},
+          {title: '模板名称', key: 'name'},
+          {title: '状态', key: 'status'},
+          {title: '操作', key: 'action', width: 150, align: 'center',
+            render: (h, params) => {
+              let newVar = [];
+              let status = params.row.status;
+              if (status !== '审核失败' && status !== '已失效') {
+                newVar.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.chooseTemlate(params.index)}}}, '选择'));
+              }
+              return h('div', newVar);
+            }
+          }
+        ];
+      },
+      getReceiverTableColumns () {
+        return [
+          {title: '收件人组名称', key: 'name',},
+          {title: '提交数量', key: 'cover'},
+          {title: '创建时间', key: 'createTS'},
+          {title: '操作', key: 'action', width: 150, align: 'center', render: (h, params) => {return h('div', [h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.chooseReceiver(params.index)}}}, '选择')]);}}
+        ];
+      },
+      changeTableColumns () {
+        this.chooseReceiverModalColumns = this.getReceiverTableColumns();
+        this.chooseTemplateModalColumns = this.geTemplateTableColumns();
+      },
+    },
+    mounted () {
+      this.changeTableColumns();
+    }
+  }
+</script>
+
+<style scoped>
+#task {
+  max-width: 80%;
+}
+</style>

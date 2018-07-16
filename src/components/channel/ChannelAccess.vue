@@ -121,17 +121,26 @@
             title: '操作',
             key: 'op',
             align: 'center',
+            width: 200,
             render: (h, params) => {
               const $vue = this;
               return h('div', [
-                h('a', {
+                h('Button', {
+                  props: {
+                    type: 'ghost',
+                    size: 'small'
+                  },
                   on: {
                     click: function () {
                       $vue.accessInfoModal = true;
                     }
                   }
                 }, '接入信息'),
-                h('a', {
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
                   style: {
                     "margin-left": '10px'
                   },

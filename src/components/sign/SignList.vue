@@ -142,9 +142,14 @@
             title: '操作',
             key: 'op',
             align: 'center',
+            width: 200,
             render: (h, params) => {
               const $vue = this;
-              const del = h('a', {
+              const del = h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
                 on: {
                   click: function () {
                     $vue.$Modal.confirm({

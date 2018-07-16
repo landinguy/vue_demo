@@ -121,6 +121,7 @@ Mock.mock("/tmpl/1", "delete", {msg: '', code: 0});
 Mock.mock("/chan/items", "post", {msg: '', code: 0, res: res1});
 Mock.mock("/chan/item/1", "post", {msg: '', code: 0});
 Mock.mock("/chan/item/halt/1", "post", {msg: '', code: 0});
+Mock.mock("/chan/item/bind", "post", {msg: '', code: 0});
 Mock.mock("/chan/items/count", "post", {msg: '', code: 0, res: 60});
 
 Mock.mock("/tmpl/1", "get", {msg: '', code: 0, res: res2});
@@ -133,15 +134,87 @@ Mock.mock("/sign/1", "delete", {msg: '', code: 0});
 Mock.mock("/signs/count", "post", {msg: '', code: 0, count: 30});
 Mock.mock("/signs", "post", {msg: '', code: 0, res: res4});
 
+Mock.mock("/mat/upload", "post", function (req, res) {
+  console.log("req:" + JSON.stringify(req));
+  res = {
+    msg: '', code: 0, res: 'http://192.168.2.57/images/111.jpg'
+  };
+  return res;
+});
+
 const sendRecord = [
-  {"task_id": "a", "name": "发送1波数据", "template_name": "模块名称1", "receiver_amount": 1000, "start_ts": 1531389519000, "status": "审核中", "id": ""},
-  {"task_id": "b", "name": "发送2波数据", "template_name": "模块名称2", "receiver_amount": 1500, "start_ts": 1531389519000, "status": "审核失败", "id": ""},
-  {"task_id": "c", "name": "发送3波数据", "template_name": "模块名称3", "receiver_amount": 2000, "start_ts": 1531389519000, "status": "已失效", "id": ""},
-  {"task_id": "d", "name": "发送4波数据", "template_name": "模块名称4", "receiver_amount": 2500, "start_ts": 1531389519000, "status": "等待开始", "id": ""},
-  {"task_id": "e", "name": "发送5波数据", "template_name": "模块名称5", "receiver_amount": 3000, "start_ts": 1531389519000, "status": "正在发送", "id": ""},
-  {"task_id": "f", "name": "发送6波数据", "template_name": "模块名称6", "receiver_amount": 3500, "start_ts": 1531389519000, "status": "暂停中", "id": ""},
-  {"task_id": "g", "name": "发送7波数据", "template_name": "模块名称7", "receiver_amount": 4000, "start_ts": 1531389519000, "status": "发送完成", "id": ""},
-  {"task_id": "h", "name": "发送8波数据", "template_name": "模块名称8", "receiver_amount": 4500, "start_ts": 1531389519000, "status": "发送终止", "id": ""},
+  {
+    "task_id": "a",
+    "name": "发送1波数据",
+    "template_name": "模块名称1",
+    "receiver_amount": 1000,
+    "start_ts": 1531389519000,
+    "status": "审核中",
+    "id": ""
+  },
+  {
+    "task_id": "b",
+    "name": "发送2波数据",
+    "template_name": "模块名称2",
+    "receiver_amount": 1500,
+    "start_ts": 1531389519000,
+    "status": "审核失败",
+    "id": ""
+  },
+  {
+    "task_id": "c",
+    "name": "发送3波数据",
+    "template_name": "模块名称3",
+    "receiver_amount": 2000,
+    "start_ts": 1531389519000,
+    "status": "已失效",
+    "id": ""
+  },
+  {
+    "task_id": "d",
+    "name": "发送4波数据",
+    "template_name": "模块名称4",
+    "receiver_amount": 2500,
+    "start_ts": 1531389519000,
+    "status": "等待开始",
+    "id": ""
+  },
+  {
+    "task_id": "e",
+    "name": "发送5波数据",
+    "template_name": "模块名称5",
+    "receiver_amount": 3000,
+    "start_ts": 1531389519000,
+    "status": "正在发送",
+    "id": ""
+  },
+  {
+    "task_id": "f",
+    "name": "发送6波数据",
+    "template_name": "模块名称6",
+    "receiver_amount": 3500,
+    "start_ts": 1531389519000,
+    "status": "暂停中",
+    "id": ""
+  },
+  {
+    "task_id": "g",
+    "name": "发送7波数据",
+    "template_name": "模块名称7",
+    "receiver_amount": 4000,
+    "start_ts": 1531389519000,
+    "status": "发送完成",
+    "id": ""
+  },
+  {
+    "task_id": "h",
+    "name": "发送8波数据",
+    "template_name": "模块名称8",
+    "receiver_amount": 4500,
+    "start_ts": 1531389519000,
+    "status": "发送终止",
+    "id": ""
+  },
 ];
 const stopTask = {
   "result": "success"
@@ -155,19 +228,19 @@ const receiverRS = {
   ]
 };
 const templateData = [
-  {"id": "1", "name": "模板1",  "status": "审核通过",},
-  {"id": "2", "name": "模板2",  "status": "审核中",},
-  {"id": "3", "name": "模板3",  "status": "审核失败",},
-  {"id": "4", "name": "模板4",  "status": "已失效",},
+  {"id": "1", "name": "模板1", "status": "审核通过",},
+  {"id": "2", "name": "模板2", "status": "审核中",},
+  {"id": "3", "name": "模板3", "status": "审核失败",},
+  {"id": "4", "name": "模板4", "status": "已失效",},
 ];
 const taskDetail = {
-    "name": "This is 任务名称",
-    "receiver_groupid": "123",
-    "template_id": "aaa",
-    "template_name": "模板名称",
-    "receiver_amount": "1000",
-    "start_ts": "2017-10-10",
-    "end_ts": ""
+  "name": "This is 任务名称",
+  "receiver_groupid": "123",
+  "template_id": "aaa",
+  "template_name": "模板名称",
+  "receiver_amount": "1000",
+  "start_ts": "2017-10-10",
+  "end_ts": ""
 };
 Mock.mock("/send/task/list/1", "post", {msg: '', code: 0, res: sendRecord});
 Mock.mock("/send/task/stop/{taskId}", "post", {msg: '', code: 0, res: stopTask});

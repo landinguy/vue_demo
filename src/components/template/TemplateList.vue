@@ -96,11 +96,16 @@
           {
             title: '操作',
             align: 'center',
+            width:200,
             render: (h, params) => {
               const id = params.row.id;
               const $vue = this;
               const status = params.row.status;
-              const view = h('a', {
+              const view = h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
                 on: {
                   click: function () {
                     $vue.setOperation('view');
@@ -111,9 +116,13 @@
                   }
                 },
               }, '查看');
-              const edit = h('a', {
+              const edit = h('Button', {
+                props: {
+                  type: 'info',
+                  size: 'small'
+                },
                 style: {
-                  "margin-left": '10px'
+                  "margin-left": '5px'
                 },
                 on: {
                   click: function () {
@@ -125,10 +134,15 @@
                   }
                 }
               }, '修改');
-              const del = h('a', {
+              const del = h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
                 style: {
-                  "margin-left": '10px'
-                }, on: {
+                  "margin-left": '5px'
+                },
+                on: {
                   click: function () {
                     $vue.$Modal.confirm({
                       title: '删除',

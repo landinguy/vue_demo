@@ -126,7 +126,9 @@
                               :format="format"
                               :show-upload-list="false"
                               :before-upload="handleBeforeUpload"
-                              :on-success="handleSuccess" style="display: inline-block">
+                              :on-success="handleSuccess"
+                              :data="extraParam"
+                              style="display: inline-block">
                         <Button-Group>
                           <i-button type="ghost" icon="ios-cloud-upload-outline">
                             上传文件
@@ -145,12 +147,11 @@
               <div class="mobile">
                 <div class="mobile_content">
                   <p v-if="material.t=='文本'" class="c_text">{{material.text}}</p>
-                  <img v-if="material.t=='图片'" src="http://localhost/images/zl_cover.jpg" class="c_img"/>
-                  <video v-if="material.t=='视频'" id="c_video" class="c_video" src="http://localhost/video/v2.mp4"
+                  <img v-if="material.t=='图片'" class="c_img"/>
+                  <video v-if="material.t=='视频'" id="c_video" class="c_video"
                          controls>
                   </video>
-                  <audio v-if="material.t=='音频'" id="c_audio" class="c_audio" controls
-                         src="http://localhost/yp.m4a"></audio>
+                  <audio v-if="material.t=='音频'" id="c_audio" class="c_audio" controls></audio>
                 </div>
               </div>
             </div>
@@ -172,20 +173,23 @@
     name: 'CreateTemplate',
     data() {
       return {
+        extraParam: {
+          type: '图片'
+        },
+        index: '',
         signList: [],
         id: '',
         op: '',
-        haveText: 1,
+        haveText: 0,
         tab1: '新建素材',
         materials: [
-          {mn: '图片xxx', mc: 'http://localhost/images/111.jpg', mt: '图片'},
-          {mn: '视频xxx', mc: 'http://localhost/video/v3.mp4', mt: '视频'},
-          {mn: '文本xxx', mc: '文本内容文本内容文本内容文本内容文本内容文本内容文本内', mt: '文本'},
+//          {mn: '图片xxx', mc: 'http://localhost/images/111.jpg', mt: '图片'},
+//          {mn: '视频xxx', mc: 'http://localhost/video/v3.mp4', mt: '视频'},
 //          {mc: 'http://localhost/yp.m4a', mt: 4}
         ],
         tip: '请输入文本、链接和最多5个参数，链接和参数必须使用通配符{$}包围。\n例如：尊敬的{$用户昵称}，您是我行{$会员级别}，您的详单请点击{$http://www.wostore.cn/}',
         uploadTip: '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳',
-        uploadUrl: '',
+        uploadUrl: '/mat/upload',
         format: ['jpg', 'jepg', 'png', 'gif'],
         label: '上传图片',
         addModal: false,
@@ -231,6 +235,7 @@
         history.back();
       },
       edit(index) {
+        this.index = index;
         this.tab1 = '编辑素材';
         this.material.name = this.materials[index].mn;
         this.material.t = this.materials[index].mt;
@@ -241,14 +246,19 @@
         setTimeout(() => {
           if (this.material.t == '文本') {
             this.material.text = mc;
-          } else if (this.material.t == '图片') {
-            this.getByClass("c_img").setAttribute("src", mc);
-          } else if (this.material.t == '视频') {
-            this.getById("c_video").src = mc;
-          } else if (this.material.t == '音频') {
-            this.getById("c_audio").src = mc;
+          } else {
+            this.showMaterialInPhone(mc);
           }
         }, 100);
+      },
+      showMaterialInPhone(mc) {
+        if (this.material.t == '图片') {
+          this.getByClass("c_img").setAttribute("src", mc);
+        } else if (this.material.t == '视频') {
+          this.getById("c_video").src = mc;
+        } else if (this.material.t == '音频') {
+          this.getById("c_audio").src = mc;
+        }
       },
       del(index) {
         var $vue = this;
@@ -257,12 +267,9 @@
           content: '确认删除该素材？',
           onOk() {
             if ($vue.materials[index].mt == '文本') {
-              $vue--;
+              $vue.haveText--;
             }
             $vue.materials.splice(index, 1);
-          },
-          onCancel() {
-
           }
         });
       },
@@ -315,9 +322,18 @@
       save() {//保存一个文本素材时，haveText加1
         this.$refs.materialForm.validate((valid) => {
           if (valid) {
-            alert(1)
-          } else {
-            alert(2)
+            var m = this.material;
+            var mc = m.uploadValid;
+            if (this.material.t == '文本') {
+              this.haveText++;
+              mc = m.text;
+            }
+            if (this.index != '') {//编辑元素时移除编辑之前的元素
+              this.materials.splice(this.index, 1);
+              this.index = '';
+            }
+            this.materials.push({mn: m.name, mc: mc, mt: m.t});
+            this.addModal = false;
           }
         })
       },
@@ -346,9 +362,10 @@
       },
       handleSuccess(res, file) {
         if (res != null) {
-          console.log("res ->" + res);
+          console.log("res ->" + res.res);
           this.$Message.success('上传成功');
-          this.material.uploadValid = res;
+          this.material.uploadValid = res.res;
+          this.showMaterialInPhone(res.res);
         } else {
           this.$Message.error('上传失败');
           this.material.uploadValid = '';
@@ -356,6 +373,7 @@
       },
       change(val) {
         console.log("materialType:" + val);
+        this.extraParam.type = val;
         switch (val) {
           case '文本':
             this.format = [];

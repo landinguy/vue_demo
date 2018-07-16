@@ -19,6 +19,17 @@
   import { mapState } from 'vuex'
   export default {
     created(){
+      console.log(this.$route.params.et, this.$route.params.taskId)
+
+      if(undefined!=this.$route.params.st){
+        this.startTime = this.$route.params.st;
+      }
+      if(undefined!=this.$route.params.et){
+        this.endTime = this.$route.params.et;
+      }
+      if(undefined!=this.$route.params.taskId){
+        this.taskId = this.$route.params.taskId;
+      }
       this.queryTask();
     },
     computed: {

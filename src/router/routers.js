@@ -117,7 +117,7 @@ export default [
       }
     ]
   },
-  
+
   {
     path: '/template',
     name: 'template',

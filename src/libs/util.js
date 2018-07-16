@@ -1,4 +1,4 @@
-import { forEach, hasOneOf } from '@/libs/tools'
+import {forEach, hasOneOf} from '@/libs/tools'
 
 export const hasChild = (item) => {
   return item.children && item.children.length !== 0
@@ -98,10 +98,10 @@ export const getHomeRoute = routers => {
  * @description 如果该newRoute已经存在则不再添加
  */
 export const getNewTagList = (list, newRoute) => {
-  const { name, path, meta } = newRoute
+  const {name, path, meta} = newRoute
   let newList = [...list]
   if (newList.findIndex(item => item.name === name) >= 0) return newList
-  else newList.push({ name, path, meta })
+  else newList.push({name, path, meta})
   return newList
 }
 
@@ -246,3 +246,17 @@ export const getTableDataFromArray = (array) => {
     tableData
   }
 }
+
+/**
+ * 完整显示表格数据
+ * @param h
+ * @param t
+ * @returns {*}
+ */
+export const showTip = (h, t) => {
+  return h("div", {
+    attrs: {
+      title: t
+    }
+  }, t)
+};

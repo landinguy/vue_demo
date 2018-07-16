@@ -111,6 +111,44 @@ export default [
           title: '我的模板'
         },
         component: () => import('@/components/template/TemplateList')
+      },
+      {
+        path: 'sign_list',
+        name: 'sign_list',
+        meta: {
+          icon: 'ios-navigate',
+          title: '签名管理'
+        },
+        component: () => import('@/components/sign/SignList')
+      }
+    ]
+  },
+  {
+    path: '/channel',
+    name: 'channel',
+    meta: {
+      icon: 'ios-navigate',
+      title: '通道管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'channel_access',
+        name: 'channel_access',
+        meta: {
+          icon: 'ios-navigate',
+          title: '通道接入'
+        },
+        component: () => import('@/components/channel/ChannelAccess')
+      },
+      {
+        path: 'channel_manage',
+        name: 'channel_manage',
+        meta: {
+          icon: 'ios-navigate',
+          title: '通道配置'
+        },
+        component: () => import('@/components/channel/ChannelManage')
       }
     ]
   },

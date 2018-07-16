@@ -120,7 +120,11 @@
                 },
                 on: {
                   click: () => {
-                    this.modifySubAccount(params.index)
+                    // this.modifySubAccount(params.index)
+                    this.$router.push({name:'data_details',
+                      params:{ st:this.startTime,
+                        et:this.endTime,
+                        taskId:this.statsList[params.index].taskId}});
                   }
                 }
               }, '详情')

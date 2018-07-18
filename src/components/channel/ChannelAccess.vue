@@ -5,13 +5,13 @@
       <span class="bold">通道提供商</span>
       </Col>
       <Col span="4">
-      <Input v-model="name" placeholder="输入通道供应商" clearable/>
+      <Input v-model="params.supplierName" placeholder="输入通道供应商" clearable/>
       </Col>
       <Col span="4" style="text-align: right">
       <span class="bold">通道号</span>
       </Col>
       <Col span="4">
-      <Input v-model="channelNo" placeholder="输入数字，支持模糊匹配" clearable/>
+      <Input v-model="params.channelNo" placeholder="输入数字，支持模糊匹配" clearable/>
       </Col>
       <Col span="8" style="text-align: center">
       <Button type="primary" @click="search">
@@ -25,7 +25,7 @@
     <div style="margin-top: 40px">
       <Table stripe border :columns="columns" :data="tableData"></Table>
       <div style="margin-top: 20px;text-align: right">
-        <Page :total="100" show-elevator @on-change="changePage"></Page>
+        <Page :total="total" show-elevator @on-change="changePage"></Page>
       </div>
     </div>
     <Modal v-model="accessInfoModal">
@@ -34,26 +34,26 @@
       </p>
       <div>
         <Form ref="infoForm" :model="accessData" :label-width="100">
-          <FormItem label="cpid" prop="v0">
-            <Input v-model="accessData.v0" class="input_len" disabled/>
+          <FormItem label="cpid" prop="cpid">
+            <Input v-model="accessData.cpid" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="计费类型" prop="v1">
-            <Input v-model="accessData.v1" class="input_len" disabled/>
+          <FormItem label="计费类型" prop="billingType">
+            <Input v-model="accessData.billingType" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="账户余量 / 条" prop="v2">
-            <Input v-model="accessData.v2" class="input_len" disabled/>
+          <FormItem label="账户余量 / 条" prop="remainder">
+            <Input v-model="accessData.remainder" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="密钥" prop="v3">
-            <Input v-model="accessData.v3" class="input_len" disabled/>
+          <FormItem label="密钥" prop="accountSecret">
+            <Input v-model="accessData.accountSecret" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="Token" prop="v4">
-            <Input v-model="accessData.v4" class="input_len" disabled/>
+          <FormItem label="Token" prop="token">
+            <Input v-model="accessData.token" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="API登录名" prop="v5">
-            <Input v-model="accessData.v5" class="input_len" disabled/>
+          <FormItem label="API登录名" prop="apiId">
+            <Input v-model="accessData.apiId" class="input_len" disabled/>
           </FormItem>
-          <FormItem label="API密钥" prop="v6">
-            <Input v-model="accessData.v6" class="input_len" disabled/>
+          <FormItem label="API密钥" prop="apiSecret">
+            <Input v-model="accessData.apiSecret" class="input_len" disabled/>
           </FormItem>
         </Form>
       </div>
@@ -71,52 +71,136 @@
     name: 'ChannelAccess',
     data() {
       return {
-        name: '',
-        channelNo: '',
+        total: 0,
+        params: {
+          supplierName: '',
+          channelNo: '',
+          pageNo: 1,
+          pageSize: 10
+        },
         columns: [
           {
             title: '通道供应商',
-            key: 'col1',
+            key: 'name',
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              return showTip(h, params.row.col1);
+              return h('span', {
+                style: {
+                  color: 'blue'
+                },
+                attrs: {
+                  title: params.row.name
+                }
+              }, params.row.name)
             }
           }, {
             title: '运营商支持',
-            key: 'col2',
             align: 'center',
-            ellipsis: true
+            ellipsis: true,
+            render: (h, params) => {
+              const text = [];
+              params.row.chans.forEach(function (item, index) {
+                if (item.unicomSupport && text.indexOf('联通') == -1) {
+                  text.push('联通')
+                }
+                if (item.mobileSupport && text.indexOf('移动') == -1) {
+                  text.push('移动')
+                }
+                if (item.telcomSupport && text.indexOf('电信') == -1) {
+                  text.push('电信')
+                }
+              });
+              return h('span', {
+                attrs: {
+                  title: text.join("、")
+                }
+              }, text.join('、'))
+            }
           }, {
             title: '接入通道号',
-            key: 'col3',
+            key: 'channelNo',
             align: 'center',
-            ellipsis: true
+            ellipsis: true,
+            render: (h, params) => {
+              return this.chansForeach(h, params, 'channelNo');
+            }
           }, {
             title: '可用余量（条）',
-            key: 'col4',
+            key: 'remainder',
             align: 'center',
-            ellipsis: true
+            ellipsis: true,
+            render: (h, params) => {
+              return this.chansForeach(h, params, 'remainder');
+            }
           }, {
             title: '并发能力（条/秒）',
-            key: 'col5',
-            align: 'center'
+            key: 'maxRate',
+            align: 'center',
+            render: (h, params) => {
+              return this.chansForeach(h, params, 'maxRate');
+            }
           }, {
             title: '免流能力',
-            key: 'col6',
-            align: 'center'
+            key: 'freeFlowSupport',
+            align: 'center',
+            render: (h, params) => {
+              const arr = [];
+              params.row.chans.forEach(function (item) {
+                const ffs = item.freeFlowSupport;
+                const text = ffs == 'ALL' ? '全部' : ffs == 'YES' ? '免流' : '不免流';
+                arr.push(h('p', text))
+              });
+              return h('div', arr);
+            }
           }, {
             title: '成本价（元）',
-            key: 'col7',
-            align: 'center'
+            align: 'center',
+            ellipsis: true,
+            render: (h, params) => {
+              const arr = [];
+              params.row.chans.forEach(function (item) {
+                const costPrice1 = item.costPrice1;
+                const costPrice2 = item.costPrice2;
+                const text = [];
+                if (costPrice1) {
+                  text.push(costPrice1 + " / 免流");
+                }
+                if (costPrice2) {
+                  text.push(costPrice2 + " / 不免流");
+                }
+                arr.push(h('p', {
+                  attrs: {
+                    title: text.join(' ； ')
+                  }
+                }, text.join(' ； ')))
+              });
+              return h('div', arr);
+            }
           }, {
             title: '业务类型',
-            key: 'col8',
-            align: 'center'
+            key: 'bizType',
+            align: 'center',
+            render: (h, params) => {
+              const arr = [];
+              params.row.chans.forEach(function (item) {
+                const text = item.bizType == 'SERVICE' ? '服务类' : '营销类';
+                arr.push(h('p', text))
+              });
+              return h('div', arr);
+            }
           }, {
             title: '通道类型',
-            key: 'col9',
-            align: 'center'
+            key: 'shareable',
+            align: 'center',
+            render: (h, params) => {
+              const arr = [];
+              params.row.chans.forEach(function (item) {
+                const text = item.shareable ? '公用' : '专享';
+                arr.push(h('p', text))
+              });
+              return h('div', arr);
+            }
           }, {
             title: '操作',
             key: 'op',
@@ -133,6 +217,7 @@
                   on: {
                     click: function () {
                       $vue.accessInfoModal = true;
+                      $vue.setAccessInfo(params.row);
                     }
                   }
                 }, '接入信息'),
@@ -142,7 +227,7 @@
                     size: 'small'
                   },
                   style: {
-                    "margin-left": '10px'
+                    "margin-left": '5px'
                   },
                   on: {
                     click: function () {
@@ -159,49 +244,87 @@
         tableData: [],
         accessInfoModal: false,
         accessData: {
-          v0: '',
-          v1: '',
-          v2: '',
-          v3: '',
-          v4: '',
-          v5: '',
-          v6: ''
+          cpid: '',
+          billingType: '',
+          remainder: '',
+          accountSecret: '',
+          token: '',
+          apiId: '',
+          apiSecret: ''
         }
       }
     },
     methods: {
+      setAccessInfo(obj) {
+        this.accessData.cpid = obj.cpid;
+        this.accessData.billingType = obj.billingType;
+        this.accessData.remainder = obj.remainder;
+        this.accessData.accountSecret = obj.accountSecret;
+        this.accessData.token = obj.token;
+        this.accessData.apiId = obj.apiId;
+        this.accessData.apiSecret = obj.apiSecret;
+      },
+      chansForeach(h, params, i) {
+        const arr = [];
+        params.row.chans.forEach(function (item) {
+          arr.push(h('p', {
+            attrs: {
+              title: item[i]
+            }
+          }, item[i]))
+        });
+        return h('div', arr);
+      },
       close() {
         this.accessInfoModal = false;
       },
       clear() {
-        this.name = '';
-        this.channelNo = '';
+        this.params.supplierName = '';
+        this.params.channelNo = '';
       },
       search() {
-
+        this.params.pageNo = 1;
+        this.sendPost();
+      },
+      sendPost() {
+        console.log("params:" + JSON.stringify(this.params));
+        axios.post(this.baseUrl + "/suppliers", this.params).then(res => {
+          this.tableData = res.data;
+        })
       },
       changePage(n) {
-        alert(n)
+        this.params.pageNo = n;
+        this.sendPost();
+      },
+      getTotal() {
+        axios.post(this.baseUrl + "/suppliers/count",
+          {
+            supplierName: this.params.supplierName
+          }).then(res => {
+          if (res.data) {
+            this.total = res.data
+          }
+        })
       }
     },
     mounted() {
-      for (var i = 0; i < 10; i++) {
-        var row = {
-//        id: 1,
-          col1: 'col1',
-          col2: 'col2',
-          col3: 'col3',
-          col4: 'col4',
-          col5: 'col5',
-          col6: 'col6',
-          col7: 'col7',
-          col8: 'col8',
-          col9: 'col9',
-          op: ''
-        };
-        row.id = i;
-        this.tableData.push(row);
-      }
+//      axios.post("http://192.168.2.207:8080/login", {username: 'admin', passwd: '123456'}).then(res => {
+//        if (res) {
+//          alert(JSON.stringify(res));
+//          axios.get("http://192.168.2.207:8080/test", {}).then(r => {
+//            alert(JSON.stringify(r))
+//          }).catch(err => {
+//            alert(JSON.stringify(err))
+//          });
+//          axios.get("http://192.168.2.207:8080/test", {}).then(r => {
+//            alert(JSON.stringify(r))
+//          }).catch(err => {
+//            alert(JSON.stringify(err))
+//          })
+//        }
+//      })
+      this.getTotal();
+      this.sendPost();
     }
   }
 </script>

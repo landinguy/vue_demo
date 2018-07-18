@@ -40,20 +40,20 @@
                    class="input_len"/>
           </FormItem>
 
-          <FormItem label="" prop="uploadValid">
-            <Upload :action="uploadUrl"
-                    :format="['jpg','png']"
-                    :show-upload-list="false"
-                    :before-upload="handleBeforeUpload"
-                    :on-success="handleSuccess" style="display: inline-block">
-              <Button-Group>
-                <i-button type="primary" class="input_len" icon="ios-cloud-upload-outline">
-                  上传签名授权书
-                </i-button>
-              </Button-Group>
-            </Upload>
-            <p class="sign_tip">PNG、JPG格式，不超过500K</p>
-          </FormItem>
+          <!--<FormItem label="" prop="uploadValid">-->
+          <!--<Upload :action="uploadUrl"-->
+          <!--:format="['jpg','png']"-->
+          <!--:show-upload-list="false"-->
+          <!--:before-upload="handleBeforeUpload"-->
+          <!--:on-success="handleSuccess" style="display: inline-block">-->
+          <!--<Button-Group>-->
+          <!--<i-button type="primary" class="input_len" icon="ios-cloud-upload-outline">-->
+          <!--上传签名授权书-->
+          <!--</i-button>-->
+          <!--</Button-Group>-->
+          <!--</Upload>-->
+          <!--<p class="sign_tip">PNG、JPG格式，不超过500K</p>-->
+          <!--</FormItem>-->
         </Form>
       </div>
       <div slot="footer" style="text-align: center">
@@ -183,7 +183,7 @@
         signData: {
           cp: '',
           content: '',
-          uploadValid: '',
+//          uploadValid: '',
           source: '',
           status: ''
         },
@@ -193,7 +193,7 @@
             validator: this.validateText,
             trigger: 'blur'
           },],
-          uploadValid: [{required: true, message: '请上传签名授权书', trigger: 'blur'}]
+//          uploadValid: [{required: true, message: '请上传签名授权书', trigger: 'blur'}]
         },
         total: 0
       }
@@ -208,26 +208,26 @@
           callback()
         }
       },
-      handleBeforeUpload(file) {
-        var index = file.name.lastIndexOf(".");
-        var type = file.name.substring(index + 1);
-
-        if (type.toUpperCase() != "JPG" && type.toUpperCase() != "PNG") {
-          this.$Message.error('请上传jpg、png图片文件');
-          return false;
-        }
-
-      },
-      handleSuccess(res, file) {
-        if (res != null) {
-          console.log("res ->" + res);
-          this.$Message.success('上传成功');
-          this.sign.uploadValid = res;
-        } else {
-          this.$Message.error('上传失败');
-          this.sign.uploadValid = '';
-        }
-      },
+//      handleBeforeUpload(file) {
+//        var index = file.name.lastIndexOf(".");
+//        var type = file.name.substring(index + 1);
+//
+//        if (type.toUpperCase() != "JPG" && type.toUpperCase() != "PNG") {
+//          this.$Message.error('请上传jpg、png图片文件');
+//          return false;
+//        }
+//
+//      },
+//      handleSuccess(res, file) {
+//        if (res != null) {
+//          console.log("res ->" + res);
+//          this.$Message.success('上传成功');
+//          this.sign.uploadValid = res;
+//        } else {
+//          this.$Message.error('上传失败');
+//          this.sign.uploadValid = '';
+//        }
+//      },
       confirm() {
         this.$refs.signForm.validate((valid) => {
           if (valid) {

@@ -115,6 +115,101 @@ const res4 = [
     "updateTs": "2018-07-12 18:00:00"
   }
 ];
+const res5 = [{
+  "id": "",
+  "name": "小沃",
+  "cpid": "cpid",
+  "billingType": "PRE",
+  "remainder": 1000000,
+  "accountSecret": "wqdqfqwedfqfqwfq",
+  "token": "token",
+  "apiId": "apiId",
+  "apiSecret": "apiSecret",
+  "chans": [
+    {
+      "id": "",
+      "channelNo": "1065541810733",
+      "supplierId": "",
+      "supplierName": "小沃1",
+      "channelType": "LONG",
+      "unicomSupport": true,
+      "mobileSupport": false,
+      "telcomSupport": false,
+      "remainder": 1000000,
+      "maxRate": 200,
+      "freeFlowSupport": "YES",
+      "costPrice1": "0.15",
+      "costPrice2": "",
+      "bizType": "SERVICE",
+      "shareable": false
+    },
+    {
+      "id": "",
+      "channelNo": "1065541810734",
+      "supplierId": "",
+      "supplierName": "小沃2",
+      "channelType": "SHORT",
+      "unicomSupport": true,
+      "mobileSupport": true,
+      "telcomSupport": true,
+      "remainder": 2000000,
+      "maxRate": 200,
+      "freeFlowSupport": "NO",
+      "costPrice1": "",
+      "costPrice2": "0.25",
+      "bizType": "AD",
+      "shareable": true
+    },
+    {
+      "id": "",
+      "channelNo": "1065541810735",
+      "supplierId": "",
+      "supplierName": "小沃3",
+      "channelType": "SHORT",
+      "unicomSupport": true,
+      "mobileSupport": true,
+      "telcomSupport": true,
+      "remainder": 1500000,
+      "maxRate": 100,
+      "freeFlowSupport": "ALL",
+      "costPrice1": "0.15",
+      "costPrice2": "0.25",
+      "bizType": "AD",
+      "shareable": true
+    }
+  ]
+},
+  {
+    "id": "",
+    "name": "三体",
+    "cpid": "cpid1",
+    "billingType": "PRE1",
+    "remainder": 2000000,
+    "accountSecret": "qqqqqqqqqqqqqqqqqq",
+    "token": "token1",
+    "apiId": "apiId1",
+    "apiSecret": "apiSecret1",
+    "chans": [
+      {
+        "id": "",
+        "channelNo": "1065541810743",
+        "supplierId": "",
+        "supplierName": "小沃1",
+        "channelType": "SHORT",
+        "unicomSupport": false,
+        "mobileSupport": true,
+        "telcomSupport": true,
+        "remainder": 3000000,
+        "maxRate": 300,
+        "freeFlowSupport": "YES",
+        "costPrice1": "0.15",
+        "costPrice2": "",
+        "bizType": "SERVICE",
+        "shareable": true
+      }
+    ]
+  }
+];
 Mock.mock("/test", "post", {name: "xxf"});
 Mock.mock("/login", "post", {code: 0});
 Mock.mock("/tmpl/1", "delete", {msg: '', code: 0});
@@ -133,11 +228,26 @@ Mock.mock("/sign/create", "post", {msg: '', code: 0});
 Mock.mock("/sign/1", "delete", {msg: '', code: 0});
 Mock.mock("/signs/count", "post", {msg: '', code: 0, count: 30});
 Mock.mock("/signs", "post", {msg: '', code: 0, res: res4});
+Mock.mock("/suppliers/count", "post", function () {
+  return 30
+});
+Mock.mock("/suppliers", "post", function (req, res) {
+  res = res5;
+  return res;
+});
 
 Mock.mock("/mat/upload", "post", function (req, res) {
   console.log("req:" + JSON.stringify(req));
   res = {
-    msg: '', code: 0, res: 'http://192.168.2.57/images/111.jpg'
+    // msg: '', code: 0, res: 'http://192.168.2.57/images/111.jpg'
+    msg: '',
+    code: 0,
+    res: '',
+    data: {
+      id: "",
+      type: "",
+      resource: "http://localhost/video/v3.mp4"
+    }
   };
   return res;
 });

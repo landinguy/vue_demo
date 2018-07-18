@@ -20,7 +20,7 @@
         </FormItem>
 
         <FormItem label="模板内容" prop="contentValid">
-          <p class="input_len" style="text-align: right">预估大小：0 MB / 上限 2.0 MB</p>
+          <p class="input_len" style="text-align: right">预估大小：{{getTotalSize}} MB / 上限 2.0 MB</p>
           <div id="parent">
             <div style="position: relative" v-for="(item,index) in materials">
               <div v-if="item.mt=='文本'" class="input_len parent_p"
@@ -216,7 +216,8 @@
           name: '',
           t: '图片',
           uploadValid: '',
-          text: ''
+          text: '',
+          size: 0
         },
         materialValidate: {
           name: [{required: true, message: '请填写素材名称', trigger: 'blur'}],
@@ -280,7 +281,11 @@
       submit() {
         if (this.haveText <= 0) {
           this.$Message.warning('模板内容至少应包含一个文本素材');
-          return;
+          return
+        }
+        if (this.getTotalSize > 2) {
+          this.$Message.warning('模板内容应不大于2M');
+          return
         }
         this.$refs.templateForm.validate((valid) => {
           if (valid) {
@@ -324,15 +329,17 @@
           if (valid) {
             var m = this.material;
             var mc = m.uploadValid;
+            var ms = m.size;
             if (this.material.t == '文本') {
               this.haveText++;
               mc = m.text;
+              ms = 0;
             }
             if (this.index != '') {//编辑元素时移除编辑之前的元素
               this.materials.splice(this.index, 1);
               this.index = '';
             }
-            this.materials.push({mn: m.name, mc: mc, mt: m.t});
+            this.materials.push({mn: m.name, mc: mc, mt: m.t, ms: ms});
             this.addModal = false;
           }
         })
@@ -364,7 +371,8 @@
         if (res != null) {
           console.log("res ->" + res.res);
           this.$Message.success('上传成功');
-          this.material.uploadValid = res.res;
+          this.material.uploadValid = res.data.resource;
+          this.material.size = parseFloat((file.size / (1024 * 1024)).toFixed(2));
           this.showMaterialInPhone(res.res);
         } else {
           this.$Message.error('上传失败');
@@ -455,6 +463,13 @@
     computed: {
       getTotalCount() {
         return this.material.text.trim().length;
+      },
+      getTotalSize() {
+        var sum = 0;
+        this.materials.forEach(item => {
+          sum += item.ms;
+        });
+        return sum;
       }
     },
     mounted() {

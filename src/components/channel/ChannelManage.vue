@@ -141,6 +141,9 @@
               return h('span', {
                 style: {
                   color: 'blue'
+                },
+                attrs: {
+                  title: params.row.supplierName
                 }
               }, params.row.supplierName)
             }
@@ -208,13 +211,13 @@
               const costPrice1 = params.row.costPrice1;
               const costPrice2 = params.row.costPrice2;
               if (costPrice1) {
-                arr.push(h('span', costPrice1 + "/免流"))
+                arr.push(h('span', costPrice1 + " / 免流"))
               }
               if (params.row.freeFlow == '全部') {
                 arr.push(h('br'));
               }
               if (costPrice2) {
-                var text = costPrice2 + "/不免流";
+                var text = costPrice2 + " / 不免流";
                 arr.push(h('span', text))
               }
               return h('div', arr);

@@ -29,7 +29,7 @@
         </Layout>
       </Content>
       <Footer style="text-align: center">
-        <p>&copy; 2018 <a href="http://ad.wostore.cn/adhome/" target="_blank">小沃科技有限公司</a></p>
+        <p>&copy; 2018 <a href="http://store.wo.com.cn/" target="_blank">小沃科技有限公司</a></p>
       </Footer>
     </Layout>
   </Layout>

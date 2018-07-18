@@ -7,12 +7,14 @@ import store from './store'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import '../static/common.less'
+import axios from 'axios'
 require('@/mock')
 
 Vue.use(iView);
 
 Vue.config.productionTip = false;
 Vue.prototype.baseUrl = "";
+axios.defaults.withCredentials = true;
 
 /* eslint-disable no-new */
 new Vue({

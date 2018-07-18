@@ -211,17 +211,6 @@ export default [
           title: '发送记录'
         },
         component: () => import('@/components/task/Record.vue')
-      },
-      {
-        path: 'task_detail',
-        name: 'task_detail',
-        meta: {
-          icon: 'ios-navigate',
-          title: '发送记录详情',
-          hideInMenu: true,
-          notCache: true
-        },
-        component: () => import('@/components/task/TaskDetail.vue')
       }
     ]
   },

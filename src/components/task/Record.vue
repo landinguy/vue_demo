@@ -1,5 +1,30 @@
 <template>
   <div>
+    <Row>
+      <Col span="12">
+        <Input v-model="fastSearchContent" placeholder="快速查询">
+        <Select v-model="fastSearchContentStatus" slot="prepend" style="width: 100px">
+          <Option value="audit">审核中</Option>
+          <Option value="auditFail">审核失败</Option>
+          <Option value="expired">已失效</Option>
+          <Option value="waitingToStart">等待开始</Option>
+          <Option value="month">正在发送</Option>
+          <Option value="month">暂停中</Option>
+          <Option value="month">发送完成</Option>
+          <Option value="month">发送终止</Option>
+        </Select>
+        <Button slot="append" icon="ios-search"></Button>
+        </Input>
+      </Col>
+      <Col span="4" offset="8" style="text-align: right">
+      <Button type="primary" @click="toTaskPage">
+        <Icon type="plus"></Icon>
+        新建发送
+      </Button>
+      </Col>
+    </Row>
+
+    <br>
     <Table border :columns="recordColumns" :data="recordData" stripe></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
@@ -20,10 +45,13 @@
 
 <script>
   import axios from "axios";
+  import {mapMutations} from 'vuex'
   export default {
     name: "record",
     data() {
       return {
+        fastSearchContent:'',
+        fastSearchContentStatus:'',
         recordColumns: [],
         deleteModal:false,
         showDeleteHint:false,
@@ -34,6 +62,13 @@
       };
     },
     methods: {
+      ...mapMutations([
+        'setTaskId',
+        'setTaskOperation'
+      ]),
+      toTaskPage() {
+        this.$router.push({name:'new_task'})
+      },
       formatDate (str) {
         let date = new Date(str);
         const y = date.getFullYear();
@@ -60,9 +95,24 @@
             console.log(error);
           });
       },
+      showModify(index) {
+        console.log("showModify: "+index);
+        this.setTaskOperation(this.recordData[index].task_id);
+        this.$router.push({name:'new_task'})
+      },
+      showCopy(index) {
+        console.log("showCopy: "+index);
+        this.setTaskOperation(this.recordData[index].task_id);
+        this.$router.push({name:'new_task'})
+      },
+      showSendStatistics(index) {
+        this.$router.push({name:'data_statistics'})
+      },
       showDetail(index) {
         console.log(index);
-        this.$router.push({name:'task_detail'})
+        console.log(this.recordData[index].task_id);
+        this.setTaskId(this.recordData[index].task_id);
+        this.$router.push({name:'new_task'})
       },
       showDeleteModal(index) {
         this.deleteModal = true;
@@ -131,11 +181,11 @@
             }
             btnArray.push(h('Button', {props: {type: 'success', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showDetail(params.index)}}}, '查看'));
             if (status === '审核中' || status === '审核失败' || status === '已失效' || status === '等待开始') {
-              btnArray.push(h('Button', {props: {type: 'warning', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.remove(params.index)}}}, '修改'))
+              btnArray.push(h('Button', {props: {type: 'warning', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showModify(params.index)}}}, '修改'))
             }
-            btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.remove(params.index)}}}, '复制'));
+            btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showCopy(params.index)}}}, '复制'));
             if (status === '正在发送' || status === '暂停中' || status === '发送完成' || status === '发送终止') {
-              btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.remove(params.index)}}}, '数据'))
+              btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showSendStatistics(params.index)}}}, '数据'))
             }
             if (status === '审核中' || status === '审核失败' || status === '已失效' || status === '等待开始' || status === '发送完成' || status === '发送终止') {
               btnArray.push(h('Button', {props: {type: 'error', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showDeleteModal(params.index)}}}, '删除'))

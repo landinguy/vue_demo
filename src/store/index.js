@@ -8,6 +8,7 @@ import home from './module/home'
 import account from './module/account'
 import subAccount from "./module/subAccount"
 import statistics from "./module/statistics"
+import task from "./module/task"
 
 Vue.use(Vuex)
 
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     home,
     account,
     subAccount,
-    statistics
+    statistics,
+    task
   }
 })

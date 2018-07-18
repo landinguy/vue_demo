@@ -358,4 +358,5 @@ Mock.mock("/send/task/delete/{taskId}", "post", {msg: '', code: 0});
 Mock.mock("/send/receiver/get/{subaccountNumber}", "post", receiverRS);
 Mock.mock("/tmpls", "post", {msg: '', code: 0, data: templateData});
 Mock.mock("/send/task/get/{id}", "post", {msg: '', code: 0, data: taskDetail});
+Mock.mock("/send/task/create", {msg: '', code: 0});
 

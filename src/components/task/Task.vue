@@ -2,14 +2,14 @@
   <div>
     <Form id='task' ref="task" :model="task" :rules="ruleValidate" label-position="right" :label-width="100">
       <FormItem label="发送任务名称" prop="name">
-        <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength"></Input>
+        <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength" :disabled="id !== ''"></Input>
       </FormItem>
       <FormItem label="发送模板" prop="template">
         <Row>
-          <Col span="10">
+          <Col :span="id === '' ? 10 : 24">
           <Input v-model="task.template" placeholder="请选择模板" disabled></Input>
           </Col>
-          <Col span="10" style="margin-left: 10px">
+          <Col span="10" style="margin-left: 10px" v-if="id === ''">
           <Button type="primary" @click="showChooseTemplateModal">选择模板</Button>
           <Button type="ghost" @click="newTemplate">新建模板</Button>
           </Col>
@@ -17,10 +17,10 @@
       </FormItem>
       <FormItem label="收件人" prop="receiver">
         <Row>
-          <Col span="10">
+          <Col :span="id === '' ? 10 : 24">
           <Input v-model="task.receiver" placeholder="选择收件人" disabled></Input>
           </Col>
-          <Col span="10" style="margin-left: 10px">
+          <Col span="10" style="margin-left: 10px" v-if="id === ''">
           <Button type="primary" @click="showChooseReceiverModal">选择收件人</Button>
           <Button type="ghost" @click="newReceiverModal = true">新建收件人</Button>
           </Col>
@@ -34,30 +34,30 @@
 
       <FormItem label="发送时间" prop="sendTime">
         <RadioGroup v-model="task.sendTime" type="button">
-          <Radio label="rightNow">立即发送</Radio>
-          <Radio label="sometime">定时发送</Radio>
+          <Radio label="rightNow" :disabled="id !== ''">立即发送</Radio>
+          <Radio label="sometime" :disabled="id !== ''">定时发送</Radio>
         </RadioGroup>
       </FormItem>
 
       <FormItem v-if="task.sendTime === 'sometime'" prop="customSendTime">
-        <DatePicker v-model="task.customSendTime" :options="dateOption" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请输入发送时间" style="width: 200px"></DatePicker>
+        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请输入发送时间" style="width: 200px"></DatePicker>
       </FormItem>
 
       <FormItem label="发送时段" prop="sendPeriod">
         <RadioGroup v-model="task.sendPeriod" type="button">
-          <Radio label="dayTime">白天时段</Radio>
-          <Radio label="customTime">自定义时段</Radio>
+          <Radio label="dayTime" :disabled="id !== ''">白天时段</Radio>
+          <Radio label="customTime" :disabled="id !== ''">自定义时段</Radio>
         </RadioGroup>
       </FormItem>
 
       <FormItem v-if="task.sendPeriod === 'customTime'" prop="customSendPeriod">
-        <TimePicker v-model="task.customSendPeriod" confirm format="HH:mm" :steps="[1, 60]" placeholder="选择时段" style="width: 112px"></TimePicker>
+        <TimePicker @on-change="handleTimeChange" :editable='false' confirm type="timerange" placement="bottom-start" placeholder="请选择发送时段" style="width: 168px"></TimePicker>
       </FormItem>
 
       <FormItem label="发送控速" prop="sendSpeed">
         <RadioGroup v-model="task.sendSpeed" type="button">
-          <Radio label="defaultSpeed">默认速度</Radio>
-          <Radio label="customSpeed">自定义速度</Radio>
+          <Radio label="defaultSpeed" :disabled="id !== ''">默认速度</Radio>
+          <Radio label="customSpeed" :disabled="id !== ''">自定义速度</Radio>
         </RadioGroup>
       </FormItem>
 
@@ -69,8 +69,8 @@
 
       <FormItem label="单日发送上限" prop="daySendLimit">
         <RadioGroup v-model="task.daySendLimit" type="button">
-          <Radio label="notLimit">不限制</Radio>
-          <Radio label="customLimit">自定义上限</Radio>
+          <Radio label="notLimit" :disabled="id !== ''">不限制</Radio>
+          <Radio label="customLimit" :disabled="id !== ''">自定义上限</Radio>
         </RadioGroup>
       </FormItem>
 
@@ -82,9 +82,9 @@
 
       <FormItem label="发送地域" prop="sendArea">
         <RadioGroup v-model="task.sendArea" type="button">
-          <Radio label="everywhere">不限制</Radio>
-          <Radio label="customArea">自定义省市</Radio>
-          <Radio label="excludeArea">屏蔽省市</Radio>
+          <Radio label="everywhere" :disabled="id !== ''">不限制</Radio>
+          <Radio label="customArea" :disabled="id !== ''">自定义省市</Radio>
+          <Radio label="excludeArea" :disabled="id !== ''">屏蔽省市</Radio>
         </RadioGroup>
       </FormItem>
 
@@ -100,11 +100,15 @@
         </div>
       </FormItem>
 
-      <FormItem>
+      <FormItem v-if="id === ''">
         <Button type="primary" @click="handleSubmit('task')">提交</Button>
         <Button type="ghost" @click="handleReset('task')" style="margin-left: 8px">取消</Button>
       </FormItem>
     </Form>
+
+    <br>
+
+    <Button type="ghost" v-if="id || modifyId || copyId" @click="goBack">返回</Button>
 
     <Modal v-model="chooseTemplateModal" width="800">
       <p slot="header">
@@ -112,7 +116,7 @@
         <span>选择模板</span>
       </p>
 
-      <Table height="200" :columns="chooseTemplateModalColumns" :data="templateData"></Table>
+      <Table height="500" :columns="chooseTemplateModalColumns" :data="templateData"></Table>
 
       <div slot="footer">
       </div>
@@ -124,7 +128,7 @@
         <span>选择收件人</span>
       </p>
 
-      <Table height="200" :columns="chooseReceiverModalColumns" :data="receiverRS"></Table>
+      <Table height="500" :columns="chooseReceiverModalColumns" :data="receiverRS"></Table>
 
       <div slot="footer">
       </div>
@@ -178,6 +182,9 @@
         else {if (value <= 0) {callback(new Error('请输入正整数'));} else {callback();}}
       };
       return {
+        id:'',
+        modifyId:'',
+        copyId:'',
         maxLength:20,
         file: null,
         loadingStatus: false,
@@ -241,18 +248,32 @@
                 callback(errors);
               }}
           ],
-          customSendPeriod:[{ required: true, message: '发送时段不能为空', trigger: 'blur' },],
+          customSendPeriod:[
+            {validator(rule, value, callback, source, options) {
+                let errors = [];
+                console.log("valueaaa" + value + "aaa");
+                if (value === '' || value == ',') {
+                  callback('发送时段不能为空');
+                }
+                callback(errors);
+              }}
+          ],
           customSendSpeed: [{ validator: validateNumber, trigger: 'blur' }],
           customDaySendLimit: [{ validator: validateNumber, trigger: 'blur' }],
         }
       };
     },
     methods: {
+      goBack() {
+        this.$store.state.task.task_id = '';
+        this.$store.state.task.task_operation = '';
+        history.back();
+      },
       newTemplate() {
         this.$router.push({name:'create_template'})
       },
       handleSubmit (name) {
-        console.log(1111)
+        console.log("time: " + this.task.customSendPeriod);
         this.$refs[name].validate((valid) => {
           if (this.task.sendArea === 'customArea') {
             console.log(JSON.stringify(this.$refs.customAreaRef.getCheckedNodes()));
@@ -260,6 +281,25 @@
           console.log(JSON.stringify(this.task.customSendArea));
           if (valid) {
             this.$Message.success('Success!');
+            axios.post("/send/task/create",{
+              subaccount_no:'',
+              name:this.task.name,
+              template_id:'',
+              template_name:this.task.template,
+              receiver_groupid:'',
+              receiver_amount:this.task.number,
+              start_ts:'',
+              end_ts:'',
+              periodFrom:'',
+              periodTo:'',
+              rate_limit:'',
+              region:'',
+            }).then(function (response) {
+              console.log(response.data.data);
+            })
+              .catch(function (error) {
+                console.log(error);
+              });
           } else {
             this.$Message.error('请填写必要信息!');
           }
@@ -267,6 +307,14 @@
       },
       handleReset (name) {
         this.$refs[name].resetFields();
+      },
+      handleDateChange(time) {
+        this.task.customSendTime = time;
+      },
+      handleTimeChange(time) {
+        console.log("type: " + typeof time)
+        console.log("time change: " + JSON.stringify(time));
+        this.task.customSendPeriod = time;
       },
       handleBeforeUpload (file) {
         let fileName = file.name;
@@ -357,8 +405,37 @@
         this.chooseReceiverModalColumns = this.getReceiverTableColumns();
         this.chooseTemplateModalColumns = this.geTemplateTableColumns();
       },
+      getTaskDetail (id) {
+        let vue = this;
+        axios.post("/send/task/get/{id}").then(value => {
+          let data = value.data.data;
+          console.log(data);
+          vue.task.name = data.name;
+          vue.task.template = data.template_name;
+          vue.task.receiver = data.receiver_groupid;
+          vue.task.number = data.receiver_amount;
+        }).catch(reason => {
+          console.log(reason);
+        })
+      }
     },
     mounted () {
+      this.id = this.$store.state.task.task_id;
+      this.modifyId = this.$store.state.task.task_operation;
+      this.copyId = this.$store.state.task.task_operation;
+      console.log("store: " + this.id + " modifyId: " + this.modifyId + " copyId: " + this.copyId);
+      if (this.id !== undefined && this.id.length !== 0) {
+        console.log("modifyId not null request network for task detail");
+        this.getTaskDetail(this.modifyId);
+      }
+      if (this.modifyId !== undefined && this.modifyId.length !== 0) {
+        console.log("id not null request network for task detail");
+        this.getTaskDetail(this.id);
+      }
+      if (this.copyId !== undefined && this.copyId.length !== 0) {
+        console.log("copyId not null request network for task detail");
+        this.getTaskDetail(this.copyId);
+      }
       this.changeTableColumns();
     }
   }

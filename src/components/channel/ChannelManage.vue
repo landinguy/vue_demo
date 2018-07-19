@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <Row type="flex" justify="center">
       <Col span="2" style="text-align: right">
       <span class="bold">通道提供商</span>
@@ -442,6 +442,13 @@
   }
 </script>
 <style lang="less">
+  .bg{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+  }
+  
   .input_len {
     width: 360px;
   }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <div class="content_div">
       <Form ref="templateForm" :model="formData" :rules="ruleValidate" :label-width="120" class="form">
         <FormItem label="模板名称" prop="name">
@@ -579,6 +579,13 @@
     font-size: 16px;
     color: #333333;
     overflow: auto;
+  }
+
+  .bg{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
   }
 
 </style>

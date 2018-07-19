@@ -353,6 +353,76 @@ const taskDetail = {
   "start_ts": "2017-10-10",
   "end_ts": ""
 };
+const permission = [
+  {
+    "menu": {
+      "index": true,
+      "account": {
+        "accountInfo": true,
+        "subaccount": true
+      },
+      "mould": {
+        "mouldCreate": true,
+        "mouldList": true,
+        "sign": true
+      },
+      "task": {
+        "taskCreate": true,
+        "taskList": true
+      },
+      "stats": {
+        "sendStats": true,
+        "sendDetail": true
+      },
+      "channel": {
+        "channelInfo": true,
+        "channelAssignment": true
+      },
+      "system": {
+        "privilege": true
+      }
+    },
+    "roleId": "1",
+    "roleName": "运营人员",
+    "accountNumber": "",
+    "accountNickname": "昵称随意",
+    "accountId": ""
+  },
+  {
+    "menu": {
+      "index": false,
+      "account": {
+        "accountInfo": false,
+        "subaccount": false
+      },
+      "mould": {
+        "mouldCreate": false,
+        "mouldList": true,
+        "sign": true
+      },
+      "task": {
+        "taskCreate": true,
+        "taskList": false
+      },
+      "stats": {
+        "sendStats": false,
+        "sendDetail": true
+      },
+      "channel": {
+        "channelInfo": false,
+        "channelAssignment": false
+      },
+      "system": {
+        "privilege": false
+      }
+    },
+    "roleId": "1",
+    "roleName": "运营人员2",
+    "accountNumber": "",
+    "accountNickname": "昵称随意2",
+    "accountId": ""
+  }
+];
 Mock.mock("/send/task/list/1", "post", {msg: '', code: 0, res: sendRecord});
 Mock.mock("/send/task/stop/{taskId}", "post", {msg: '', code: 0, res: stopTask});
 Mock.mock("/send/task/delete/{taskId}", "post", {msg: '', code: 0});
@@ -360,4 +430,5 @@ Mock.mock("/send/receiver/get/{subaccountNumber}", "post", receiverRS);
 Mock.mock("/tmpls", "post", {msg: '', code: 0, data: templateData});
 Mock.mock("/send/task/get/{id}", "post", {msg: '', code: 0, data: taskDetail});
 Mock.mock("/send/task/create", {msg: '', code: 0});
+Mock.mock("/role/list", {msg: '', code: 0 , data: permission});
 

@@ -216,6 +216,26 @@ export default [
     ]
   },
   {
+    path: '/system',
+    name: 'system',
+    meta: {
+      icon: 'ios-navigate',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'permission',
+        name: 'permission',
+        meta: {
+          icon: 'ios-navigate',
+          title: '用户权限'
+        },
+        component: () => import('@/components/permission/Permission')
+      },
+    ]
+  },
+  {
     path: '/error404',
     name: 'error404',
     component: () => import('@/components/error/error404.vue')

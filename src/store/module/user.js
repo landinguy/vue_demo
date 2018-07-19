@@ -6,7 +6,7 @@ export default {
     userName: '',
     userId: '',
     token: '',
-    access: ''
+    access:['normal']
   },
   mutations: {
     setUserId (state, id) {

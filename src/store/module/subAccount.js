@@ -1,4 +1,4 @@
-import { querySubAccountList,disableOrDeleteSubAccount } from '@/api/account'
+import { querySubAccountList,disableOrDeleteSubAccount,addSubAccount,modifySubAccount } from '@/api/account'
 export default {
   state: {
     subAccountList:[]
@@ -54,5 +54,26 @@ export default {
         })
       })
     },
+    handleAddSubAccount({commit}, {accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}) {
+      return new Promise((resolve, reject) => {
+        disableOrDeleteSubAccount({accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}
+        ).then(res => {
+          resolve()
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+    handleModifySubAccount({commit}, {accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}) {
+      return new Promise((resolve, reject) => {
+        disableOrDeleteSubAccount({accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}
+        ).then(res => {
+          resolve()
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    },
+
   }
   }

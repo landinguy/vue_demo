@@ -24,6 +24,7 @@ export default {
       state.name = accountInfo.name;
       state.scopes = accountInfo.scopes;
       state.companyWebsite = accountInfo.companyWebsite;
+      state.access = accountInfo.access;
     }
   },
 
@@ -48,12 +49,14 @@ export default {
             nickname:"测试",
             email:"email",
             tel:"110",
-            name:"刘涛",
+            name:"姓名",
             scopes:"科技",
-            companyWebsite:"www.111.c0m"
+            companyWebsite:"www.111.c0m",
+            access:["super"]
           }
           commit('setAccountInfo', accountInfo)
-          reject(err)
+          resolve(accountInfo)
+          // reject(accountInfo)
         })
       })
     },

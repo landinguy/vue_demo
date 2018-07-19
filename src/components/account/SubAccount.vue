@@ -15,6 +15,7 @@
           <Button type="primary" @click="querySubAccount()" >查询</Button>
         </div>
         <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加新账号</Button>
+        <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加用户组</Button>
         <Table border :columns="columns" :data="subAccountList"></Table>
       </div>
     </div>

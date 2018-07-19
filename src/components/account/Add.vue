@@ -6,15 +6,26 @@
     <FormItem label="子账户名称：" prop="subaccountNickname">
       <Input v-model="subAccountInfo.subaccountNickname" placeholder="账户名称"></Input>
     </FormItem>
-    <FormItem label="使用人：" prop="owner">
-      <Input v-model="subAccountInfo.owner" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>
+    <FormItem label="角色：" prop="role">
+      <Select v-model="subAccountInfo.role">
+        <Option value="sub">推广子账号</Option>
+        <!--<Option value="shanghai">广告审核</Option>-->
+        <!--<Option value="shenzhen">内部运营</Option>-->
+      </Select>
     </FormItem>
+
+    <!--<FormItem label="使用人：" prop="owner">-->
+      <!--<Input v-model="subAccountInfo.owner" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>-->
+    <!--</FormItem>-->
 
     <FormItem label="账号密码：" prop="pwd">
       <Input v-model="subAccountInfo.pwd" type="password" placeholder="请输入8-20位密码"></Input>
     </FormItem>
     <FormItem label="重复密码："  prop="rePwd">
       <Input v-model="subAccountInfo.rePwd" type="password" placeholder="请重复输入账号密码"></Input>
+    </FormItem>
+    <FormItem label="备注：" prop="owner">
+      <Input v-model="subAccountInfo.owner" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>
     </FormItem>
     <FormItem>
       <Button type="primary" @click="handleSubmit('subAccountInfo')">保存并提交</Button>
@@ -37,6 +48,7 @@
           accountNumber:"",
           subaccountNumber:"",
           subaccountNickname:"",
+          role:"",
           owner:"",
           pwd:"",
           rePwd:""
@@ -48,27 +60,44 @@
           subaccountNickname: [
             { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
-          owner: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          ],
+          // owner: [
+          //   { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+          // ],
           pwd: [
             { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
           rePwd: [
             { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
+          role: [
+            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+          ],
         }
       }
     },
     methods: {
-      handleSubmit (name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.$Message.success('Success!');
-          } else {
-            this.$Message.error('Fail!');
-          }
-        })
+      ...mapActions([
+        'handleAddSubAccount',
+        'handleModifySubAccount'
+      ]),
+      handleSubmit (subAccountInfo) {
+        if(this.$parent.index != -1){
+          this.handleModifySubAccount().then(res=>{}, err=>{});
+        }
+        else
+        {
+          this.handleAddSubAccount().then(res=>{}, err=>{});
+        }
+
+
+
+        // this.$refs[name].validate((valid) => {
+        //   if (valid) {
+        //     this.$Message.success('Success!');
+        //   } else {
+        //     this.$Message.error('Fail!');
+        //   }
+        // })
       },
       handleReset (name) {
         this.$parent.addAccount = false;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <Row type="flex" justify="space-between">
       <Col span="4">
       <Input v-model="params.key" placeholder="快速查找">
@@ -295,6 +295,14 @@
   }
 </script>
 <style lang="less">
+
+  .bg{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+  }
+
   .input_len {
     width: 360px;
   }

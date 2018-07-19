@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <Row type="flex" justify="space-between">
       <Col span="4">
       <Select v-model="params.status" clearable>
@@ -96,7 +96,7 @@
           {
             title: '操作',
             align: 'center',
-            width:200,
+            width: 200,
             render: (h, params) => {
               const id = params.row.id;
               const $vue = this;
@@ -221,5 +221,10 @@
   }
 </script>
 <style lang="less">
-
+  .bg {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+  }
 </style>

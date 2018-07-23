@@ -24,8 +24,8 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex'
-    import { mapState } from 'vuex'
+    import { mapActions,mapState,mapGetters } from 'vuex'
+    import {timeAgo, formatDate} from "../../libs/timeUitls";
     export default {
         name: "Overview",
         methods:{
@@ -37,12 +37,18 @@
           ...mapState({
             send:state=>state.home.send,
             sendSuc:state=>state.home.sendSuc,
-            remain:state=>state.home.remain
-          })
+            remain:state=>state.home.remain,
+            // accountId:state=>state.user.accountId,
+          }),
+          ...mapGetters(['accountId']),
 
         },
         mounted(){
-          this.handleTotal( "", "", "");
+          var st = st = formatDate(new Date().getTime());
+          var et = formatDate(new Date().getTime());
+          st = st.split(" ")[0]+" 00:00:00";
+          console.log("------"+this.accountId)
+          this.handleTotal( {accountId:this.accountId, st:st, et:et});
         }
     }
 </script>

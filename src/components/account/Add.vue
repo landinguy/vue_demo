@@ -8,7 +8,7 @@
     </FormItem>
     <FormItem label="角色：" prop="role">
       <Select v-model="subAccountInfo.role">
-        <Option value="sub">推广子账号</Option>
+        <Option value="1">推广子账号</Option>
         <!--<Option value="shanghai">广告审核</Option>-->
         <!--<Option value="shenzhen">内部运营</Option>-->
       </Select>
@@ -34,13 +34,15 @@
   </Form>
 </template>
 <script>
-  import { mapActions } from 'vuex'
-  import { mapState } from 'vuex'
+  import { mapActions,mapState,mapGetters } from 'vuex'
   export default {
     computed: {
       ...mapState({
         subAccountList:state => state.subAccount.subAccountList,
-      })
+        // accountId:state=>state.user.accountId,
+        // accountNumber:state=>state.user.accountNumber,
+      }),
+      ...mapGetters(['accountId','accountNumber']),
     },
     data () {
       return {
@@ -82,11 +84,52 @@
       ]),
       handleSubmit (subAccountInfo) {
         if(this.$parent.index != -1){
-          this.handleModifySubAccount().then(res=>{}, err=>{});
+          var password = "";
+          if(this.subAccountInfo.pwd == "000000"){
+            password = "";
+          }
+          else
+          {
+            password = this.subAccountInfo.pwd;
+          }
+          var params = {accountNumber:this.accountNumber,
+            subaccountNumber:this.subAccountInfo.subaccountNumber,
+            subaccountId:this.$parent.modifyInfo.subaccountId,
+            subaccountNickname:this.subAccountInfo.subaccountNickname,
+            owner:this.subAccountInfo.owner,
+            pwd:password,
+            roleId:this.subAccountInfo.role
+          }
+          console.log(params);
+          this.handleModifySubAccount(params).then(res=>{
+            console.log(res)
+            if(res.data.code == 0){
+              this.$Message.info("修改成功");
+            }
+          }, err=>{});
         }
         else
         {
-          this.handleAddSubAccount().then(res=>{}, err=>{});
+          if(this.subAccountInfo.pwd != this.subAccountInfo.rePwd){
+            this.$Message.info("两次输入密码不一致");
+            return;
+          }
+          var data = {accountNumber:this.accountNumber,
+            subaccountNumber:this.subAccountInfo.subaccountNumber,
+            subaccountNickname:this.subAccountInfo.subaccountNickname,
+            owner:this.subAccountInfo.owner,
+            pwd:this.subAccountInfo.pwd,
+            roleId:this.subAccountInfo.role
+          };
+          console.log(data)
+          this.handleAddSubAccount(data).then(res=>{
+              console.log(res)
+              if(res.data.code == 0){
+                this.$Message.info("添加账号成功");
+              }
+          }, err=>{
+
+          });
         }
 
 
@@ -108,7 +151,9 @@
       if(this.$parent.index != -1){
         this.subAccountInfo.subaccountNumber = this.$parent.modifyInfo.subaccountNumber;
         this.subAccountInfo.subaccountNickname = this.$parent.modifyInfo.subaccountNickname;
-        this.subAccountInfo.owner = this.$parent.modifyInfo.owner
+        this.subAccountInfo.owner = this.$parent.modifyInfo.owner;
+        this.subAccountInfo.pwd = "000000";
+        this.subAccountInfo.rePwd = "000000";
       }
 
     }

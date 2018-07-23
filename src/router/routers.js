@@ -62,7 +62,7 @@ export default [
     meta: {
       // icon: 'ios-navigate',
       title: '账户管理',
-      access:['normal']
+      // access:['normal']
     },
     component: Main,
     children: [
@@ -213,6 +213,26 @@ export default [
         },
         component: () => import('@/components/task/Record.vue')
       }
+    ]
+  },
+  {
+    path: '/system',
+    name: 'system',
+    meta: {
+      icon: 'ios-navigate',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'permission',
+        name: 'permission',
+        meta: {
+          icon: 'ios-navigate',
+          title: '用户权限'
+        },
+        component: () => import('@/components/permission/Permission')
+      },
     ]
   },
   {

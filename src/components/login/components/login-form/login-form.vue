@@ -20,6 +20,7 @@
   </Form>
 </template>
 <script>
+  import { mapActions } from 'vuex'
 export default {
   name: 'LoginForm',
   props: {
@@ -43,8 +44,8 @@ export default {
   data () {
     return {
       form: {
-        userName: 'super_admin',
-        password: ''
+        userName: 'admin',
+        password: '123456'
       }
     }
   },
@@ -57,16 +58,54 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'handleLogin'
+    ]),
     handleSubmit () {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.$emit('on-success-valid', {
-            userName: this.form.userName,
-            password: this.form.password
-          })
+      console.log("--------",this.form.userName, this.form.password)
+      this.handleLogin({ username:this.form.userName, passwd:this.form.password}).then(
+        res=>{
+          console.log(res.data.data)
+          if(res.data.code == 0){
+            this.$emit('on-success-valid', {
+                    userName: this.form.userName,
+                    password: this.form.password
+                  })
+          }
+        },
+        err=>{
+          console.log(err)
         }
-      })
-    }
+      );
+
+      // this.$refs.loginForm.validate((valid) => {
+      //   if (valid) {
+      //     this.$emit('on-success-valid', {
+      //       userName: this.form.userName,
+      //       password: this.form.password
+      //     })
+      //   }
+      // })
+    },
+
   }
 }
+
+
+
+// methods: {
+//
+//     handleSubmit ({ userName, password }) {
+//     this.handleLogin(userName, password).then(res=>{
+//       console.log(res.data.id);
+//       this.$router.push({
+//         name: 'home'
+//       })
+//     }, err=>{
+//       this.$router.push({
+//         name: 'login'
+//       })
+//     });
+//
+//   }
 </script>

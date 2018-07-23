@@ -1,27 +1,27 @@
 import axios from '@/libs/axios'
 import url from './url'
 
-export const total = ({admin, st, et }) => {
+export const total = ({accountId, st, et }) => {
   const data = {
     st,
-    et,
-    admin
+    et
   }
+  console.log(data)
   return axios.request({
-    url:url.homeTotal,
+    url:url.homeTotal + accountId,
     data,
     method: 'post'
   })
 }
 
-export const trend = ({ admin, st, et }) => {
+export const trend = ({ accountId, st, et }) => {
   const data = {
     st,
-    et,
-    admin
+    et
   }
+
   return axios.request({
-    url:url.homeTrend,
+    url:url.homeTrend + accountId,
     data,
     method: 'post'
   })

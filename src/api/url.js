@@ -1,4 +1,7 @@
 var url = {
+  base:"",
+  //登录
+  login:"/login",
   //首页
   homeTotal:"/index/total/",
   homeTrend:"/index/trend/",

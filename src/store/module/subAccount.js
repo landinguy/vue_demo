@@ -11,64 +11,65 @@ export default {
 
   actions: {
 
-    handleQuerySubAccountList({commit}, {accountNumber,subaccountNumber, status}) {
+    handleQuerySubAccountList({commit}, {subaccountNickname,status}) {
       return new Promise((resolve, reject) => {
-        querySubAccountList({accountNumber,subaccountNumber, status}
+        querySubAccountList({subaccountNickname,status}
         ).then(res => {
-          resolve()
+          commit('setSubAccountList', res.data.data)
+          resolve(res)
         }).catch(err => {
 
-          const subAccountList = [
-            {
-              subaccountNumber:"test1",
-              subaccountNickname:"测试账号",
-              owner:"张三",
-              status:"1",
-            },
-            {
-              subaccountNumber:"test2",
-              subaccountNickname:"测试账号",
-              owner:"张三",
-              status:"2",
-            },
-            {
-              subaccountNumber:"test3",
-              subaccountNickname:"测试账号",
-              owner:"张三",
-              status:"3",
-            },
-          ]
-          commit('setSubAccountList', subAccountList)
+          // const subAccountList = [
+          //   {
+          //     subaccountNumber:"test1",
+          //     subaccountNickname:"测试账号",
+          //     owner:"张三",
+          //     status:"1",
+          //   },
+          //   {
+          //     subaccountNumber:"test2",
+          //     subaccountNickname:"测试账号",
+          //     owner:"张三",
+          //     status:"2",
+          //   },
+          //   {
+          //     subaccountNumber:"test3",
+          //     subaccountNickname:"测试账号",
+          //     owner:"张三",
+          //     status:"3",
+          //   },
+          // ]
+          commit('setSubAccountList', res.data.data)
           reject(err)
         })
       })
     },
 
-    handleDisableOrDeleteSubAccount({commit}, {accountNumber,subaccountNumber, status}) {
+    handleDisableOrDeleteSubAccount({commit}, {subaccountId, status}) {
       return new Promise((resolve, reject) => {
-        disableOrDeleteSubAccount({accountNumber,subaccountNumber, status}
+        disableOrDeleteSubAccount({subaccountId, status}
         ).then(res => {
-          resolve()
+          resolve(res)
         }).catch(err => {
           reject(err)
         })
       })
     },
-    handleAddSubAccount({commit}, {accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}) {
+    handleAddSubAccount({commit}, {accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}) {
       return new Promise((resolve, reject) => {
-        disableOrDeleteSubAccount({accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}
+        addSubAccount({accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}
         ).then(res => {
-          resolve()
+          resolve(res)
         }).catch(err => {
           reject(err)
         })
       })
     },
-    handleModifySubAccount({commit}, {accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}) {
+    handleModifySubAccount({commit}, {accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}) {
       return new Promise((resolve, reject) => {
-        disableOrDeleteSubAccount({accountNumber,subaccountNumber, subaccountNickname,owner, role,pwd}
+        modifySubAccount({accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}
         ).then(res => {
-          resolve()
+          resolve(res)
         }).catch(err => {
           reject(err)
         })

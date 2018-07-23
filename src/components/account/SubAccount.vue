@@ -7,7 +7,7 @@
       <div v-if="!addAccount" class="sub">
         <div  class="query">
           <label>子账号名称</label>
-          <Input v-model="accountNumber" placeholder="账号名称" style="width: 200px;margin-right: 32px;"></Input>
+          <Input v-model="accountNickName" placeholder="账号名称" style="width: 200px;margin-right: 32px;"></Input>
           <label>账号状态</label>
           <Select v-model="accountState" style="width:200px;margin-right: 32px;">
             <Option v-for="item in selectedState" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -15,15 +15,14 @@
           <Button type="primary" @click="querySubAccount()" >查询</Button>
         </div>
         <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加新账号</Button>
-        <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加用户组</Button>
+        <!--<Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加用户组</Button>-->
         <Table border :columns="columns" :data="subAccountList"></Table>
       </div>
     </div>
 </template>
 <script>
   import Add from "./Add"
-  import { mapActions } from 'vuex'
-  import { mapState } from 'vuex'
+  import { mapActions,mapState,mapGetters } from 'vuex'
     export default {
       components:{
         Add
@@ -45,39 +44,50 @@
 
         },
         querySubAccount(){
-          this.handleQuerySubAccountList("", this.accountNumber, this.accountState);
+          var data = {subaccountNickname:this.accountNickName,status:this.accountState}
+          console.log(data)
+          this.handleQuerySubAccountList(data);
         },
         disableOrDeleteSubAccount(index, status){
-          this.handleDisableOrDeleteSubAccount("", this.subAccountList[index], status);
+          var data = {subaccountId:this.subAccountList[index].subaccountId, status:status}
+          console.log(data)
+
+          this.handleDisableOrDeleteSubAccount(data).then(res=>{
+              if(res.data.code == 0){
+                this.$Message.info("账号已禁用或者删除");
+              }
+          },err=>{
+
+          });
         }
       },
       computed: {
         ...mapState({
           subAccountList:state => state.subAccount.subAccountList,
-        })
+          // accountId:state=>state.user.accountId,
+          // accountNumber:state=>state.user.accountNumber,
+        }),
+        ...mapGetters(['accountId','accountNumber']),
       },
       data(){
         return{
           index:-1,
           modifyInfo:null,
-          accountNumber:"",
+          accountNickName:"",
+          // accountNumber:"",
           accountState:"",
           addAccount:false,
           selectedState: [
             {
-              value: 'all',
+              value: 'USE',
               label: '全部'
             },
             {
-              value: 'modify',
-              label: '修改'
-            },
-            {
-              value: 'disable',
+              value: 'DISABLED',
               label: '禁用'
             },
             {
-              value: 'delete',
+              value: 'DELETED',
               label: '删除'
             }
           ],
@@ -115,7 +125,7 @@
                     },
                     on: {
                       click: () => {
-                        this.disableOrDeleteSubAccount(params.index, "delete");
+                        this.disableOrDeleteSubAccount(params.index, "DISABLED");
                       }
                     }
                   }, '禁用'),
@@ -126,7 +136,7 @@
                     },
                     on: {
                       click: () => {
-                        this.disableOrDeleteSubAccount(params.index, "delete");
+                        this.disableOrDeleteSubAccount(params.index, "DELETED");
                       }
                     }
                   }, '删除'),

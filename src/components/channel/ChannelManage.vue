@@ -361,12 +361,13 @@
           supplierName: [],
           channelId: '',
           yys: '',
-          accountId: "1",
+          accountId: '',
           remainder: '',
           freeFlowSupport: '',
           costPrice1: '',
           costPrice2: '',
-          desc: ''
+          desc: '',
+          maxRate: 0
         },
         ruleValidate: {
           supplierName: [{required: true, type: 'array', min: 1, message: '请选择通道供应商', trigger: 'change'}],
@@ -385,6 +386,7 @@
         console.log("suppliers :" + val);
         this.channels = [];
         const yys = [];
+        let maxRate = 0;
         val.forEach(i => {
           this.supplierData.forEach(s => {
             if (i == s.id) {
@@ -399,17 +401,23 @@
                 if (c.telcomSupport && yys.indexOf('电信') == -1) {
                   yys.push('电信')
                 }
+                //获取最大发送速率
+                if (c.maxRate > maxRate) {
+                  maxRate = c.maxRate;
+                }
               })
             }
           })
         });
         this.formData.yys = yys.join(" , ");
+        this.formData.maxRate = maxRate;
       },
       save() {
         this.$refs.channelForm.validate((valid) => {
-          if (!valid) {
-            axios.post(this.baseUrl + "/chan/item/bind", {}).then(res => {
-              if (res.data.msg == '' && res.data.code == 0) {
+          if (valid) {
+            const param = this.getParams();
+            axios.post(this.baseUrl + "/chan/item/bind", param).then(res => {
+              if (res.data.code == 0) {
                 this.addModal = false;
                 this.$Message.success({
                   content: '保存成功',
@@ -424,6 +432,18 @@
             })
           }
         })
+      },
+      getParams() {
+        const param = {};
+        param.accountId = this.formData.accountId;
+        param.channelId = this.formData.channelId;
+        param.remainder = this.formData.remainder;
+        param.maxRate = this.formData.maxRate;
+        param.freeFlowSupport = this.formData.freeFlowSupport;
+        param.costPrice1 = this.formData.costPrice1;
+        param.costPrice2 = this.formData.costPrice2;
+        param.desc = this.formData.desc;
+        return param;
       },
       cancel() {
         this.addModal = false;
@@ -470,15 +490,15 @@
       },
       getSuppliersInfo() {
         axios.post(this.baseUrl + "/suppliers", {}).then(res => {
-//          this.supplierData = res.data.data;
-          this.supplierData = res.data;
+          this.supplierData = res.data.data;
+//          this.supplierData = res.data;
         })
       }
     },
     mounted() {
-//      this.getTotal();
-//      this.sendPost();
-      this.getSuppliersInfo();
+      this.getTotal();
+      this.sendPost();
+//      this.getSuppliersInfo();
     }
   }
 </script>

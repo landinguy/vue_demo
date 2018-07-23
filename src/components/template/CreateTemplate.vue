@@ -23,11 +23,11 @@
           <p class="input_len" style="text-align: right">预估大小：{{getTotalSize}} MB / 上限 2.0 MB</p>
           <div id="parent">
             <div style="position: relative" v-for="(item,index) in materials">
-              <div v-if="item.mt=='文本' || item.mt=='TEXT'" class="input_len parent_p"
+              <div v-if="item.mt=='TEXT'" class="input_len parent_p"
                    style="" v-text="item.mc"></div>
-              <img v-if="item.mt=='图片' || item.mt=='PIC'" :src="item.mc" class="input_len">
-              <video v-if="item.mt=='视频' || item.mt=='VIDEO'" controls :src="item.mc" class="input_len"></video>
-              <audio v-if="item.mt=='音频' || item.mt=='AUDIO'" controls :src="item.mc" class="input_len"></audio>
+              <img v-if="item.mt=='PIC'" :src="item.mc" class="input_len">
+              <video v-if="item.mt=='VIDEO'" controls :src="item.mc" class="input_len"></video>
+              <audio v-if="item.mt=='AUDIO'" controls :src="item.mc" class="input_len"></audio>
               <div style="position: absolute;right: -40px;top: 0px" v-if="op!='view'">
                 <Button type="ghost" size="small" @click="edit(index)">编辑</Button>
                 <br>
@@ -168,6 +168,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import {mapGetters } from 'vuex'
 
   export default {
     name: 'CreateTemplate',
@@ -225,10 +226,10 @@
           name: [{required: true, message: '请填写素材名称', trigger: 'blur'}],
           t: [{required: true, message: '请选择素材类型', trigger: 'change'}],
           uploadValid: [{required: true, message: '请上传素材文件', trigger: 'blur'}],
-          text: [{required: true, message: '请输入文本内容', trigger: 'blur'}, {
-            validator: this.validateText,
-            trigger: 'blur'
-          }],
+          text: [
+            {required: true, message: '请输入文本内容', trigger: 'blur'},
+            {validator: this.validateText, trigger: 'blur'}
+          ],
         }
       }
     },
@@ -243,14 +244,16 @@
         this.material.name = this.materials[index].mn;
         this.material.t = this.materials[index].mt;
         var mc = this.materials[index].mc;
-        alert(mc)
-        this.material.uploadValid = mc;
+//        alert(mc)
         this.addModal = true;
         //等待video/audio加载之后在执行
         setTimeout(() => {
           if (this.material.t == '文本') {
             this.material.text = mc;
+            this.extraParam.type = 'TEXT';
           } else {
+            this.extraParam.type =
+              this.material.uploadValid = mc.substring(mc.lastIndexOf("/") + 1);
             this.showMaterialInPhone(mc);
           }
         }, 100);
@@ -336,10 +339,9 @@
             var m = this.material;
             var mc = m.uploadValid;
             var ms = m.size;
+            var mt = m.t == '文本' ? 'TEXT' : m.t == '图片' ? 'PIC' : m.t == '视频' ? 'VIDEO' : 'AUDIO';
             if (this.material.t == '文本') {
               this.haveText++;
-              mc = m.text;
-              ms = 0;
               this.extraParam.txt = m.text;
               this.extraParam.spaceUsage = 0;
               axios({
@@ -360,7 +362,7 @@
               }).then(res => {
                 if (res.data.data) {
                   const mid = res.data.data.id;
-                  this.materials.push({mid: mid, mn: m.name, mc: mc, mt: m.t, ms: ms});
+                  this.materials.push({mid: mid, mn: m.name, mc: m.text, mt: mt, ms: 0});
                 } else {
                   this.$Message.error(res.data.msg);
                 }
@@ -372,7 +374,7 @@
             }
 
             if (this.material.t != '文本') {
-              this.materials.push({mid: m.id, mn: m.name, mc: mc, mt: m.t, ms: ms});
+              this.materials.push({mid: m.id, mn: m.name, mc: mc, mt: mt, ms: ms});
             }
             this.addModal = false;
           }
@@ -406,7 +408,6 @@
         if (res.data) {
           console.log("res ->" + JSON.stringify(res.data));
           this.$Message.success('上传成功');
-          this.$refs.upload.clearFiles();
           this.material.id = res.data.id;
           this.material.uploadValid = res.data.resource;
           this.material.size = parseFloat((file.size / (1024 * 1024)).toFixed(2));
@@ -515,7 +516,8 @@
           sum += item.ms;
         });
         return sum;
-      }
+      },
+
     },
     mounted() {
       this.getSignList();

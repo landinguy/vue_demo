@@ -36,7 +36,7 @@
           </FormItem>
 
           <FormItem label="签名" prop="content">
-            <Input v-model="signData.content" placeholder="【】内3~8个字，无论汉字、英文、数字皆记为1个字" :maxlength="10"
+            <Input v-model="signData.content" placeholder="3~8个字，无论汉字、英文、数字皆记为1个字" :maxlength="8"
                    class="input_len"/>
           </FormItem>
 
@@ -196,11 +196,8 @@
         },
         signValidate: {
           cp: [{required: true, message: '请选择广告主', trigger: 'change'}],
-          content: [{required: true, message: '请填写签名', trigger: 'blur'}, {
-            validator: this.validateText,
-            trigger: 'blur'
-          },],
-//          uploadValid: [{required: true, message: '请上传签名授权书', trigger: 'blur'}]
+          content: [{required: true, message: '请填写签名', trigger: 'blur'},
+            {validator: this.validateText, trigger: 'blur'}]
         },
         total: 0
       }
@@ -209,32 +206,10 @@
       validateText(rule, value, callback) {
         if (value.trim() == "") {
           callback(new Error("签名内容不能为空"));
-        } else if (!value.startsWith("【") || !value.endsWith("】")) {
-          callback(new Error("签名格式不正确"));
         } else {
           callback()
         }
       },
-//      handleBeforeUpload(file) {
-//        var index = file.name.lastIndexOf(".");
-//        var type = file.name.substring(index + 1);
-//
-//        if (type.toUpperCase() != "JPG" && type.toUpperCase() != "PNG") {
-//          this.$Message.error('请上传jpg、png图片文件');
-//          return false;
-//        }
-//
-//      },
-//      handleSuccess(res, file) {
-//        if (res != null) {
-//          console.log("res ->" + res);
-//          this.$Message.success('上传成功');
-//          this.sign.uploadValid = res;
-//        } else {
-//          this.$Message.error('上传失败');
-//          this.sign.uploadValid = '';
-//        }
-//      },
       confirm() {
         this.$refs.signForm.validate((valid) => {
           if (valid) {

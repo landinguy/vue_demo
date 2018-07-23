@@ -33,15 +33,8 @@
       this.getDataFromNetwork();
     },
     methods: {
-      onSelectChange(param) {
-        if (param.length === 0) {
-          return;
-        }
-        this.roleTree = [];
-        let info = this.permissionInfo[param[0].nodeKey];
-        this.roleTree.push({title:info.roleName});
+      initMenu(menu) {
         this.menuTree = [];
-        let menu = info.menu;
         if (menu.index) {
           this.menuTree.push({title: "首页"});
         }
@@ -54,7 +47,7 @@
             account.children.push({title: '账户信息'});
           }
           if(menu.account.subaccount) {
-            account.children.push({title: '子账户'});
+            account.children.push({title: '子账户管理'});
           }
           if (account.children.length !== 0) {
             this.menuTree.push(account);
@@ -62,17 +55,17 @@
         }
         if(menu.mould) {
           let mould = {
-            title: "模板",
+            title: "模板管理",
             children:[]
           };
           if (menu.mould.mouldCreate) {
-            mould.children.push({title: '创建模板'});
+            mould.children.push({title: '新建模板'});
           }
           if(menu.mould.mouldList) {
-            mould.children.push({title: '模板列表'});
+            mould.children.push({title: '我的模板'});
           }
           if(menu.mould.sign) {
-            mould.children.push({title: '模板标签'});
+            mould.children.push({title: '签名管理'});
           }
           if (mould.children.length !== 0) {
             this.menuTree.push(mould);
@@ -80,14 +73,14 @@
         }
         if(menu.task) {
           let task = {
-            title: "任务",
+            title: "发送管理",
             children:[]
           };
           if (menu.task.taskCreate) {
             task.children.push({title: '新建任务'});
           }
           if(menu.task.taskList) {
-            task.children.push({title: '任务列表'});
+            task.children.push({title: '发送记录'});
           }
 
           if (task.children.length !== 0) {
@@ -96,14 +89,14 @@
         }
         if(menu.stats) {
           let stats = {
-            title: "统计",
+            title: "数据统计",
             children:[]
           };
           if (menu.stats.sendStats) {
             stats.children.push({title: '发送统计'});
           }
           if(menu.stats.sendDetail) {
-            stats.children.push({title: '发送详情'});
+            stats.children.push({title: '发送详单'});
           }
 
           if (stats.children.length !== 0) {
@@ -112,14 +105,14 @@
         }
         if(menu.channel) {
           let channel = {
-            title: "通道",
+            title: "通道管理",
             children:[]
           };
           if (menu.channel.channelInfo) {
-            channel.children.push({title: '通道信息'});
+            channel.children.push({title: '通道接入'});
           }
           if(menu.channel.channelAssignment) {
-            channel.children.push({title: '通道分配'});
+            channel.children.push({title: '通道配置'});
           }
 
           if (channel.children.length !== 0) {
@@ -128,11 +121,11 @@
         }
         if(menu.system) {
           let system = {
-            title: "系统",
+            title: "系统管理",
             children:[]
           };
           if (menu.system.privilege) {
-            system.children.push({title: '权限'});
+            system.children.push({title: '用户权限'});
           }
 
           if (system.children.length !== 0) {
@@ -140,17 +133,35 @@
           }
         }
       },
-      getDataFromNetwork() {
-        axios.post("/role/list")
+      onSelectChange(param) {
+        if (param.length === 0) {
+          return;
+        }
+        let info = this.permissionInfo[param[0].nodeKey];
+        axios.post(this.baseUrl + "/role/get/" + info.roleId)
           .then(value => {
-            let permissionInfo = value.data.data;
-            this.permissionInfo = permissionInfo;
-            for (let info of permissionInfo) {
-              this.userTree.push({title: info.accountNickname});
+            console.log(value);
+            this.roleTree = [];
+            this.roleTree.push({title:value.data.data.roleName});
+            console.log(value.data.data.menu);
+            this.initMenu(value.data.data.menu);
+          }).catch(reason => {
+          console.log(reason);
+        });
+      },
+      getDataFromNetwork() {
+        axios.post(this.baseUrl + "/subaccount/list", {})
+          .then(value => {
+            console.log(value);
+            let data = value.data.data;
+            this.permissionInfo = data;
+            for (let obj of data) {
+              this.userTree.push({title: obj.subaccountNickname});
             }
           }).catch(reason => {
           console.log(reason);
-        })
+        });
+
       }
     },
     data() {

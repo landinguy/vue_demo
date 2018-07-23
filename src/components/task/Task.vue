@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <Form id='task' ref="task" :model="task" :rules="ruleValidate" label-position="right" :label-width="100">
       <FormItem label="发送任务名称" prop="name">
         <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength" :disabled="id !== ''"></Input>
@@ -15,14 +15,14 @@
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="收件人" prop="receiver">
+      <FormItem label="发送人群" prop="receiver">
         <Row>
           <Col :span="id === '' ? 10 : 24">
-          <Input v-model="task.receiver" placeholder="选择收件人" disabled></Input>
+          <Input v-model="task.receiver" placeholder="请选择已创建的联系人组" disabled></Input>
           </Col>
           <Col span="10" style="margin-left: 10px" v-if="id === ''">
-          <Button type="primary" @click="showChooseReceiverModal">选择收件人</Button>
-          <Button type="ghost" @click="newReceiverModal = true">新建收件人</Button>
+          <Button type="primary" @click="showChooseReceiverModal">选择联系人组</Button>
+          <Button type="ghost" @click="newReceiverModal = true">新建联系人</Button>
           </Col>
         </Row>
       </FormItem>
@@ -89,15 +89,21 @@
       </FormItem>
 
       <FormItem v-if="task.sendArea === 'customArea'">
-        <div style="max-height: 250px;overflow-y: scroll">
-          <Tree :data="cityTree" ref="customAreaRef" show-checkbox multiple></Tree>
-        </div>
+          <Card>
+            <p slot="title">自定义省市区</p>
+            <div style="max-height: 250px;overflow-y: scroll">
+              <Tree :data="customCityTree" ref="customAreaRef" show-checkbox multiple></Tree>
+            </div>
+          </Card>
       </FormItem>
 
       <FormItem v-if="task.sendArea === 'excludeArea'">
-        <div style="max-height: 250px;overflow-y: scroll">
-          <Tree :data="cityTree" ref="excludeAreaRef" show-checkbox multiple></Tree>
-        </div>
+        <Card>
+          <p slot="title">屏蔽省市区</p>
+          <div style="max-height: 250px;overflow-y: scroll">
+            <Tree :data="shieldCityTree" ref="excludeAreaRef" show-checkbox multiple></Tree>
+          </div>
+        </Card>
       </FormItem>
 
       <FormItem v-if="id === ''">
@@ -144,7 +150,7 @@
       <div v-if="!uploadComplete">
         <Upload
           :before-upload="handleBeforeUpload"
-          action="//jsonplaceholder.typicode.com/posts/">
+          :action="uploadUrl">
           <Button type="ghost" icon="ios-cloud-upload-outline">点击从本地选择文件</Button>
         </Upload>
         <div v-if="file !== null" style="margin-top: 20px">待上传文件: {{ file.name }}</div>
@@ -157,13 +163,13 @@
         <h1 style="display: inline-block">{{uploadRightNumber}}</h1>个
         <div v-if="uploadWrongNumber > 0">
           <hr style="margin-top: 20px;margin-bottom: 20px">
-          <p>识别到错误信息{{uploadWrongNumber}}个，点击下载 <a href="#">《错误详单》</a></p>
+          <p>识别到错误信息{{uploadWrongNumber}}个，点击下载 <a :href="downloadErrorDetailUrl" >《错误详单》</a></p>
         </div>
       </div>
 
       <div slot="footer">
         <Button v-if="!uploadComplete" type="primary" size="large" long :loading="loadingStatus" @click="upload">{{ loadingStatus ? '上传中' : '点击上传' }}</Button>
-        <Button v-if="uploadComplete" type="primary" size="large" long @click="upload">完成</Button>
+        <Button v-if="uploadComplete" type="primary" size="large" long @click="uploadFinish">完成</Button>
       </div>
     </Modal>
   </div>
@@ -182,6 +188,8 @@
         else {if (value <= 0) {callback(new Error('请输入正整数'));} else {callback();}}
       };
       return {
+        downloadErrorDetailUrl:'',
+        uploadUrl:this.baseUrl + '/send/receiver/upload',
         id:'',
         modifyId:'',
         copyId:'',
@@ -193,9 +201,10 @@
         newReceiverModal:false,
         saveToContacts: true,
         uploadComplete:false,
-        uploadRightNumber:10000,
-        uploadWrongNumber:1000,
-        cityTree:citytree,
+        uploadRightNumber:-1,
+        uploadWrongNumber:-1,
+        customCityTree:JSON.parse(JSON.stringify(citytree)),
+        shieldCityTree:JSON.parse(JSON.stringify(citytree)),
         chooseTemplateModalColumns: [],
         chooseReceiverModalColumns: [],
         templateData: [],
@@ -211,10 +220,10 @@
           }
         },
         task: {
-          name: '',
-          template: '',
-          receiver: '',
-          number: 0,
+          name: 'aaa',
+          template: 'ACA793E2F18844269378A86A96337E07',
+          receiver: 'ccc',
+          number: 10,
           sendTime: 'rightNow',
           sendSpeed: 'defaultSpeed',
           sendPeriod: 'dayTime',
@@ -272,33 +281,44 @@
       newTemplate() {
         this.$router.push({name:'create_template'})
       },
+      uploadFinish() {
+        this.uploadComplete = false;
+        this.newReceiverModal = false;
+      },
       handleSubmit (name) {
-        console.log("time: " + this.task.customSendPeriod);
+        console.log("form value : " + JSON.stringify(this.task));
+        let vue = this;
         this.$refs[name].validate((valid) => {
           if (this.task.sendArea === 'customArea') {
-            console.log(JSON.stringify(this.$refs.customAreaRef.getCheckedNodes()));
+            console.log("sendArea: "+JSON.stringify(this.$refs.customAreaRef.getCheckedNodes()));
           }
-          console.log(JSON.stringify(this.task.customSendArea));
+
           if (valid) {
-            this.$Message.success('Success!');
-            axios.post("/send/task/create",{
-              subaccount_no:'',
+            let taskData = {
+              accountId:'1',
               name:this.task.name,
-              template_id:'',
-              template_name:this.task.template,
-              receiver_groupid:'',
-              receiver_amount:this.task.number,
-              start_ts:'',
-              end_ts:'',
-              periodFrom:'',
-              periodTo:'',
-              rate_limit:'',
-              region:'',
-            }).then(function (response) {
-              console.log(response.data.data);
+              templateId:'123456789',
+              templateName:this.task.template,
+              receiverGroupId:'789456123',
+              receiverAmount:this.task.number,
+              startTs:'',
+              endTs:'',
+              // periodFrom:'',
+              // periodTo:'',
+              rateLimit:'',
+              // region:'',
+            };
+            console.log("post task data: " + JSON.stringify(taskData));
+            axios.post(this.baseUrl + "/task/create",taskData).then(function (response) {
+              if (response.data.code === 0) {
+                vue.$Message.success('提交任务成功!');
+              } else {
+                vue.$Message.error('提交任务失败!');
+              }
             })
               .catch(function (error) {
                 console.log(error);
+                vue.$Message.success('提交任务失败!');
               });
           } else {
             this.$Message.error('请填写必要信息!');
@@ -329,14 +349,35 @@
         return false;
       },
       upload () {
+        console.log(this.file);
         if (this.file !== null) {
           this.loadingStatus = true;
-          setTimeout(() => {
+          let vue = this;
+          let data = new FormData();
+          data.append('accountNo', '1');
+          data.append('save', this.saveToContacts.toString());
+          data.append('file', this.file);
+          axios.post(this.uploadUrl,data,{
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then(value => {
+            console.log("upload success response: " + JSON.stringify(value));
+            vue.uploadRightNumber = value.data.data.amount;
+            vue.uploadWrongNumber = value.data.data.errorAmount;
+            vue.downloadErrorDetailUrl = vue.baseUrl + '/send/receiver/' + value.data.data.group_id + '/error_details_download/';
             this.file = null;
             this.loadingStatus = false;
             this.uploadComplete = true;
-            this.$Message.success('Success')
-          }, 1500);
+            this.$Message.success('上传文件成功!');
+            this.task.receiver = value.data.data.group_id;
+            this.task.number = value.data.data.amount;
+          }).catch(reason => {
+            console.log("upload faile response: " + reason);
+            this.loadingStatus = false;
+            this.uploadComplete = false;
+            this.$Message.error('上传文件失败!')
+          });
         } else {
           this.$Message.info('请选择文件!');
         }
@@ -344,7 +385,13 @@
       showChooseTemplateModal() {
         this.chooseTemplateModal = true;
         let vue = this;
-        axios.post("/tmpls")
+        let param = {
+          status:'AUDIT_PASS',
+          pageNo:'1',
+          pageSize:'20',
+          accountId:'1'
+        };
+        axios.post(this.baseUrl + "/tmpls",param)
           .then(function (response) {
             console.log(response.data.data);
             vue.templateData = response.data.data;
@@ -356,7 +403,7 @@
       showChooseReceiverModal() {
         this.chooseReceiverModal = true;
         let vue = this;
-        axios.post("/send/receiver/get/{subaccountNumber}")
+        axios.post(this.baseUrl + "/send/receiver/get/1")
           .then(function (response) {
             // console.log(response.data.receiverRS);
             vue.receiverRS = response.data.receiverRS;
@@ -380,7 +427,7 @@
         return [
           {title: '模板编号', key: 'id',},
           {title: '模板名称', key: 'name'},
-          {title: '状态', key: 'status'},
+          {title: '状态', key: 'status',render: (h, params) => {return h('div', '审核通过')}},
           {title: '操作', key: 'action', width: 150, align: 'center',
             render: (h, params) => {
               let newVar = [];
@@ -407,13 +454,13 @@
       },
       getTaskDetail (id) {
         let vue = this;
-        axios.post("/send/task/get/{id}").then(value => {
+        axios.post(this.baseUrl + "/task/get/" + id,{accountId:'1'}).then(value => {
           let data = value.data.data;
           console.log(data);
           vue.task.name = data.name;
-          vue.task.template = data.template_name;
-          vue.task.receiver = data.receiver_groupid;
-          vue.task.number = data.receiver_amount;
+          vue.task.template = data.templateName;
+          vue.task.receiver = data.receiverGroupId;
+          vue.task.number = data.receiverAmount;
         }).catch(reason => {
           console.log(reason);
         })
@@ -426,11 +473,11 @@
       console.log("store: " + this.id + " modifyId: " + this.modifyId + " copyId: " + this.copyId);
       if (this.id !== undefined && this.id.length !== 0) {
         console.log("modifyId not null request network for task detail");
-        this.getTaskDetail(this.modifyId);
+        this.getTaskDetail(this.id);
       }
       if (this.modifyId !== undefined && this.modifyId.length !== 0) {
         console.log("id not null request network for task detail");
-        this.getTaskDetail(this.id);
+        this.getTaskDetail(this.modifyId);
       }
       if (this.copyId !== undefined && this.copyId.length !== 0) {
         console.log("copyId not null request network for task detail");
@@ -444,5 +491,11 @@
 <style scoped>
 #task {
   max-width: 80%;
+}
+.bg{
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
 }
 </style>

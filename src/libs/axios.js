@@ -26,9 +26,9 @@ class httpRequest {
       withCredentials: true,
       headers: {
         // 'Content-Type': 'application/x-www-form-urlencoded',
-        // 'Access-Control-Allow-Origin':'http://192.168.2.39:8080',
+        // 'Access-Control-Allow-Origin':'*',
         // 'Access-Control-Allow-Headers':'Content-Type,Content-Length, Authorization,\'Origin\',Accept,X-Requested-With',
-        // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        // 'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
         // 'Access-Control-Allow-Credentials':true,
         'Content-Type': 'application/json; charset=utf-8',
         // 'X-URL-PATH': location.pathname
@@ -42,6 +42,7 @@ class httpRequest {
   }
   // 请求实例
   request (options) {
+    console.log("request params:", options)
     var instance = this.create()
     // this.interceptors(instance, options.url)
     options = Object.assign({}, options)

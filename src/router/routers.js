@@ -11,15 +11,15 @@ export default [
     },
     component: () => import('@/components/login/Login')
   },
-  {
-    path: '/hello',
-    name: 'HelloWorld',
-    component: HelloWorld
-  },
+  // {
+  //   path: '/hello',
+  //   name: 'HelloWorld',
+  //   component: HelloWorld
+  // },
   {
     path: '/',
     name: 'home',
-    redirect: '/home',
+    redirect: '/login',
     component: Main,
     meta: {
       hideInMenu: true,
@@ -88,38 +88,6 @@ export default [
   },
 
   {
-    path: '/data',
-    name: 'statistics',
-    meta: {
-      // icon: 'ios-navigate',
-      title: '数据统计',
-
-    },
-    component: Main,
-    children: [
-      {
-        path: 'data_statistics',
-        name: 'data_statistics',
-        meta: {
-          // icon: 'ios-navigate',
-          title: '发送统计',
-          // access:['normal']
-        },
-        component: () => import('@/components/statistics/Statistics.vue')
-      },
-      {
-        path: 'data_details',
-        name: 'data_details',
-        meta: {
-          // icon: 'ios-navigate',
-          title: '发送详单'
-        },
-        component: () => import('@/components/statistics/Details.vue')
-      }
-    ]
-  },
-
-  {
     path: '/template',
     name: 'template',
     meta: {
@@ -158,35 +126,6 @@ export default [
     ]
   },
   {
-    path: '/channel',
-    name: 'channel',
-    meta: {
-      // icon: 'ios-navigate',
-      title: '通道管理'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'channel_access',
-        name: 'channel_access',
-        meta: {
-          // icon: 'ios-navigate',
-          title: '通道接入'
-        },
-        component: () => import('@/components/channel/ChannelAccess')
-      },
-      {
-        path: 'channel_manage',
-        name: 'channel_manage',
-        meta: {
-          // icon: 'ios-navigate',
-          title: '通道配置'
-        },
-        component: () => import('@/components/channel/ChannelManage')
-      }
-    ]
-  },
-  {
     path: '/send',
     name: 'send',
     meta: {
@@ -216,10 +155,72 @@ export default [
     ]
   },
   {
+    path: '/data',
+    name: 'statistics',
+    meta: {
+      // icon: 'ios-navigate',
+      title: '数据统计',
+
+    },
+    component: Main,
+    children: [
+      {
+        path: 'data_statistics',
+        name: 'data_statistics',
+        meta: {
+          // icon: 'ios-navigate',
+          title: '发送统计',
+          // access:['normal']
+        },
+        component: () => import('@/components/statistics/Statistics.vue')
+      },
+      {
+        path: 'data_details',
+        name: 'data_details',
+        meta: {
+          // icon: 'ios-navigate',
+          title: '发送详单'
+        },
+        component: () => import('@/components/statistics/Details.vue')
+      }
+    ]
+  },
+
+  {
+    path: '/channel',
+    name: 'channel',
+    meta: {
+      // icon: 'ios-navigate',
+      title: '通道管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'channel_access',
+        name: 'channel_access',
+        meta: {
+          // icon: 'ios-navigate',
+          title: '通道接入'
+        },
+        component: () => import('@/components/channel/ChannelAccess')
+      },
+      {
+        path: 'channel_manage',
+        name: 'channel_manage',
+        meta: {
+          // icon: 'ios-navigate',
+          title: '通道配置'
+        },
+        component: () => import('@/components/channel/ChannelManage')
+      }
+    ]
+  },
+
+  {
     path: '/system',
     name: 'system',
     meta: {
-      icon: 'ios-navigate',
+      // icon: 'ios-navigate',
       title: '系统管理'
     },
     component: Main,
@@ -228,7 +229,7 @@ export default [
         path: 'permission',
         name: 'permission',
         meta: {
-          icon: 'ios-navigate',
+          // icon: 'ios-navigate',
           title: '用户权限'
         },
         component: () => import('@/components/permission/Permission')

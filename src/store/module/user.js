@@ -44,6 +44,7 @@ export default {
           username,
           passwd
         }).then(res => {
+          console.log(res)
           commit('setAccountId', res.data.data.accountId);
           commit('setAccountNumber', res.data.data.accountNumber);
           commit('setAccountNickname', res.data.data.accountNickname);

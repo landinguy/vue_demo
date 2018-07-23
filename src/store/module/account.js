@@ -1,19 +1,20 @@
-import { mainAccountInfo,updateNickName,updatePassword,updateAccountInfo } from '@/api/account'
+import {mainAccountInfo, updateNickName, updatePassword, updateAccountInfo} from '@/api/account'
+
 export default {
   state: {
-    accountNumber:"admin",
-    companyName:"小沃科技",
-    createTs:"2018-07-06 14:12:00",
-    nickname:"测试",
-    email:"email",
-    tel:"110",
-    name:"刘涛",
-    scopes:"科技",
-    companyWebsite:"www.111.c0m",
-    access:""
+    accountNumber: "admin",
+    companyName: "小沃科技",
+    createTs: "2018-07-06 14:12:00",
+    nickname: "测试",
+    email: "email",
+    tel: "110",
+    name: "刘涛",
+    scopes: "科技",
+    companyWebsite: "www.111.c0m",
+    access: ""
   },
   mutations: {
-    setAccountInfo (state, accountInfo) {
+    setAccountInfo(state, accountInfo) {
       state.accountNumber = accountInfo.accountNumber;
       state.companyName = accountInfo.companyName;
       state.createTs = accountInfo.createTs;
@@ -30,7 +31,7 @@ export default {
 
   actions: {
 
-    handleMainAccountInfo ({ commit }, {accountNumber}) {
+    handleMainAccountInfo({commit}, {accountNumber}) {
       return new Promise((resolve, reject) => {
         mainAccountInfo({
           accountNumber,
@@ -43,16 +44,16 @@ export default {
         }).catch(err => {
 
           const accountInfo = {
-            accountNumber:"admin",
-            companyName:"小沃科技",
-            createTs:"2018-07-06 14:12:00",
-            nickname:"测试",
-            email:"email",
-            tel:"110",
-            name:"姓名",
-            scopes:"科技",
-            companyWebsite:"www.111.c0m",
-            access:["super"]
+            accountNumber: "admin",
+            companyName: "小沃科技",
+            createTs: "2018-07-06 14:12:00",
+            nickname: "测试",
+            email: "email",
+            tel: "110",
+            name: "姓名",
+            scopes: "科技",
+            companyWebsite: "www.111.c0m",
+            access: ["super"]
           }
           commit('setAccountInfo', accountInfo)
           resolve(accountInfo)
@@ -61,9 +62,9 @@ export default {
       })
     },
 
-    handleUpdateNickName ({ commit }, { accountNumber,companyName,createTs, nickname}) {
+    handleUpdateNickName({commit}, {accountNumber, companyName, createTs, nickname}) {
       return new Promise((resolve, reject) => {
-        updateNickName({ accountNumber,companyName,createTs, nickname}
+        updateNickName({accountNumber, companyName, createTs, nickname}
         ).then(res => {
 
           resolve()
@@ -74,9 +75,9 @@ export default {
       })
     },
 
-    handleUpdatePassword ({ commit }, {accountNumber,pwd}) {
+    handleUpdatePassword({commit}, {accountNumber, pwd}) {
       return new Promise((resolve, reject) => {
-        updateNickName({accountNumber,pwd}
+        updateNickName({accountNumber, pwd}
         ).then(res => {
 
           resolve()
@@ -87,9 +88,9 @@ export default {
       })
     },
 
-    handleUpdateAccountInfo ({ commit }, {accountNumber,email,tel,name,scopes,companyWebsite}) {
+    handleUpdateAccountInfo({commit}, {accountNumber, email, tel, name, scopes, companyWebsite}) {
       return new Promise((resolve, reject) => {
-        updateNickName({ accountNumber,email,tel,name,scopes,companyWebsite}
+        updateNickName({accountNumber, email, tel, name, scopes, companyWebsite}
         ).then(res => {
 
           resolve()

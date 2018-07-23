@@ -23,12 +23,11 @@
           <p class="input_len" style="text-align: right">预估大小：{{getTotalSize}} MB / 上限 2.0 MB</p>
           <div id="parent">
             <div style="position: relative" v-for="(item,index) in materials">
-              <div v-if="item.mt=='文本'" class="input_len parent_p"
+              <div v-if="item.mt=='文本' || item.mt=='TEXT'" class="input_len parent_p"
                    style="" v-text="item.mc"></div>
-              <img v-if="item.mt=='图片'" :src="item.mc" class="input_len"
-                   style="">
-              <video v-if="item.mt=='视频'" controls :src="item.mc" class="input_len"></video>
-              <audio v-if="item.mt=='音频'" controls :src="item.mc" class="input_len"></audio>
+              <img v-if="item.mt=='图片' || item.mt=='PIC'" :src="item.mc" class="input_len">
+              <video v-if="item.mt=='视频' || item.mt=='VIDEO'" controls :src="item.mc" class="input_len"></video>
+              <audio v-if="item.mt=='音频' || item.mt=='AUDIO'" controls :src="item.mc" class="input_len"></audio>
               <div style="position: absolute;right: -40px;top: 0px" v-if="op!='view'">
                 <Button type="ghost" size="small" @click="edit(index)">编辑</Button>
                 <br>
@@ -122,7 +121,8 @@
 
                   <template v-if="material.t!='文本'">
                     <FormItem :label="label" prop="uploadValid">
-                      <Upload :action="uploadUrl"
+                      <Upload ref="upload"
+                              :action="uploadUrl"
                               :format="format"
                               :show-upload-list="false"
                               :before-upload="handleBeforeUpload"
@@ -174,7 +174,9 @@
     data() {
       return {
         extraParam: {
-          type: '图片'
+          type: 'PIC',
+          txt: '',
+          spaceUsage: 0
         },
         index: '',
         signList: [],
@@ -185,11 +187,10 @@
         materials: [
 //          {mn: '图片xxx', mc: 'http://localhost/images/111.jpg', mt: '图片'},
 //          {mn: '视频xxx', mc: 'http://localhost/video/v3.mp4', mt: '视频'},
-//          {mc: 'http://localhost/yp.m4a', mt: 4}
         ],
         tip: '请输入文本、链接和最多5个参数，链接和参数必须使用通配符{$}包围。\n例如：尊敬的{$用户昵称}，您是我行{$会员级别}，您的详单请点击{$http://www.wostore.cn/}',
         uploadTip: '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳',
-        uploadUrl: '/mat/upload',
+        uploadUrl: this.baseUrl + '/mat/upload',
         format: ['jpg', 'jepg', 'png', 'gif'],
         label: '上传图片',
         addModal: false,
@@ -213,6 +214,7 @@
           contentValid: [{required: true, message: '模板内容不能为空', trigger: 'blur'}],
         },
         material: {
+          id: '',
           name: '',
           t: '图片',
           uploadValid: '',
@@ -241,6 +243,7 @@
         this.material.name = this.materials[index].mn;
         this.material.t = this.materials[index].mt;
         var mc = this.materials[index].mc;
+        alert(mc)
         this.material.uploadValid = mc;
         this.addModal = true;
         //等待video/audio加载之后在执行
@@ -292,7 +295,7 @@
             this.clearData();
             const params = this.getParams();
             axios.post(this.baseUrl + "/tmpl/create", params).then(res => {
-              if (res.data.code == 0 && res.data.msg == "") {
+              if (res.code == 0) {
                 this.$Message.success({
                   content: '提交成功',
                   duration: 1,
@@ -309,14 +312,17 @@
       },
       getParams() {
         const tmpl = {};
-        tmpl.accountId = "";
+        tmpl.accountId = "1";
         tmpl.name = this.formData.name;
-        tmpl.contentType = this.formData.contentType;
+        tmpl.contentType = this.formData.contentType == '服务类' ? 'SERVICE' : 'AD';
         tmpl.subject = this.formData.subject;
-        tmpl.content = this.formData.content;
         tmpl.sign = this.formData.sign;
-        tmpl.signPlace = this.formData.signPlace;
+        tmpl.signPlace = this.formData.signPlace == '头部签名' ? 'HEAD' : 'TAIL';
         tmpl.flowType = this.formData.flowType == '免流' ? true : false;
+        this.materials.forEach(item => {
+          this.formData.content.push(item.mid);
+        });
+        tmpl.content = this.formData.content;
         return tmpl;
       },
       showModal() {
@@ -334,12 +340,40 @@
               this.haveText++;
               mc = m.text;
               ms = 0;
+              this.extraParam.txt = m.text;
+              this.extraParam.spaceUsage = 0;
+              axios({
+                url: this.baseUrl + '/mat/upload',
+                method: 'post',
+                data: this.extraParam,
+                transformRequest: [function (data) {
+                  // Do whatever you want to transform the data
+                  let ret = ''
+                  for (let it in data) {
+                    ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                  }
+                  return ret
+                }],
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                }
+              }).then(res => {
+                if (res.data.data) {
+                  const mid = res.data.data.id;
+                  this.materials.push({mid: mid, mn: m.name, mc: mc, mt: m.t, ms: ms});
+                } else {
+                  this.$Message.error(res.data.msg);
+                }
+              });
             }
             if (this.index != '') {//编辑元素时移除编辑之前的元素
               this.materials.splice(this.index, 1);
               this.index = '';
             }
-            this.materials.push({mn: m.name, mc: mc, mt: m.t, ms: ms});
+
+            if (this.material.t != '文本') {
+              this.materials.push({mid: m.id, mn: m.name, mc: mc, mt: m.t, ms: ms});
+            }
             this.addModal = false;
           }
         })
@@ -366,39 +400,46 @@
           this.$Message.error('请上传mp3音频文件');
           return false;
         }
+        this.extraParam.spaceUsage = (file.size / (1024 * 1024)).toFixed(2);
       },
       handleSuccess(res, file) {
-        if (res != null) {
-          console.log("res ->" + res.res);
+        if (res.data) {
+          console.log("res ->" + JSON.stringify(res.data));
           this.$Message.success('上传成功');
+          this.$refs.upload.clearFiles();
+          this.material.id = res.data.id;
           this.material.uploadValid = res.data.resource;
           this.material.size = parseFloat((file.size / (1024 * 1024)).toFixed(2));
-          this.showMaterialInPhone(res.res);
+          this.showMaterialInPhone(res.data.resource);
         } else {
-          this.$Message.error('上传失败');
+          this.$Message.error(res.msg);
           this.material.uploadValid = '';
         }
       },
       change(val) {
         console.log("materialType:" + val);
-        this.extraParam.type = val;
+        this.extraParam.txt = '';
         switch (val) {
           case '文本':
             this.format = [];
+            this.extraParam.type = 'TEXT';
             break;
           case '图片':
             this.label = '上传图片';
             this.format = ['jpg', 'jepg', 'png', 'gif'];
+            this.extraParam.type = 'PIC';
             this.uploadTip = '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳';
             break;
           case '视频':
             this.label = '上传视频';
             this.format = ['mp4'];
+            this.extraParam.type = 'VIDEO';
             this.uploadTip = '支持使用MP4文件，1.6MB以内，宽高640*480px，第一帧将作为视频封面。比特率800（超清）时长推荐15秒，比特率400（标清）不超过30秒为佳';
             break;
           case '音频':
             this.label = '上传音频';
             this.format = ['mp3'];
+            this.extraParam.type = 'AUDIO';
             this.uploadTip = '支持使用MP3文件';
             break;
         }
@@ -427,10 +468,10 @@
         this.$store.state.template.operation = 'default';
       },
       search(id) {
-        axios.get(this.baseUrl + "/tmpl/" + id, {accountId: ""}).then(res => {
-          if (res.data.res) {
-            console.log(JSON.stringify(res.data.res));
-            this.setData(res.data.res);
+        axios.get(this.baseUrl + "/tmpl/" + id, {accountId: "1"}).then(res => {
+          if (res.data) {
+            console.log(JSON.stringify(res.data));
+            this.setData(res.data.data);
           } else {
             this.$Message.error('获取模板数据失败');
           }
@@ -438,24 +479,28 @@
       },
       setData(res) {
         this.formData.name = res.name;
-        this.formData.contentType = res.contentType;
+        this.formData.contentType = res.contentType == 'SERVICE' ? '服务类' : '营销类';
         this.formData.subject = res.subject;
         this.formData.sign = res.sign;
-        this.formData.signPlace = res.signPlace;
+        this.formData.signPlace = res.signPlace == 'HEAD' ? '头部签名' : '尾部签名';
         this.formData.flowType = res.flowType ? '免流' : '不免流';
-        if (res.content != []) {
+        if (res.mats != []) {
           this.formData.contentValid = "contentValid";
+          res.mats.forEach(item => {
+            this.materials.push({mid: item.id, mc: item.resource, mt: item.type, ms: parseFloat(item.spaceUsage)})
+          })
         }
       },
       getSignList() {
-        axios.post(this.baseUrl + "/sign/get/11").then(res => {
-          if (res.data.res) {
-            const list = res.data.res;
-            for (var i in list) {
-              this.signList.push({value: list[i].sign, label: list[i].sign})
-            }
+        axios.post(this.baseUrl + "/signs", {accountId: '1'}).then(res => {
+          if (res.data.data) {
+            res.data.data.forEach(item => {
+              if (item.status == 'AUDIT_PASSED') {
+                this.signList.push({value: item.content, label: item.content})
+              }
+            });
           } else {
-            this.$Message.error('获取模板数据失败');
+            this.$Message.error('获取签名数据失败');
           }
         })
       }
@@ -581,7 +626,7 @@
     overflow: auto;
   }
 
-  .bg{
+  .bg {
     background-color: white;
     width: 100%;
     height: 100%;

@@ -29,9 +29,9 @@
         <Form ref="signForm" :model="signData" :rules="signValidate" :label-width="80">
           <FormItem label="广告主" prop="cp">
             <Select v-model="signData.cp" class="input_len">
-              <Option value="1">广告主1</Option>
-              <Option value="2">广告主2</Option>
-              <Option value="3">广告主3</Option>
+              <Option value="cp1">广告主1</Option>
+              <Option value="cp2">广告主2</Option>
+              <Option value="cp3">广告主3</Option>
             </Select>
           </FormItem>
 
@@ -64,7 +64,7 @@
 </template>
 <script>
   import axios from 'axios'
-  import {showTip} from '@/libs/util'
+  import {showTip, timestampToTime} from '@/libs/util'
 
   export default {
     name: 'SignList',
@@ -73,7 +73,7 @@
         params: {
           pageNo: 1,
           pageSize: 10,
-          accountId: '',
+          accountId: "1",
           key: ''
         },
         uploadUrl: '',
@@ -84,7 +84,7 @@
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              return showTip(h, params.row.createTs);
+              return showTip(h, timestampToTime(params.row.createTs));
             }
           }, {
             title: '签名',
@@ -107,7 +107,8 @@
             key: 'source',
             align: 'center',
             render: (h, params) => {
-              return h('span', params.row.source)
+              const text = params.row.source == 'ADD_BY_OPERATOR' ? '运营添加' : '广告主添加';
+              return h('span', text)
             }
           }, {
             title: '签名状态',
@@ -115,12 +116,13 @@
             align: 'center',
             render: (h, params) => {
               const row = params.row;
-              const color = row.status == '审核中' ? 'blue' : row.status == '审核通过' ? 'green' : row.status == '审核失败' ? 'red' : 'gray';
+              const color = row.status == 'AUDIT_PASSED' ? 'green' : row.status == 'DELETED' ? 'red' : 'gray';
+              const text = row.status == 'AUDIT_PASSED' ? '审核通过' : row.status == 'DELETED' ? '已删除' : '未知';
               return h('span', {
                 style: {
                   color: color
                 }
-              }, row.status)
+              }, text)
             }
           }, {
             title: '最后操作人',
@@ -136,7 +138,7 @@
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              return showTip(h, params.row.updateTs);
+              return showTip(h, timestampToTime(params.row.updateTs));
             }
           }, {
             title: '操作',
@@ -145,6 +147,8 @@
             width: 200,
             render: (h, params) => {
               const $vue = this;
+              const id = params.row.id;
+              const op = [];
               const del = h('Button', {
                 props: {
                   type: 'error',
@@ -156,8 +160,8 @@
                       title: '删除',
                       content: '确认删除该签名？',
                       onOk() {
-                        axios.delete(this.baseUrl + "/sign/1",).then(res => {
-                          if (res.data.msg == "" && res.data.code == 0) {
+                        axios.delete(this.baseUrl + "/sign/" + id, {accountId: "1"}).then(res => {
+                          if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
                               duration: 1,
@@ -174,7 +178,10 @@
                   }
                 }
               }, '删除');
-              return h('div', [del]);
+              if (params.row.status != 'DELETED') {
+                op.push(del)
+              }
+              return h('div', op);
             }
           }
         ],
@@ -233,7 +240,7 @@
           if (valid) {
             const params = this.getParams();
             axios.post(this.baseUrl + "/sign/create", params).then(res => {
-              if (res.data.msg == "" && res.data.code == 0) {
+              if (res.data.code == 0) {
                 this.$Message.success({
                   content: '添加成功',
                   duration: 1,
@@ -250,18 +257,18 @@
       },
       getParams() {
         const params = {};
-        params.accountId = "";
+        params.accountId = "1";
         params.content = this.signData.content;
         params.cp = this.signData.cp;
         params.source = this.signData.source;
         params.status = this.signData.status;
-        params.updater = "";
+        params.updater = "admin";
         return params;
       },
       showModal() {
         this.$refs.signForm.resetFields();
-        this.signData.source = "运营添加";
-        this.signData.status = "审核通过";
+        this.signData.source = "ADD_BY_OPERATOR";
+        this.signData.status = "AUDIT_PASSED";
         this.addModal = true;
       },
       changePage(n) {
@@ -271,15 +278,15 @@
       getSignList() {
         console.log("params:" + JSON.stringify(this.params));
         axios.post(this.baseUrl + "/signs", this.params).then(res => {
-          if (res.data.res) {
-            this.tableData = res.data.res
+          if (res.data) {
+            this.tableData = res.data.data
           }
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/signs/count", {status: this.params.status, accountId: ""}).then(res => {
-          if (res.data.count) {
-            this.total = res.data.count
+        axios.post(this.baseUrl + "/signs/count", {status: this.params.status, accountId: "1"}).then(res => {
+          if (res.data) {
+            this.total = res.data.data;
           }
         })
       },
@@ -296,7 +303,7 @@
 </script>
 <style lang="less">
 
-  .bg{
+  .bg {
     background-color: white;
     width: 100%;
     height: 100%;

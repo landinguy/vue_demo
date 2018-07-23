@@ -3,14 +3,14 @@
     <Row type="flex" justify="space-between">
       <Col span="4">
       <Select v-model="params.status" clearable>
-        <Option value="审核中">审核中</Option>
-        <Option value="审核通过">审核通过</Option>
-        <Option value="审核失败">审核失败</Option>
-        <Option value="已失效">已失效</Option>
+        <Option value="AUDITING">审核中</Option>
+        <Option value="AUDIT_PASS">审核通过</Option>
+        <Option value="AUDIT_FAILED">审核失败</Option>
+        <Option value="OBSOLETED">已失效</Option>
       </Select>
       </Col>
       <Col span="4" offset="2">
-      <Input v-model="params.key" placeholder="快速查找">
+      <Input placeholder="快速查找">
       <span slot="append">
         <Button icon="ios-search" @click="search"></Button>
       </span>
@@ -34,7 +34,7 @@
 <script>
   import {mapMutations} from 'vuex'
   import axios from 'axios'
-  import {showTip} from '@/libs/util'
+  import {showTip, timestampToTime} from '@/libs/util'
 
   export default {
     name: 'TemplateList',
@@ -42,15 +42,20 @@
       return {
         params: {
           status: '',
-          key: '',
+//          key: '',
           pageNo: 1,
-          pageSize: 10
+          pageSize: 10,
+          accountId: "1"
         },
         columns: [
           {
             title: '模板编号',
             key: 'id',
-            align: 'center'
+            align: 'center',
+            ellipsis: true,
+            render: (h, params) => {
+              return showTip(h, params.row.id)
+            }
           },
           {
             title: '模板名称',
@@ -76,7 +81,7 @@
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              return showTip(h, params.row.createTs)
+              return showTip(h, timestampToTime(params.row.createTs))
             }
           },
           {
@@ -85,12 +90,13 @@
             align: 'center',
             render: (h, params) => {
               const row = params.row;
-              const color = row.status == '审核中' ? 'blue' : row.status == '审核通过' ? 'green' : row.status == '审核失败' ? 'red' : 'gray';
+              const color = row.status == 'AUDITING' ? 'blue' : row.status == 'AUDIT_PASS' ? 'green' : row.status == 'AUDIT_FAILED' ? 'red' : 'gray';
+              const text = row.status == 'AUDITING' ? '审核中' : row.status == 'AUDIT_PASS' ? '审核通过' : row.status == 'AUDIT_FAILED' ? '审核失败' : '已失效';
               return h('span', {
                 style: {
                   color: color
                 }
-              }, row.status)
+              }, text)
             }
           },
           {
@@ -148,8 +154,8 @@
                       title: '删除',
                       content: '确认删除该模板？',
                       onOk() {
-                        axios.delete($vue.baseUrl + "/tmpl/1", {accountId: ""}).then(res => {
-                          if (res.data.msg == "" && res.data.code == 0) {
+                        axios.delete($vue.baseUrl + "/tmpl/" + id, {accountId: "1"}).then(res => {
+                          if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
                               duration: 1,
@@ -196,8 +202,8 @@
       getTmplList() {
         console.log("params:" + JSON.stringify(this.params));
         axios.post(this.baseUrl + "/tmpls", this.params).then(res => {
-          if (res.data.res) {
-            this.tableData = res.data.res
+          if (res.data) {
+            this.tableData = res.data.data
           }
         })
       },
@@ -207,9 +213,9 @@
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/tmpls/count", {status: this.params.status, accountId: ""}).then(res => {
-          if (res.data.data) {
-            this.total = res.data.data
+        axios.post(this.baseUrl + "/tmpls/count", {status: this.params.status, accountId: "1"}).then(res => {
+          if (res.data) {
+            this.total = res.data.data;
           }
         })
       }

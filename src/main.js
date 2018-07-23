@@ -8,11 +8,12 @@ import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import '../static/common.less'
 import axios from 'axios'
-require('@/mock')
+// require('@/mock')
 
 Vue.use(iView);
 
 Vue.config.productionTip = false;
+// Vue.prototype.baseUrl = "http://192.168.2.207:8090";
 Vue.prototype.baseUrl = "";
 axios.defaults.withCredentials = true;
 

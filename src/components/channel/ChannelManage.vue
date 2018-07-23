@@ -18,8 +18,8 @@
       </Col>
       <Col span="3">
       <Select v-model="params.status" clearable>
-        <Option value="正常">正常</Option>
-        <Option value="停用">停用</Option>
+        <Option value="NORMAL">正常</Option>
+        <Option value="HALT">停用</Option>
       </Select>
       </Col>
       <Col span="2" style="text-align: right">
@@ -51,17 +51,20 @@
       <div>
         <Form ref="channelForm" :model="formData" :label-width="140" :rules="ruleValidate">
           <FormItem label="通道提供商" prop="supplierName">
-            <Select v-model="formData.supplierName" class="input_len">
-              <Option value="1">小沃</Option>
-              <Option value="2">三体</Option>
+            <Select v-model="formData.supplierName" class="input_len" multiple @on-change="changeSupplier">
+              <template v-for="item in supplierData">
+                <!--<template v-for="item in 2">-->
+                <Option :value="item.id" v-text="item.name"></Option>
+                <!--<Option :value="item" v-text="item"></Option>-->
+              </template>
             </Select>
           </FormItem>
 
           <FormItem label="发送通道号" prop="channelId">
             <Select v-model="formData.channelId" class="input_len">
-              <Option value="1">1065100</Option>
-              <Option value="2">1065101</Option>
-              <Option value="3">1065102</Option>
+              <template v-for="c in channels">
+                <Option :value="c.id" v-text="c.channelNo"></Option>
+              </template>
             </Select>
           </FormItem>
 
@@ -122,6 +125,8 @@
     name: 'ChannelManage',
     data() {
       return {
+        channels: [],
+        supplierData: [],
         addModal: false,
         params: {
           supplierName: '',
@@ -200,8 +205,13 @@
           },
           {
             title: '免流能力',
-            key: 'freeFlow',
-            align: 'center'
+            key: 'freeFlowSupport',
+            align: 'center',
+            render: (h, params) => {
+              const ffs = params.row.freeFlowSupport;
+              const text = ffs == 'ALL' ? '全部' : ffs == 'YES' ? '免流' : '不免流';
+              return h('span', text);
+            }
           },
           {
             title: '合同价（元）',
@@ -213,7 +223,7 @@
               if (costPrice1) {
                 arr.push(h('span', costPrice1 + " / 免流"))
               }
-              if (params.row.freeFlow == '全部') {
+              if (params.row.freeFlowSupport == 'ALL') {
                 arr.push(h('br'));
               }
               if (costPrice2) {
@@ -237,8 +247,8 @@
             key: 'status',
             align: 'center',
             render: (h, params) => {
-              const text = params.row.status;
-              const color = params.row.status == '正常' ? '#00CC00' : 'red';
+              const text = params.row.status == 'NORMAL' ? '正常' : '停用';
+              const color = params.row.status == 'NORMAL' ? '#00CC00' : 'red';
               return h('span', {
                 style: {
                   color: color
@@ -254,7 +264,7 @@
             render: (h, params) => {
               const $vue = this;
               const channelId = params.row.channelId;
-              const op3 = params.row.status == '正常' ? '停用' : '启用';
+              const op3 = params.row.status == 'NORMAL' ? '停用' : '启用';
               return h('div', [
                 h('Button', {
                   props: {
@@ -284,8 +294,8 @@
                         '<span style="color: red">提示：</span>' +
                         '如果该账户中有发送余量，将全部退回您的账号中，且该账号下已有的模板、发送任务及数据等将全部失效。</p>',
                         onOk() {
-                          axios.post($vue.baseUrl + "/chan/item/" + channelId).then(res => {
-                            if (res.data.msg == '' && res.data.code == 0) {
+                          axios.delete($vue.baseUrl + "/chan/item/" + channelId).then(res => {
+                            if (res.data.code == 0) {
                               $vue.$Message.success({
                                 content: '删除成功',
                                 duration: 1,
@@ -320,7 +330,7 @@
                           '停用后该通道无法正常使用，确认是否停用？</p>',
                           onOk() {
                             axios.post($vue.baseUrl + "/chan/item/halt/" + channelId).then(res => {
-                              if (res.data.msg == '' && res.data.code == 0) {
+                              if (res.data.code == 0) {
                                 $vue.$Message.success({
                                   content: '已停用',
                                   duration: 1,
@@ -348,10 +358,10 @@
         total: 0,
         operation: '添加',
         formData: {
-          supplierName: '',
+          supplierName: [],
           channelId: '',
           yys: '',
-          accountId: '',
+          accountId: "1",
           remainder: '',
           freeFlowSupport: '',
           costPrice1: '',
@@ -359,7 +369,7 @@
           desc: ''
         },
         ruleValidate: {
-          supplierName: [{required: true, message: '请选择通道供应商', trigger: 'change'}],
+          supplierName: [{required: true, type: 'array', min: 1, message: '请选择通道供应商', trigger: 'change'}],
           channelId: [{required: true, message: '请选择通道号', trigger: 'change'}],
           accountId: [{required: true, message: '请选择分配账号', trigger: 'change'}],
           remainder: [{required: true, message: '请输入分配发送量', trigger: 'blur'}],
@@ -371,6 +381,30 @@
       }
     },
     methods: {
+      changeSupplier(val) {
+        console.log("suppliers :" + val);
+        this.channels = [];
+        const yys = [];
+        val.forEach(i => {
+          this.supplierData.forEach(s => {
+            if (i == s.id) {
+              s.chans.forEach(c => {
+                this.channels.push({id: c.id, channelNo: c.channelNo});
+                if (c.unicomSupport && yys.indexOf('联通') == -1) {
+                  yys.push('联通')
+                }
+                if (c.mobileSupport && yys.indexOf('移动') == -1) {
+                  yys.push('移动')
+                }
+                if (c.telcomSupport && yys.indexOf('电信') == -1) {
+                  yys.push('电信')
+                }
+              })
+            }
+          })
+        });
+        this.formData.yys = yys.join(" , ");
+      },
       save() {
         this.$refs.channelForm.validate((valid) => {
           if (!valid) {
@@ -413,7 +447,7 @@
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
         axios.post(this.baseUrl + "/chan/items", this.params).then(res => {
-          this.tableData = res.data.res;
+          this.tableData = res.data.data;
         })
       },
       changePage(n) {
@@ -429,26 +463,33 @@
             status: this.params.status,
 
           }).then(res => {
-          if (res.data.res) {
-            this.total = res.data.res
+          if (res.data) {
+            this.total = res.data.data;
           }
         })
       },
+      getSuppliersInfo() {
+        axios.post(this.baseUrl + "/suppliers", {}).then(res => {
+//          this.supplierData = res.data.data;
+          this.supplierData = res.data;
+        })
+      }
     },
     mounted() {
-      this.getTotal();
-      this.sendPost();
+//      this.getTotal();
+//      this.sendPost();
+      this.getSuppliersInfo();
     }
   }
 </script>
 <style lang="less">
-  .bg{
+  .bg {
     background-color: white;
     width: 100%;
     height: 100%;
     padding: 16px;
   }
-  
+
   .input_len {
     width: 360px;
   }

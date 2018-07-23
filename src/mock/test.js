@@ -117,7 +117,7 @@ const res4 = [
 ];
 const res5 = [
   {
-    "id": "",
+    "id": "1",
     "name": "小沃",
     "cpid": "cpid",
     "billingType": "PRE",
@@ -128,7 +128,7 @@ const res5 = [
     "apiSecret": "apiSecret",
     "chans": [
       {
-        "id": "",
+        "id": "11",
         "channelNo": "1065541810733",
         "supplierId": "",
         "supplierName": "小沃1",
@@ -145,7 +145,7 @@ const res5 = [
         "shareable": false
       },
       {
-        "id": "",
+        "id": "12",
         "channelNo": "1065541810734",
         "supplierId": "",
         "supplierName": "小沃2",
@@ -162,7 +162,7 @@ const res5 = [
         "shareable": true
       },
       {
-        "id": "",
+        "id": "13",
         "channelNo": "1065541810735",
         "supplierId": "",
         "supplierName": "小沃3",
@@ -181,7 +181,7 @@ const res5 = [
     ]
   },
   {
-    "id": "",
+    "id": "2",
     "name": "三体",
     "cpid": "cpid1",
     "billingType": "PRE1",
@@ -192,7 +192,7 @@ const res5 = [
     "apiSecret": "apiSecret1",
     "chans": [
       {
-        "id": "",
+        "id": "21",
         "channelNo": "1065541810743",
         "supplierId": "",
         "supplierName": "小沃1",
@@ -240,7 +240,6 @@ Mock.mock("/suppliers", "post", function (req, res) {
 Mock.mock("/mat/upload", "post", function (req, res) {
   console.log("req:" + JSON.stringify(req));
   res = {
-    // msg: '', code: 0, res: 'http://192.168.2.57/images/111.jpg'
     msg: '',
     code: 0,
     res: '',
@@ -360,4 +359,6 @@ Mock.mock("/send/receiver/get/{subaccountNumber}", "post", receiverRS);
 Mock.mock("/tmpls", "post", {msg: '', code: 0, data: templateData});
 Mock.mock("/send/task/get/{id}", "post", {msg: '', code: 0, data: taskDetail});
 Mock.mock("/send/task/create", {msg: '', code: 0});
+
+
 

@@ -73,8 +73,8 @@
       return {
         total: 0,
         params: {
-          supplierName: '',
-          channelNo: '',
+          supplierName: "",
+          channelNo: "",
           pageNo: 1,
           pageSize: 10
         },
@@ -289,7 +289,7 @@
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
         axios.post(this.baseUrl + "/suppliers", this.params).then(res => {
-          this.tableData = res.data;
+          this.tableData = res.data.data;
         })
       },
       changePage(n) {
@@ -302,21 +302,21 @@
             supplierName: this.params.supplierName
           }).then(res => {
           if (res.data) {
-            this.total = res.data
+            this.total = res.data.data;
           }
         })
       }
     },
     mounted() {
-//      axios.post("http://192.168.2.207:8080/login", {username: 'admin', passwd: '123456'}).then(res => {
+//      axios.post(this.baseUrl + "/login", {username: 'admin', passwd: '123456'}).then(res => {
 //        if (res) {
 //          alert(JSON.stringify(res));
-//          axios.get("http://192.168.2.207:8080/test", {}).then(r => {
+//          axios.get(this.baseUrl + "/test", {}).then(r => {
 //            alert(JSON.stringify(r))
 //          }).catch(err => {
 //            alert(JSON.stringify(err))
 //          });
-//          axios.get("http://192.168.2.207:8080/test", {}).then(r => {
+//          axios.get(this.baseUrl + "/test", {}).then(r => {
 //            alert(JSON.stringify(r))
 //          }).catch(err => {
 //            alert(JSON.stringify(err))
@@ -329,7 +329,7 @@
   }
 </script>
 <style lang="less">
-  .bg{
+  .bg {
     background-color: white;
     width: 100%;
     height: 100%;

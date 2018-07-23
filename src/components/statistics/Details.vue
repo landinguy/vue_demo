@@ -15,8 +15,7 @@
 
 <script>
   import {formatDate} from "../../libs/timeUitls";
-  import { mapActions } from 'vuex'
-  import { mapState } from 'vuex'
+  import { mapActions,mapGetters,mapState } from 'vuex'
   export default {
     created(){
       console.log(this.$route.params.et, this.$route.params.taskId)
@@ -36,7 +35,8 @@
       ...mapState({
         statsDetailCount: state => state.statistics.statsDetailCount,
         statsDetailList: state => state.statistics.statsDetailList,
-      })
+      }),
+      ...mapGetters(['accountId']),
     },
     methods:{
       ...mapActions([

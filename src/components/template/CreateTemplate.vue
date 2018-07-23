@@ -168,7 +168,7 @@
 </template>
 <script>
   import axios from 'axios'
-  import {mapGetters } from 'vuex'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'CreateTemplate',
@@ -234,6 +234,7 @@
       }
     },
     methods: {
+
       back() {
         this.clearData();
         history.back();
@@ -242,18 +243,19 @@
         this.index = index;
         this.tab1 = '编辑素材';
         this.material.name = this.materials[index].mn;
-        this.material.t = this.materials[index].mt;
+        let mt = this.materials[index].mt;
+        this.material.t = mt == 'TEXT' ? '文本' : mt == 'PIC' ? '图片' : mt == 'VIDEO' ? '视频' : '音频';
         var mc = this.materials[index].mc;
-//        alert(mc)
+
+        this.extraParam.type = mt;
         this.addModal = true;
         //等待video/audio加载之后在执行
         setTimeout(() => {
           if (this.material.t == '文本') {
             this.material.text = mc;
-            this.extraParam.type = 'TEXT';
           } else {
-            this.extraParam.type =
-              this.material.uploadValid = mc.substring(mc.lastIndexOf("/") + 1);
+            this.material.text = '';
+            this.material.uploadValid = mc.substring(mc.lastIndexOf("/") + 1);
             this.showMaterialInPhone(mc);
           }
         }, 100);
@@ -315,7 +317,6 @@
       },
       getParams() {
         const tmpl = {};
-        tmpl.accountId = "1";
         tmpl.name = this.formData.name;
         tmpl.contentType = this.formData.contentType == '服务类' ? 'SERVICE' : 'AD';
         tmpl.subject = this.formData.subject;
@@ -469,7 +470,7 @@
         this.$store.state.template.operation = 'default';
       },
       search(id) {
-        axios.get(this.baseUrl + "/tmpl/" + id, {accountId: "1"}).then(res => {
+        axios.get(this.baseUrl + "/tmpl/" + id, {}).then(res => {
           if (res.data) {
             console.log(JSON.stringify(res.data));
             this.setData(res.data.data);
@@ -493,7 +494,7 @@
         }
       },
       getSignList() {
-        axios.post(this.baseUrl + "/signs", {accountId: '1'}).then(res => {
+        axios.post(this.baseUrl + "/signs", {accountId: this.accountId}).then(res => {
           if (res.data.data) {
             res.data.data.forEach(item => {
               if (item.status == 'AUDIT_PASSED') {
@@ -517,7 +518,7 @@
         });
         return sum;
       },
-
+      ...mapGetters(['accountId'])
     },
     mounted() {
       this.getSignList();

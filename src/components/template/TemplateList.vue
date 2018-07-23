@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-  import {mapMutations} from 'vuex'
+  import {mapMutations, mapGetters} from 'vuex'
   import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
 
@@ -44,8 +44,7 @@
           status: '',
 //          key: '',
           pageNo: 1,
-          pageSize: 10,
-          accountId: "1"
+          pageSize: 10
         },
         columns: [
           {
@@ -154,7 +153,7 @@
                       title: '删除',
                       content: '确认删除该模板？',
                       onOk() {
-                        axios.delete($vue.baseUrl + "/tmpl/" + id, {accountId: "1"}).then(res => {
+                        axios.delete($vue.baseUrl + "/tmpl/" + id, {accountId: this.accountId}).then(res => {
                           if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
@@ -200,8 +199,10 @@
         this.getTmplList();
       },
       getTmplList() {
-        console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + "/tmpls", this.params).then(res => {
+        let params = this.params;
+        params.accountId = this.accountId;
+        console.log("params:" + JSON.stringify(params));
+        axios.post(this.baseUrl + "/tmpls", params).then(res => {
           if (res.data) {
             this.tableData = res.data.data
           }
@@ -213,7 +214,7 @@
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/tmpls/count", {status: this.params.status, accountId: "1"}).then(res => {
+        axios.post(this.baseUrl + "/tmpls/count", {status: this.params.status, accountId: this.accountId}).then(res => {
           if (res.data) {
             this.total = res.data.data;
           }
@@ -223,6 +224,9 @@
     mounted() {
       this.getTotal();
       this.getTmplList();
+    },
+    computed: {
+      ...mapGetters(['accountId'])
     }
   }
 </script>

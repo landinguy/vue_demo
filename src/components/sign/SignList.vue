@@ -65,6 +65,7 @@
 <script>
   import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'SignList',
@@ -73,7 +74,6 @@
         params: {
           pageNo: 1,
           pageSize: 10,
-          accountId: "1",
           key: ''
         },
         uploadUrl: '',
@@ -160,7 +160,7 @@
                       title: '删除',
                       content: '确认删除该签名？',
                       onOk() {
-                        axios.delete(this.baseUrl + "/sign/" + id, {accountId: "1"}).then(res => {
+                        axios.delete(this.baseUrl + "/sign/" + id, {}).then(res => {
                           if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
@@ -232,7 +232,6 @@
       },
       getParams() {
         const params = {};
-        params.accountId = "1";
         params.content = this.signData.content;
         params.cp = this.signData.cp;
         params.source = this.signData.source;
@@ -251,15 +250,17 @@
         this.getSignList();
       },
       getSignList() {
-        console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + "/signs", this.params).then(res => {
+        let params = this.params;
+        params.accountId = this.accountId;
+        console.log("params:" + JSON.stringify(params));
+        axios.post(this.baseUrl + "/signs", params).then(res => {
           if (res.data) {
             this.tableData = res.data.data
           }
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/signs/count", {status: this.params.status, accountId: "1"}).then(res => {
+        axios.post(this.baseUrl + "/signs/count", {status: this.params.status, accountId: this.accountId}).then(res => {
           if (res.data) {
             this.total = res.data.data;
           }
@@ -273,6 +274,9 @@
     mounted() {
       this.getTotal();
       this.getSignList();
+    },
+    computed: {
+      ...mapGetters(['accountId'])
     }
   }
 </script>

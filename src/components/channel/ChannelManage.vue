@@ -498,7 +498,7 @@
     mounted() {
       this.getTotal();
       this.sendPost();
-//      this.getSuppliersInfo();
+      this.getSuppliersInfo();
     }
   }
 </script>

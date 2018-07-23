@@ -19,9 +19,9 @@ export default {
     LoginForm
   },
   methods: {
-    ...mapActions([
-      'handleLogin'
-    ]),
+    // ...mapActions([
+    //   'handleLogin'
+    // ]),
     handleSubmit ({ userName, password }) {
       this.$router.push({
         name: 'home'

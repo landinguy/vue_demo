@@ -3,34 +3,52 @@ import { login } from '@/api/user'
 
 export default {
   state: {
-    userName: '',
-    userId: '',
-    token: '',
-    access:['normal']
+    accountId:'',
+    accountNumber: '',
+    accountNickname: '',
+    roleId: '',
+    access:[],
   },
   mutations: {
-    setUserId (state, id) {
-      state.userId = id
+    setAccountId (state, accountId) {
+      state.accountId = accountId
+      sessionStorage.setItem("accountId", accountId);
     },
-    setUserName (state, name) {
-      state.userName = name
+    setAccountNumber (state, accountNumber) {
+      state.accountNumber = accountNumber
+      sessionStorage.setItem("accountNumber", accountNumber);
     },
-    setToken (state, token) {
-      state.token = token
+    setAccountNickname (state, accountNickname) {
+      state.accountNickname = accountNickname;
+    },
+    setRoleId (state, roleId) {
+      state.roleId = roleId
     }
   },
+  getters:{
+      accountId:state=>{
+        return sessionStorage.getItem("accountId")
+      },
+    accountNumber:state=>{
+        return sessionStorage.getItem("accountNumber")
+      }
+  },
+
   actions: {
     // 登录
-    handleLogin ({ commit }, {userName, password}) {
-      userName = userName.trim()
+    handleLogin ({ commit }, {username, passwd}) {
+      // userName = userName.trim()
+      console.log("%",username, passwd)
       return new Promise((resolve, reject) => {
         login({
-          userName,
-          password
+          username,
+          passwd
         }).then(res => {
-          const username = res.data.username
-          commit('setUserName', username)
-          resolve()
+          commit('setAccountId', res.data.data.accountId);
+          commit('setAccountNumber', res.data.data.accountNumber);
+          commit('setAccountNickname', res.data.data.accountNickname);
+          commit('setRoleId', res.data.data.roleId);
+          resolve(res)
         }).catch(err => {
           reject(err)
         })

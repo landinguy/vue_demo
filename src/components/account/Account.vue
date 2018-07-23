@@ -82,8 +82,7 @@
 
 </template>
 <script>
-  import { mapActions } from 'vuex'
-  import { mapState } from 'vuex'
+  import { mapActions,mapState,mapGetters } from 'vuex'
   export default {
     data() {
       return {
@@ -148,7 +147,7 @@
 
       handleSubmit(name){
         if(name=='basic'){
-          this.handleUpdateNickName(this.basic.accountNumber, this.basic.companyName, this.basic.createTs, this.basic.nickname).then(
+          this.handleUpdateNickName({accountNumber:this.basic.accountNumber, nickname:this.basic.nickname}).then(
             res =>{
               this.$Message.info("保存成功");
             },
@@ -159,7 +158,7 @@
         }
 
         if(name=='more'){
-          this.handleUpdateAccountInfo(this.more.email, this.more.tel, this.more.name, this.more.scopes, this.more.companyWebsite).then(
+          this.handleUpdateAccountInfo({accountNumber:this.accountNumber, email:this.more.email, tel:this.more.tel, name:this.more.name, scopes:this.more.scopes, companyWebsite:this.more.companyWebsite}).then(
             res =>{
               this.$Message.info("保存成功");
             },
@@ -170,14 +169,18 @@
         }
 
         if(name=='pwd'){
-          if(this.pwd != this.rePwd){
+          console.log(this.pwd.newPwd, this.pwd.confirm)
+          if(this.pwd.newPwd != this.pwd.confirm){
             this.$Message.info("两次输入密码不一致");
             return;
           }
-          this.handleUpdatePassword(this.accountNumber, this.pwd.confirm).then(
+          this.handleUpdatePassword({accountNumber:this.accountNumber, pwd:this.pwd.confirm}).then(
             res =>{
-              this.$Message.info("修改成功");
-              this.changePwd = true;
+              if(res.data.code == 0){
+                this.$Message.info("修改成功");
+                this.changePwd = true;
+              }
+
             },
             err =>{
               this.$Message.info("修改失败");
@@ -211,17 +214,21 @@
         tel: state => state.account.tel,
         name: state => state.account.name,
         scopes: state => state.account.scopes,
-        companyWebsite: state => state.account.companyWebsite
-      })
+        companyWebsite: state => state.account.companyWebsite,
+        // accountId:state=>state.user.accountId,
+        // accountNumber:state=>state.user.accountNumber
+      }),
+      ...mapGetters(['accountId','accountNumber']),
     },
     created(){
-      this.handleMainAccountInfo("").then(
+      console.log("accountId:"+ this.accountId)
+      this.handleMainAccountInfo({accountNumber:this.accountNumber}).then(
         res=>{
-
+          this.setBasicInfo();
+          this.setMoreInfo();
         },
         err=>{
-        this.setBasicInfo();
-        this.setMoreInfo();
+
       })
     }
   }

@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import baseUrl from "./url"
 
 
 class httpRequest {
@@ -20,11 +21,17 @@ class httpRequest {
   // 创建实例
   create () {
     let conf = {
-      baseURL: "",//baseUrl
-      // timeout: 2000,
+      baseURL: baseUrl.base,//baseUrl
+      timeout: 2000,
+      withCredentials: true,
       headers: {
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Access-Control-Allow-Origin':'http://192.168.2.39:8080',
+        // 'Access-Control-Allow-Headers':'Content-Type,Content-Length, Authorization,\'Origin\',Accept,X-Requested-With',
+        // 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        // 'Access-Control-Allow-Credentials':true,
         'Content-Type': 'application/json; charset=utf-8',
-        'X-URL-PATH': location.pathname
+        // 'X-URL-PATH': location.pathname
       }
     }
     return Axios.create(conf)

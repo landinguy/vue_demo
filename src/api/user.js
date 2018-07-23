@@ -1,14 +1,21 @@
 import axios from '@/libs/axios'
+import url from './url'
+// import axios from 'axios'
 
-export const login = ({ userName, password }) => {
+export const login = ({ username, passwd }) => {
   const data = {
-    userName,
-    password
+    username,
+    passwd
   }
   return axios.request({
-    url: 'login',
-    data,
+    url:url.login,
+    data:data,
     method: 'post'
   })
+  // axios.defaults.withCredentials = true;
+  // return axios.post("http://192.168.2.58:8090"+url.login, data)
+
+
+
 }
 

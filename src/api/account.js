@@ -11,11 +11,9 @@ export const mainAccountInfo = ({ accountNumber }) => {
   })
 }
 
-export const updateNickName = ({accountNumber,companyName,createTs, nickname}) => {
+export const updateNickName = ({accountNumber, nickname}) => {
   const data = {
     accountNumber,
-    companyName,
-    createTs,
     nickname
   }
   return axios.request({
@@ -46,23 +44,37 @@ export const updateAccountInfo = ({accountNumber,email,tel,name,scopes,companyWe
   })
 }
 
-export const querySubAccountList = ({accountNumber,subaccountNumber, status}) => {
-  const data = {
-    subaccountNumber, status
-  }
+export const querySubAccountList = (querySubAccountList) => {
+  const data = querySubAccountList
   return axios.request({
-    url:url.subAccountList + accountNumber,
+    url:url.subAccountList,
     data,
     method: 'post'
   })
 }
 
-export const disableOrDeleteSubAccount = ({accountNumber,subaccountNumber, status}) => {
-  const data = {
-    subaccountNumber, status
-  }
+export const disableOrDeleteSubAccount = ({subaccountId, status}) => {
+  const data = {subaccountId, status}
   return axios.request({
-    url:url.disableOrDeleteSubAccount + accountNumber,
+    url:url.disableOrDeleteSubAccount,
+    data,
+    method: 'post'
+  })
+}
+
+export const addSubAccount = ({accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}) => {
+  const data = {accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}
+  return axios.request({
+    url:url.addSubAccount,
+    data,
+    method: 'post'
+  })
+}
+
+export const modifySubAccount = ({accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}) => {
+  const data = {accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}
+  return axios.request({
+    url:url.modifySubAccount,
     data,
     method: 'post'
   })

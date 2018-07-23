@@ -11,13 +11,18 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
-  import { mapState } from 'vuex'
+  import { mapActions,mapState,mapGetters  } from 'vuex'
   import {timeAgo, formatDate} from "../../libs/timeUitls";
   import Chart from "./Chart"
     export default {
 
         name: "Detail",
+      computed:{
+        // ...mapState({
+        //   accountId:state=>state.user.accountId,
+        // }),
+        ...mapGetters(['accountId']),
+      },
         data(){
           return{
             value:0
@@ -49,10 +54,7 @@
               st = formatDate(timeAgo(30));
             }
             st = st.split(" ")[0]+" 00:00:00";
-
-            console.log(st, et);
-
-            this.handleTrend("",st,et).then(function () {
+            this.handleTrend({accountId:this.accountId,st:st,et:et}).then(function () {
               self.$refs.chart.reloadChart();
             }, function () {
               self.$refs.chart.reloadChart();

@@ -31,12 +31,14 @@ export default {
   actions: {
 
     handleMainAccountInfo ({ commit }, {accountNumber}) {
+      console.log("--"+accountNumber)
       return new Promise((resolve, reject) => {
         mainAccountInfo({
           accountNumber,
         }).then(res => {
 
-          const accountInfo = res.data
+          const accountInfo = res.data.data;
+          console.log(accountInfo)
           commit('setAccountInfo', accountInfo)
 
           resolve()
@@ -61,11 +63,10 @@ export default {
       })
     },
 
-    handleUpdateNickName ({ commit }, { accountNumber,companyName,createTs, nickname}) {
+    handleUpdateNickName ({ commit }, { accountNumber, nickname}) {
       return new Promise((resolve, reject) => {
-        updateNickName({ accountNumber,companyName,createTs, nickname}
+        updateNickName({ accountNumber, nickname}
         ).then(res => {
-
           resolve()
         }).catch(err => {
 
@@ -76,10 +77,9 @@ export default {
 
     handleUpdatePassword ({ commit }, {accountNumber,pwd}) {
       return new Promise((resolve, reject) => {
-        updateNickName({accountNumber,pwd}
+        updatePassword({accountNumber,pwd}
         ).then(res => {
-
-          resolve()
+          resolve(res)
         }).catch(err => {
 
           reject(err)
@@ -89,7 +89,7 @@ export default {
 
     handleUpdateAccountInfo ({ commit }, {accountNumber,email,tel,name,scopes,companyWebsite}) {
       return new Promise((resolve, reject) => {
-        updateNickName({ accountNumber,email,tel,name,scopes,companyWebsite}
+        updateAccountInfo({ accountNumber,email,tel,name,scopes,companyWebsite}
         ).then(res => {
 
           resolve()

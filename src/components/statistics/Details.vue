@@ -44,14 +44,25 @@
         'handleStatisticsDetailList',
       ]),
       queryTask(p){
-        var st = formatDate(this.startTime).split(" ")[0];
-        var et = formatDate(this.endTime).split(" ")[0];
-        this.handleStatisticsDetailCount(st, et, "" )
+        var st = formatDate(this.startTime).split(" ")[0] + " 00:00:00";
+        var et = formatDate(this.endTime).split(" ")[0] +" "+ formatDate(this.endTime).split(" ")[1];
+
+
+        var data = {st:st, et:et, accountId:this.accountId}
+
+        this.handleStatisticsDetailCount(data).then(res=>{
+          console.log(res)
+        }, err=>{})
+
         if(p!=undefined){
           this.page = p;
         }
-        console.log(st, et, this.page, this.pageSize,)
-        this.handleStatisticsDetailList( st, et, this.page, this.pageSize,"")
+        var params = {st:st,et:et,page:this.page,pageSize:this.pageSize,accountId:this.accountId}
+        console.log(params)
+        this.handleStatisticsDetailList( params).then(res=>{
+          console.log(res)
+        }, err=>{})
+
       }
 
 

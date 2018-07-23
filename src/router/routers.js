@@ -62,7 +62,7 @@ export default [
     meta: {
       // icon: 'ios-navigate',
       title: '账户管理',
-      access:['normal']
+      // access:['normal']
     },
     component: Main,
     children: [

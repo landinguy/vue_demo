@@ -66,6 +66,7 @@
 <script>
   import axios from 'axios'
   import {showTip} from '@/libs/util'
+  import url from '@/api/url'
 
   export default {
     name: 'ChannelAccess',
@@ -288,7 +289,7 @@
       },
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + "/suppliers", this.params).then(res => {
+        axios.post(this.baseUrl + url.getSuppliers, this.params).then(res => {
           this.tableData = res.data.data;
         })
       },
@@ -297,7 +298,7 @@
         this.sendPost();
       },
       getTotal() {
-        axios.post(this.baseUrl + "/suppliers/count",
+        axios.post(this.baseUrl + url.getSupp1iersCount,
           {
             supplierName: this.params.supplierName
           }).then(res => {

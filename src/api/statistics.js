@@ -1,8 +1,8 @@
 import axios from '@/libs/axios'
 import url from './url'
 
-export const statisticsCount = ({ st, et, accountId }) => {
-  const data = { st, et, accountId }
+export const statisticsCount = ({ st, et, accountId,taskId }) => {
+  const data = { st, et, accountId ,taskId}
   return axios.request({
     url:url.statisticsCount,
     data,
@@ -11,8 +11,8 @@ export const statisticsCount = ({ st, et, accountId }) => {
 }
 
 
-export const statisticsList = ({st,et,page,pageSize,accountId}) => {
-  const data = {st,et,page,pageSize,accountId}
+export const statisticsList = ({st,et,page,pageSize,accountId,taskId}) => {
+  const data = {st,et,page,pageSize,accountId,taskId}
   return axios.request({
     url:url.statisticsList,
     data,

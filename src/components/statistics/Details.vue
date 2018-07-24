@@ -97,7 +97,7 @@
           },
           {
             title: '发送结果',
-            key: 'taskStatus'
+            key: 'taskStatusName'
           }
         ],
 

@@ -75,9 +75,9 @@ export default {
       })
     },
 
-    handleUpdatePassword ({ commit }, {accountNumber,pwd}) {
+    handleUpdatePassword ({ commit }, {accountNumber,oriPwd, pwd}) {
       return new Promise((resolve, reject) => {
-        updatePassword({accountNumber,pwd}
+        updatePassword({accountNumber,oriPwd,pwd}
         ).then(res => {
           resolve(res)
         }).catch(err => {

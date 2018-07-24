@@ -23,9 +23,10 @@ export const updateNickName = ({accountNumber, nickname}) => {
   })
 }
 
-export const updatePassword = ({accountNumber,pwd}) => {
+export const updatePassword = ({accountNumber,oriPwd,pwd}) => {
   const data = {
     accountNumber,
+    oriPwd,
     pwd
   }
   return axios.request({

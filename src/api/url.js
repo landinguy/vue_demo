@@ -11,10 +11,10 @@ var url = {
   updateAdminPassword: "/account/pwd/update",
   updateAdminProperty: "/account/info/property/update",
   //子账户
-  subAccountList: "/subaccount/list",
-  disableOrDeleteSubAccount: "/subaccount/status/modify",
-  addSubAccount: "/subaccount/info/insert",
-  modifySubAccount: "/subaccount/info/update",
+  subAccountList:"/subaccount/list/",
+  disableOrDeleteSubAccount:"/subaccount/status/modify",
+  addSubAccount:"/subaccount/info/insert",
+  modifySubAccount:"/subaccount/info/update",
 
   //发送统计
   statisticsCount: "/stats/count",

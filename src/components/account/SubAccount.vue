@@ -1,7 +1,7 @@
 <template>
     <div class="bg">
       <div v-if="addAccount" class="sub">
-        <p>新建子账户</p>
+        <p>{{title}}</p>
         <Add :index="index"></Add>
       </div>
       <div v-if="!addAccount" class="sub">
@@ -24,7 +24,10 @@
   import Add from "./Add"
   import { mapActions,mapState,mapGetters } from 'vuex'
     export default {
-      components:{
+    created(){
+      this.querySubAccount();
+    },
+    components:{
         Add
       },
       methods:{
@@ -32,16 +35,42 @@
           'handleQuerySubAccountList',
           'handleDisableOrDeleteSubAccount'
         ]),
+
+        instance (type, content,index, action) {
+          const self = this;
+          switch (type) {
+            case 'warning':
+              this.$Modal.warning({
+                content: content,
+                closable:true,
+                onOk:function () {
+                  self.disableOrDeleteSubAccount(index, action);
+                }
+              });
+              break;
+            case 'error':
+              this.$Modal.error({
+                content: content,
+                closable:true,
+                onOk:function () {
+                  self.disableOrDeleteSubAccount(index, action);
+                }
+              });
+              break;
+          }
+        },
+
         addSubAccount(){
           this.addAccount = true;
           this.index = -1;
+          this.title = "新建子账户";
         },
         modifySubAccount(index){
 
           this.index = index;
           this.modifyInfo = this.subAccountList[index];
           this.addAccount = true;
-
+          this.title = "修改子账户";
         },
         querySubAccount(){
           var data = {subaccountNickname:this.accountNickName,status:this.accountState}
@@ -55,6 +84,7 @@
           this.handleDisableOrDeleteSubAccount(data).then(res=>{
               if(res.data.code == 0){
                 this.$Message.info("账号已禁用或者删除");
+                this.querySubAccount();
               }
           },err=>{
 
@@ -64,19 +94,19 @@
       computed: {
         ...mapState({
           subAccountList:state => state.subAccount.subAccountList,
-          // accountId:state=>state.user.accountId,
-          // accountNumber:state=>state.user.accountNumber,
         }),
         ...mapGetters(['accountId','accountNumber']),
       },
       data(){
         return{
+          show:true,
           index:-1,
           modifyInfo:null,
           accountNickName:"",
           // accountNumber:"",
           accountState:"",
           addAccount:false,
+          title:"新建子账户",
           selectedState: [
             {
               value: 'USE',
@@ -95,7 +125,7 @@
             {title:"子账户用户名",key:"subaccountNumber"},
             {title:"子账户账号",key:"subaccountNickname"},
             {title:"子账户使用人",key:"owner"},
-            {title:"子账户状态",key:"status"},
+            {title:"子账户状态",key:"statusName"},
             {title:"操作",key:"action",
               width: 200,
               align: 'center',
@@ -117,7 +147,7 @@
                   }, '修改'),
                   h('Button', {
                     props: {
-                      type: 'primary',
+                      type: 'warning',
                       size: 'small'
                     },
                     style: {
@@ -125,7 +155,7 @@
                     },
                     on: {
                       click: () => {
-                        this.disableOrDeleteSubAccount(params.index, "DISABLED");
+                        this.instance("warning", "您确定要禁用该账户吗？",params.index, "DISABLED")
                       }
                     }
                   }, '禁用'),
@@ -136,7 +166,7 @@
                     },
                     on: {
                       click: () => {
-                        this.disableOrDeleteSubAccount(params.index, "DELETED");
+                        this.instance("error", "您确定要删除该账户吗？",params.index, "DELETED")
                       }
                     }
                   }, '删除'),

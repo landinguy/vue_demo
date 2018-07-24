@@ -23,14 +23,12 @@
       this.queryTask();
 
       this.columns = this.columnsNormal.concat(this.columnsAdmin).concat(this.action);
-    //  this.columns = this.columnsNormal;
 
     },
     computed: {
       ...mapState({
         statsCount: state => state.statistics.statsCount,
         statsList: state => state.statistics.statsList,
-        // accountId:state=>state.user.accountId,
       }),
       ...mapGetters(['accountId']),
     },
@@ -45,7 +43,7 @@
         var et = formatDate(this.endTime).split(" ")[0] +" "+ formatDate(this.endTime).split(" ")[1];
 
 
-        var data = {st:st, et:et, accountId:this.accountId}
+        var data = {st:st, et:et, accountId:this.accountId,taskId:this.taskId}
         console.log(data)
         this.handleStatisticsCount(data).then(res=>{
           console.log(res)
@@ -54,7 +52,7 @@
           this.page = p;
         }
 
-        var params = {st:st,et:et,page:this.page,pageSize:this.pageSize,accountId:this.accountId}
+        var params = {st:st,et:et,page:this.page,pageSize:this.pageSize,accountId:this.accountId,taskId:this.taskId}
         console.log(params)
         this.handleStatisticsList( params).then(res=>{
           console.log(res)
@@ -73,7 +71,7 @@
         columns:[],
         columnsNormal: [
           {
-            title: '发送编号',
+            title: '任务ID',
             key: 'taskId'
           },
           {
@@ -98,7 +96,7 @@
           },
           {
             title: '发送状态',
-            key: 'status'
+            key: 'statusName'
           }
         ],
         columnsAdmin: [

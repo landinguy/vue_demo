@@ -21,7 +21,7 @@
           <Input v-model="task.receiver" placeholder="请选择已创建的联系人组" disabled></Input>
           </Col>
           <Col span="10" style="margin-left: 10px" v-if="id === ''">
-          <Button type="primary" @click="showChooseReceiverModal">选择联系人组</Button>
+          <!--<Button type="primary" @click="showChooseReceiverModal">选择联系人组</Button>-->
           <Button type="ghost" @click="newReceiverModal = true">新建联系人</Button>
           </Col>
         </Row>
@@ -33,17 +33,18 @@
       <br/>
 
       <FormItem label="发送时间" prop="sendTime">
-        <RadioGroup v-model="task.sendTime" type="button">
+        <RadioGroup v-model="task.sendTime" type="button" @on-change="rgChange">
           <Radio label="rightNow" :disabled="id !== ''">立即发送</Radio>
-          <Radio label="sometime" :disabled="id !== ''">定时发送</Radio>
+          <Radio label="sometime" :disabled="id !== ''">预约发送</Radio>
         </RadioGroup>
       </FormItem>
 
       <FormItem v-if="task.sendTime === 'sometime'" prop="customSendTime">
-        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请输入发送时间" style="width: 200px"></DatePicker>
+        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="date" format="yyyy-MM-dd" placeholder="请选择发送日期" style="width: 200px"></DatePicker>
+        <TimePicker @on-change="handleTimeChange" :editable='false' format="HH:mm" confirm type="timerange" placement="bottom-start" placeholder="请选择发送时段" style="width: 168px"></TimePicker>
       </FormItem>
 
-      <FormItem label="发送时段" prop="sendPeriod">
+      <!--<FormItem label="发送时段" prop="sendPeriod">
         <RadioGroup v-model="task.sendPeriod" type="button">
           <Radio label="dayTime" :disabled="id !== ''">白天时段</Radio>
           <Radio label="customTime" :disabled="id !== ''">自定义时段</Radio>
@@ -104,7 +105,7 @@
             <Tree :data="shieldCityTree" ref="excludeAreaRef" show-checkbox multiple></Tree>
           </div>
         </Card>
-      </FormItem>
+      </FormItem>-->
 
       <FormItem v-if="id === ''">
         <Button type="primary" @click="handleSubmit('task')">提交</Button>
@@ -179,6 +180,7 @@
 <script>
   import axios from 'axios';
   import citytree from '../../api/citytree';
+  import {mapGetters} from 'vuex';
   export default {
     name: "Task",
     data() {
@@ -220,9 +222,10 @@
           }
         },
         task: {
-          name: 'aaa',
-          template: 'ACA793E2F18844269378A86A96337E07',
-          receiver: 'ccc',
+          name: '',
+          template: '',
+          templateId: '',
+          receiver: '',
           number: 10,
           sendTime: 'rightNow',
           sendSpeed: 'defaultSpeed',
@@ -242,10 +245,10 @@
           receiver:[{ required: true, message: '收件人不能为空', trigger: 'blur' }],
           number:[{ validator: validateNumber, trigger: 'blur' }],
           sendTime: [{ required: true, message: '发送时间不能为空', trigger: 'change' }],
-          sendPeriod: [{ required: true, message: '发送时段不能为空', trigger: 'change' }],
+          /*sendPeriod: [{ required: true, message: '发送时段不能为空', trigger: 'change' }],
           sendSpeed: [{ required: true, message: '发送控速不能为空', trigger: 'change' }],
           daySendLimit: [{ required: true, message: '请选择单日发送上限', trigger: 'change' }],
-          sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],
+          sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],*/
 
           customSendTime:[
             // { required: true, message: '发送时间不能为空', trigger: 'change' },
@@ -267,12 +270,16 @@
                 callback(errors);
               }}
           ],
-          customSendSpeed: [{ validator: validateNumber, trigger: 'blur' }],
-          customDaySendLimit: [{ validator: validateNumber, trigger: 'blur' }],
+          /*customSendSpeed: [{ validator: validateNumber, trigger: 'blur' }],
+          customDaySendLimit: [{ validator: validateNumber, trigger: 'blur' }],*/
         }
       };
     },
     methods: {
+      rgChange() {
+        this.task.customSendPeriod = '';
+        this.task.customSendTime = '';
+      },
       goBack() {
         this.$store.state.task.task_id = '';
         this.$store.state.task.task_operation = '';
@@ -287,22 +294,23 @@
       },
       handleSubmit (name) {
         console.log("form value : " + JSON.stringify(this.task));
+        if (this.task.sendTime === 'sometime' && (this.task.customSendPeriod === '' || this.task.customSendPeriod == ',')) {
+          this.$Message.error("发送时间段不能为空");
+          return;
+        }
         let vue = this;
         this.$refs[name].validate((valid) => {
-          if (this.task.sendArea === 'customArea') {
-            console.log("sendArea: "+JSON.stringify(this.$refs.customAreaRef.getCheckedNodes()));
-          }
-
           if (valid) {
+            console.log("form value : " + this.task.customSendTime + " " + this.task.customSendPeriod[0]);
             let taskData = {
-              accountId:'1',
+              accountId:this.accountId,
               name:this.task.name,
-              templateId:'123456789',
+              templateId:this.task.templateId,
               templateName:this.task.template,
-              receiverGroupId:'789456123',
+              receiverGroupId:this.task.receiver,
               receiverAmount:this.task.number,
-              startTs:'',
-              endTs:'',
+              startTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[0]).getTime(): '',
+              endTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[1]).getTime(): '',
               // periodFrom:'',
               // periodTo:'',
               rateLimit:'',
@@ -318,7 +326,7 @@
             })
               .catch(function (error) {
                 console.log(error);
-                vue.$Message.success('提交任务失败!');
+                vue.$Message.error('提交任务失败!');
               });
           } else {
             this.$Message.error('请填写必要信息!');
@@ -354,7 +362,7 @@
           this.loadingStatus = true;
           let vue = this;
           let data = new FormData();
-          data.append('accountNo', '1');
+          data.append('accountNo', this.accountId);
           data.append('save', this.saveToContacts.toString());
           data.append('file', this.file);
           axios.post(this.uploadUrl,data,{
@@ -389,7 +397,7 @@
           status:'AUDIT_PASS',
           pageNo:'1',
           pageSize:'20',
-          accountId:'1'
+          accountId:this.accountId
         };
         axios.post(this.baseUrl + "/tmpls",param)
           .then(function (response) {
@@ -403,7 +411,7 @@
       showChooseReceiverModal() {
         this.chooseReceiverModal = true;
         let vue = this;
-        axios.post(this.baseUrl + "/send/receiver/get/1")
+        axios.post(this.baseUrl + "/send/receiver/get/" + this.accountId)
           .then(function (response) {
             // console.log(response.data.receiverRS);
             vue.receiverRS = response.data.receiverRS;
@@ -416,6 +424,7 @@
         console.log(index);
         this.chooseTemplateModal = false;
         this.task.template = this.templateData[index].name;
+        this.task.templateId = this.templateData[index].id;
       },
       chooseReceiver (index) {
         console.log(index);
@@ -454,7 +463,7 @@
       },
       getTaskDetail (id) {
         let vue = this;
-        axios.post(this.baseUrl + "/task/get/" + id,{accountId:'1'}).then(value => {
+        axios.post(this.baseUrl + "/task/get/" + id,{accountId:this.accountId}).then(value => {
           let data = value.data.data;
           console.log(data);
           vue.task.name = data.name;
@@ -465,6 +474,9 @@
           console.log(reason);
         })
       }
+    },
+    computed:{
+      ...mapGetters(['accountId'])
     },
     mounted () {
       this.id = this.$store.state.task.task_id;

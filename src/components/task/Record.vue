@@ -4,16 +4,13 @@
       <Col span="12">
         <Input v-model="fastSearchContent" placeholder="快速查询">
         <Select v-model="fastSearchContentStatus" slot="prepend" style="width: 100px">
-          <Option value="audit">审核中</Option>
-          <Option value="auditFail">审核失败</Option>
-          <Option value="expired">已失效</Option>
-          <Option value="waitingToStart">等待开始</Option>
-          <Option value="month">正在发送</Option>
-          <Option value="month">暂停中</Option>
-          <Option value="month">发送完成</Option>
-          <Option value="month">发送终止</Option>
+          <Option value="INVALID">已失效</Option>
+          <Option value="WAITING">等待开始</Option>
+          <Option value="SENT">发送完成</Option>
+          <Option value="ABORT">发送终止</Option>
+          <Option value="SENDING">正在发送</Option>
         </Select>
-        <Button slot="append" icon="ios-search"></Button>
+        <Button slot="append" icon="ios-search" @click="searchByStatus"></Button>
         </Input>
       </Col>
       <Col span="4" offset="8" style="text-align: right">
@@ -45,7 +42,7 @@
 
 <script>
   import axios from "axios";
-  import {mapMutations} from 'vuex'
+  import {mapMutations,mapGetters} from 'vuex';
   export default {
     name: "record",
     data() {
@@ -66,6 +63,15 @@
       };
     },
     methods: {
+       searchByStatus() {
+          if (this.fastSearchContentStatus === '') {
+            this.$Message.error("请选择需要查询的状态");
+            return;
+          }
+         console.log("fastSearchContentStatus: " + this.fastSearchContentStatus);
+         this.status = this.fastSearchContentStatus;
+         this.getRecordInfo();
+       },
       ...mapMutations([
         'setTaskId',
         'setTaskOperation'
@@ -101,10 +107,10 @@
         d = d < 10 ? ('0' + d) : d;
         return y + '-' + m + '-' + d;
       },
-      getRecordInfo(pageNo) {
+      getRecordInfo() {
         this.currentPage = 1;
         this.getTaskCount();
-        this.getSendRecordData(pageNo);
+        this.getSendRecordData(1);
       },
       getTaskCount() {
         let taskCount = {};
@@ -112,7 +118,7 @@
           taskCount = {status: this.status};
         }
         let vue = this;
-        axios.post(this.baseUrl + "/task/count/1", taskCount).then(function (response) {
+        axios.post(this.baseUrl + "/task/count/" + this.accountId, taskCount).then(function (response) {
           console.log(response.data.data);
           vue.total = response.data.data.amount;
         })
@@ -136,7 +142,7 @@
           pagingData.status = this.status;
         }
         console.log("paging data: " + JSON.stringify(pagingData));
-        axios.post(this.baseUrl + "/task/list/1", pagingData).then(function (response) {
+        axios.post(this.baseUrl + "/task/list/" + this.accountId, pagingData).then(function (response) {
           console.log(response.data.data);
           temp.recordData = response.data.data;
         })
@@ -174,14 +180,14 @@
       },
       decideDeleteTask() {
         let vue = this;
-        axios.post(this.baseUrl + "/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:'1'})
+        axios.post(this.baseUrl + "/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(function (response) {
             console.log(response.data);
             if (response.data.code === 0) {
               // vue.getRecordInfo(1);
               vue.$Message.success('任务删除成功!');
               // vue.current = 1;
-              vue.getRecordInfo(1);
+              vue.getRecordInfo();
             } else {
               vue.$Message.success('任务删除失败!')
             }
@@ -197,7 +203,7 @@
       },
       decideTerminateTask() {
         let vue = this;
-        axios.post(this.baseUrl + "/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:'1'})
+        axios.post(this.baseUrl + "/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(value => {
             let result = value.data.code;
             if (result >= 0) {
@@ -211,6 +217,9 @@
             console.log(error);
           });
       }
+    },
+    computed:{
+      ...mapGetters(['accountId'])
     },
     mounted() {
       this.recordColumns = [
@@ -253,7 +262,7 @@
           }
         }
       ];
-      this.getRecordInfo(1);
+      this.getRecordInfo();
     }
   }
 </script>

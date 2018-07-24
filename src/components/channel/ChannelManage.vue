@@ -120,6 +120,7 @@
 <script>
   import axios from 'axios'
   import {showTip} from '@/libs/util'
+  import url from '@/api/url'
 
   export default {
     name: 'ChannelManage',
@@ -294,7 +295,7 @@
                         '<span style="color: red">提示：</span>' +
                         '如果该账户中有发送余量，将全部退回您的账号中，且该账号下已有的模板、发送任务及数据等将全部失效。</p>',
                         onOk() {
-                          axios.delete($vue.baseUrl + "/chan/item/" + channelId).then(res => {
+                          axios.delete($vue.baseUrl + url.delChan + channelId).then(res => {
                             if (res.data.code == 0) {
                               $vue.$Message.success({
                                 content: '删除成功',
@@ -329,7 +330,7 @@
                           '<span style="color: red">提示：</span>' +
                           '停用后该通道无法正常使用，确认是否停用？</p>',
                           onOk() {
-                            axios.post($vue.baseUrl + "/chan/item/halt/" + channelId).then(res => {
+                            axios.post($vue.baseUrl + url.haltChan + channelId).then(res => {
                               if (res.data.code == 0) {
                                 $vue.$Message.success({
                                   content: '已停用',
@@ -416,7 +417,7 @@
         this.$refs.channelForm.validate((valid) => {
           if (valid) {
             const param = this.getParams();
-            axios.post(this.baseUrl + "/chan/item/bind", param).then(res => {
+            axios.post(this.baseUrl + url.bind, param).then(res => {
               if (res.data.code == 0) {
                 this.addModal = false;
                 this.$Message.success({
@@ -466,7 +467,7 @@
       },
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + "/chan/items", this.params).then(res => {
+        axios.post(this.baseUrl + url.getChans, this.params).then(res => {
           this.tableData = res.data.data;
         })
       },
@@ -475,7 +476,7 @@
         this.sendPost();
       },
       getTotal() {
-        axios.post(this.baseUrl + "/chan/items/count",
+        axios.post(this.baseUrl + url.getChansCount,
           {
             supplierName: this.params.supplierName,
             channelNo: this.params.channelNo,
@@ -489,7 +490,7 @@
         })
       },
       getSuppliersInfo() {
-        axios.post(this.baseUrl + "/suppliers", {}).then(res => {
+        axios.post(this.baseUrl + url.getSuppliers, {}).then(res => {
           this.supplierData = res.data.data;
 //          this.supplierData = res.data;
         })

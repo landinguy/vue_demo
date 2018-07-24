@@ -66,6 +66,7 @@
   import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
   import {mapGetters} from 'vuex'
+  import url from '@/api/url'
 
   export default {
     name: 'SignList',
@@ -160,7 +161,7 @@
                       title: '删除',
                       content: '确认删除该签名？',
                       onOk() {
-                        axios.delete(this.baseUrl + "/sign/" + id, {}).then(res => {
+                        axios.delete(this.baseUrl + url.delSign + id, {}).then(res => {
                           if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
@@ -214,7 +215,7 @@
         this.$refs.signForm.validate((valid) => {
           if (valid) {
             const params = this.getParams();
-            axios.post(this.baseUrl + "/sign/create", params).then(res => {
+            axios.post(this.baseUrl + url.createSign, params).then(res => {
               if (res.data.code == 0) {
                 this.$Message.success({
                   content: '添加成功',
@@ -253,14 +254,17 @@
         let params = this.params;
         params.accountId = this.accountId;
         console.log("params:" + JSON.stringify(params));
-        axios.post(this.baseUrl + "/signs", params).then(res => {
+        axios.post(this.baseUrl + url.getSigns, params).then(res => {
           if (res.data) {
             this.tableData = res.data.data
           }
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/signs/count", {status: this.params.status, accountId: this.accountId}).then(res => {
+        axios.post(this.baseUrl + url.getSignsCount, {
+          status: this.params.status,
+          accountId: this.accountId
+        }).then(res => {
           if (res.data) {
             this.total = res.data.data;
           }

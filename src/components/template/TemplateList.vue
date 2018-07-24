@@ -35,6 +35,7 @@
   import {mapMutations, mapGetters} from 'vuex'
   import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
+  import url from '@/api/url'
 
   export default {
     name: 'TemplateList',
@@ -153,7 +154,7 @@
                       title: '删除',
                       content: '确认删除该模板？',
                       onOk() {
-                        axios.delete($vue.baseUrl + "/tmpl/" + id, {accountId: this.accountId}).then(res => {
+                        axios.delete($vue.baseUrl + url.delTmpl + id, {accountId: this.accountId}).then(res => {
                           if (res.data.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
@@ -202,7 +203,7 @@
         let params = this.params;
         params.accountId = this.accountId;
         console.log("params:" + JSON.stringify(params));
-        axios.post(this.baseUrl + "/tmpls", params).then(res => {
+        axios.post(this.baseUrl + url.getTmpls, params).then(res => {
           if (res.data) {
             this.tableData = res.data.data
           }
@@ -214,7 +215,10 @@
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + "/tmpls/count", {status: this.params.status, accountId: this.accountId}).then(res => {
+        axios.post(this.baseUrl + url.getTmplsCount, {
+          status: this.params.status,
+          accountId: this.accountId
+        }).then(res => {
           if (res.data) {
             this.total = res.data.data;
           }

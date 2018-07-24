@@ -169,6 +169,7 @@
 <script>
   import axios from 'axios'
   import {mapGetters} from 'vuex'
+  import url from '@/api/url'
 
   export default {
     name: 'CreateTemplate',
@@ -191,7 +192,7 @@
         ],
         tip: '请输入文本、链接和最多5个参数，链接和参数必须使用通配符{$}包围。\n例如：尊敬的{$用户昵称}，您是我行{$会员级别}，您的详单请点击{$http://www.wostore.cn/}',
         uploadTip: '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳',
-        uploadUrl: this.baseUrl + '/mat/upload',
+        uploadUrl: this.baseUrl + url.uploadMat,
         format: ['jpg', 'jepg', 'png', 'gif'],
         label: '上传图片',
         addModal: false,
@@ -299,7 +300,7 @@
           if (valid) {
             this.clearData();
             const params = this.getParams();
-            axios.post(this.baseUrl + "/tmpl/create", params).then(res => {
+            axios.post(this.baseUrl + url.createTmpl, params).then(res => {
               if (res.code == 0) {
                 this.$Message.success({
                   content: '提交成功',
@@ -346,7 +347,7 @@
               this.extraParam.txt = m.text;
               this.extraParam.spaceUsage = 0;
               axios({
-                url: this.baseUrl + '/mat/upload',
+                url: this.baseUrl + url.uploadMat,
                 method: 'post',
                 data: this.extraParam,
                 transformRequest: [function (data) {
@@ -470,7 +471,7 @@
         this.$store.state.template.operation = 'default';
       },
       search(id) {
-        axios.get(this.baseUrl + "/tmpl/" + id, {}).then(res => {
+        axios.get(this.baseUrl + url.getTmpl + id, {}).then(res => {
           if (res.data) {
             console.log(JSON.stringify(res.data));
             this.setData(res.data.data);
@@ -494,7 +495,7 @@
         }
       },
       getSignList() {
-        axios.post(this.baseUrl + "/signs", {accountId: this.accountId}).then(res => {
+        axios.post(this.baseUrl + url.getSigns, {accountId: this.accountId}).then(res => {
           if (res.data.data) {
             res.data.data.forEach(item => {
               if (item.status == 'AUDIT_PASSED') {

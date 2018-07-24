@@ -23,10 +23,10 @@ export default {
 
   actions: {
 
-    handleStatisticsCount({commit}, {st, et, accountId}) {
+    handleStatisticsCount({commit}, {st, et, accountId,taskId}) {
       return new Promise((resolve, reject) => {
         statisticsCount({
-          st, et, accountId,
+          st, et, accountId,taskId
         }).then(res => {
           commit('setStatsCount', res.data.data)
           resolve(res)
@@ -37,9 +37,9 @@ export default {
       })
     },
 
-    handleStatisticsList({commit}, {st,et,page,pageSize,accountId}) {
+    handleStatisticsList({commit}, {st,et,page,pageSize,accountId,taskId}) {
       return new Promise((resolve, reject) => {
-        statisticsList({st,et,page,pageSize,accountId}
+        statisticsList({st,et,page,pageSize,accountId,taskId}
         ).then(res => {
           commit('setStatsList', res.data.data)
           resolve(res)

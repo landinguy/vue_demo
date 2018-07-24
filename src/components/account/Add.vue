@@ -39,8 +39,6 @@
     computed: {
       ...mapState({
         subAccountList:state => state.subAccount.subAccountList,
-        // accountId:state=>state.user.accountId,
-        // accountNumber:state=>state.user.accountNumber,
       }),
       ...mapGetters(['accountId','accountNumber']),
     },
@@ -50,29 +48,26 @@
           accountNumber:"",
           subaccountNumber:"",
           subaccountNickname:"",
-          role:"",
+          role:1,
           owner:"",
           pwd:"",
           rePwd:""
         },
         ruleValidate: {
           subaccountNumber: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+            { required: true, message: '用户名不能为空', trigger: 'blur' }
           ],
           subaccountNickname: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+            { required: true, message: '账号名称不能为空', trigger: 'blur' }
           ],
-          // owner: [
-          //   { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          // ],
           pwd: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+            { required: true, message: '密码不能为空且不低于8位', trigger: 'blur' }
           ],
           rePwd: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+            { required: true, message: '密码不能为空且不低于8位', trigger: 'blur' }
           ],
           role: [
-            { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+            { required: true, message: '角色必选', trigger: 'blur' }
           ],
         }
       }
@@ -83,64 +78,64 @@
         'handleModifySubAccount'
       ]),
       handleSubmit (subAccountInfo) {
-        if(this.$parent.index != -1){
-          var password = "";
-          if(this.subAccountInfo.pwd == "000000"){
-            password = "";
-          }
-          else
-          {
-            password = this.subAccountInfo.pwd;
-          }
-          var params = {accountNumber:this.accountNumber,
-            subaccountNumber:this.subAccountInfo.subaccountNumber,
-            subaccountId:this.$parent.modifyInfo.subaccountId,
-            subaccountNickname:this.subAccountInfo.subaccountNickname,
-            owner:this.subAccountInfo.owner,
-            pwd:password,
-            roleId:this.subAccountInfo.role
-          }
-          console.log(params);
-          this.handleModifySubAccount(params).then(res=>{
-            console.log(res)
-            if(res.data.code == 0){
-              this.$Message.info("修改成功");
+
+        this.$refs[subAccountInfo].validate((valid) => {
+          if (valid) {
+            if(this.$parent.index != -1){
+              var password = "";
+              if(this.subAccountInfo.pwd == "000000"){
+                password = "";
+              }
+              else
+              {
+                password = this.subAccountInfo.pwd;
+              }
+              var params = {accountNumber:this.accountNumber,
+                subaccountNumber:this.subAccountInfo.subaccountNumber,
+                subaccountId:this.$parent.modifyInfo.subaccountId,
+                subaccountNickname:this.subAccountInfo.subaccountNickname,
+                owner:this.subAccountInfo.owner,
+                pwd:password,
+                roleId:this.subAccountInfo.role
+              }
+              console.log(params);
+              this.handleModifySubAccount(params).then(res=>{
+                console.log(res)
+                if(res.data.code == 0){
+                  this.$Message.info("修改成功");
+                }
+              }, err=>{});
             }
-          }, err=>{});
-        }
-        else
-        {
-          if(this.subAccountInfo.pwd != this.subAccountInfo.rePwd){
-            this.$Message.info("两次输入密码不一致");
+            else
+            {
+              if(this.subAccountInfo.pwd != this.subAccountInfo.rePwd){
+                this.$Message.info("两次输入密码不一致");
+                return;
+              }
+              var data = {accountNumber:this.accountNumber,
+                subaccountNumber:this.subAccountInfo.subaccountNumber,
+                subaccountNickname:this.subAccountInfo.subaccountNickname,
+                owner:this.subAccountInfo.owner,
+                pwd:this.subAccountInfo.pwd,
+                roleId:this.subAccountInfo.role
+              };
+              console.log(data)
+              this.handleAddSubAccount(data).then(res=>{
+                console.log(res)
+                if(res.data.code == 0){
+                  this.$Message.info("添加账号成功");
+                  this.$parent.addAccount = false;
+                  this.$parent.querySubAccount();
+                }
+              }, err=>{
+
+              });
+            }
+          } else {
+            this.$Message.error('请检查所填信息是否符合要求!');
             return;
           }
-          var data = {accountNumber:this.accountNumber,
-            subaccountNumber:this.subAccountInfo.subaccountNumber,
-            subaccountNickname:this.subAccountInfo.subaccountNickname,
-            owner:this.subAccountInfo.owner,
-            pwd:this.subAccountInfo.pwd,
-            roleId:this.subAccountInfo.role
-          };
-          console.log(data)
-          this.handleAddSubAccount(data).then(res=>{
-              console.log(res)
-              if(res.data.code == 0){
-                this.$Message.info("添加账号成功");
-              }
-          }, err=>{
-
-          });
-        }
-
-
-
-        // this.$refs[name].validate((valid) => {
-        //   if (valid) {
-        //     this.$Message.success('Success!');
-        //   } else {
-        //     this.$Message.error('Fail!');
-        //   }
-        // })
+        })
       },
       handleReset (name) {
         this.$parent.addAccount = false;

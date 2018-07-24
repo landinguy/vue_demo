@@ -74,9 +74,9 @@
 
           <FormItem label="分配账号" prop="accountId">
             <Select v-model="formData.accountId" class="input_len">
-              <Option value="1">模拟账号1</Option>
-              <Option value="2">模拟账号2</Option>
-              <Option value="3">模拟账号3</Option>
+              <template v-for="a in accountData">
+                <Option :value="a.subaccountNumber" v-text="a.subaccountNumber"></Option>
+              </template>
             </Select>
           </FormItem>
 
@@ -92,13 +92,13 @@
             </Select>
           </FormItem>
 
-          <template v-if="formData.flowType==1 || formData.flowType==2">
+          <template v-if="formData.freeFlowSupport=='ALL' || formData.freeFlowSupport=='YES'">
             <FormItem label="合同价（免流）" prop="costPrice1">
               <Input v-model="formData.costPrice1" placeholder="请输入免流价" class="input_len"/>
             </FormItem>
           </template>
 
-          <template v-if="formData.flowType==1 || formData.flowType==3">
+          <template v-if="formData.freeFlowSupport=='ALL' || formData.freeFlowSupport=='NO'">
             <FormItem label="合同价（不免流）" prop="costPrice2">
               <Input v-model="formData.costPrice2" placeholder="请输入不免流价" class="input_len"/>
             </FormItem>
@@ -126,6 +126,7 @@
     name: 'ChannelManage',
     data() {
       return {
+        accountData: [],
         channels: [],
         supplierData: [],
         addModal: false,
@@ -346,7 +347,19 @@
                           }
                         });
                       } else {
-                        $vue.$Message.success('启用成功')
+                        axios.post($vue.baseUrl + url.enableChan + channelId).then(res => {
+                          if (res.data.code == 0) {
+                            $vue.$Message.success({
+                              content: '已启用',
+                              duration: 1,
+                              onClose() {
+                                location.reload(true)
+                              }
+                            })
+                          } else {
+                            $vue.$Message.error('启用失败')
+                          }
+                        });
                       }
                     }
                   }
@@ -494,12 +507,18 @@
           this.supplierData = res.data.data;
 //          this.supplierData = res.data;
         })
+      },
+      getAccount() {
+        axios.post(this.baseUrl + url.subAccountList, {status: 'USE'}).then(res => {
+          this.accountData = res.data.data
+        })
       }
     },
     mounted() {
       this.getTotal();
       this.sendPost();
       this.getSuppliersInfo();
+      this.getAccount();
     }
   }
 </script>

@@ -11,7 +11,7 @@ var url = {
   updateAdminPassword: "/account/pwd/update",
   updateAdminProperty: "/account/info/property/update",
   //子账户
-  subAccountList: "/subaccount/list/",
+  subAccountList: "/subaccount/list",
   disableOrDeleteSubAccount: "/subaccount/status/modify",
   addSubAccount: "/subaccount/info/insert",
   modifySubAccount: "/subaccount/info/update",
@@ -40,6 +40,7 @@ var url = {
   getChans: "/chan/items",
   delChan: "/chan/item/",
   haltChan: "/chan/item/halt/",
+  enableChan: "/chan/item/enable/",
   bind: "/chan/item/bind",
   getChansCount: "/chan/items/count",
   getSuppliers: "/suppliers",

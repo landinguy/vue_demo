@@ -120,10 +120,10 @@
                   </template>
 
                   <template v-if="material.t!='文本'">
-                    <FormItem :label="label" prop="uploadValid">
+                    <FormItem :label="getLabel" prop="uploadValid">
                       <Upload ref="upload"
                               :action="uploadUrl"
-                              :format="format"
+                              :format="getFormat"
                               :show-upload-list="false"
                               :before-upload="handleBeforeUpload"
                               :on-success="handleSuccess"
@@ -139,7 +139,7 @@
                       <Tag v-if="tab1=='编辑素材'" class="input_len">
                         文件： {{material.uploadValid}}
                       </Tag>
-                      <p class="tip">{{uploadTip}}</p>
+                      <p class="tip">{{getUploadTip}}</p>
                     </FormItem>
                   </template>
                 </Form>
@@ -170,6 +170,7 @@
   import axios from 'axios'
   import {mapGetters} from 'vuex'
   import url from '@/api/url'
+  import './createTmpl.less'
 
   export default {
     name: 'CreateTemplate',
@@ -180,7 +181,7 @@
           txt: '',
           spaceUsage: 0
         },
-        index: '',
+        index: null,
         signList: [],
         id: '',
         op: '',
@@ -191,7 +192,6 @@
 //          {mn: '视频xxx', mc: 'http://localhost/video/v3.mp4', mt: '视频'},
         ],
         tip: '请输入文本、链接和最多5个参数，链接和参数必须使用通配符{$}包围。\n例如：尊敬的{$用户昵称}，您是我行{$会员级别}，您的详单请点击{$http://www.wostore.cn/}',
-        uploadTip: '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳',
         uploadUrl: this.baseUrl + url.uploadMat,
         format: ['jpg', 'jepg', 'png', 'gif'],
         label: '上传图片',
@@ -235,7 +235,6 @@
       }
     },
     methods: {
-
       back() {
         this.clearData();
         history.back();
@@ -246,7 +245,7 @@
         this.material.name = this.materials[index].mn;
         let mt = this.materials[index].mt;
         this.material.t = mt == 'TEXT' ? '文本' : mt == 'PIC' ? '图片' : mt == 'VIDEO' ? '视频' : '音频';
-        var mc = this.materials[index].mc;
+        let mc = this.materials[index].mc;
 
         this.extraParam.type = mt;
         this.addModal = true;
@@ -338,14 +337,18 @@
       save() {//保存一个文本素材时，haveText加1
         this.$refs.materialForm.validate((valid) => {
           if (valid) {
-            var m = this.material;
-            var mc = m.uploadValid;
-            var ms = m.size;
-            var mt = m.t == '文本' ? 'TEXT' : m.t == '图片' ? 'PIC' : m.t == '视频' ? 'VIDEO' : 'AUDIO';
-            if (this.material.t == '文本') {
+            let m = this.material;
+            let mc = m.uploadValid;
+            let ms = m.size;
+            let mt = m.t == '文本' ? 'TEXT' : m.t == '图片' ? 'PIC' : m.t == '视频' ? 'VIDEO' : 'AUDIO';
+
+            if (mt == 'TEXT') {
               this.haveText++;
+              this.extraParam.type = 'TEXT';
               this.extraParam.txt = m.text;
               this.extraParam.spaceUsage = 0;
+              mc = m.text;
+              ms = 0;
               axios({
                 url: this.baseUrl + url.uploadMat,
                 method: 'post',
@@ -363,55 +366,90 @@
                 }
               }).then(res => {
                 if (res.data.data) {
-                  const mid = res.data.data.id;
-                  this.materials.push({mid: mid, mn: m.name, mc: m.text, mt: mt, ms: 0});
+                  m.id = res.data.data.id;
+                  this.updateMaterial(m, mc, mt, ms);
                 } else {
                   this.$Message.error(res.data.msg);
                 }
               });
-            }
-            if (this.index != '') {//编辑元素时移除编辑之前的元素
-              this.materials.splice(this.index, 1);
-              this.index = '';
+            } else {
+              this.updateMaterial(m, mc, mt, ms);
             }
 
-            if (this.material.t != '文本') {
-              this.materials.push({mid: m.id, mn: m.name, mc: mc, mt: mt, ms: ms});
-            }
             this.addModal = false;
+
+            alert(JSON.stringify(this.materials));
           }
         })
+      },
+      updateMaterial(m, mc, mt, ms) {
+        if (this.index != null) {//编辑素材
+          let obj = this.materials[this.index];
+          console.log("current material ->" + JSON.stringify(obj));
+          obj.mid = m.id;
+          obj.mn = m.name;
+          obj.mc = mc;
+          obj.mt = mt;
+          obj.ms = ms;
+          this.index = null;
+        } else {
+          this.materials.push({mid: m.id, mn: m.name, mc: mc, mt: mt, ms: ms});
+        }
       },
       cancel() {
         this.addModal = false;
         this.$refs.materialForm.resetFields();
       },
+      checkSize(size, max, msg) {
+        if (size > max) {
+          this.$Message.error(msg);
+          return false
+        }
+        return true
+      },
       handleBeforeUpload(file) {
-        var index = file.name.lastIndexOf(".");
-        var type = file.name.substring(index + 1);
+        let index = file.name.lastIndexOf(".");
+        let type = file.name.substring(index + 1);
+        let size = (file.size / (1024 * 1024)).toFixed(2);
+        let t;
         if (this.material.t == '图片') {
+          t = 'PIC';
           var arr = ["JPG", "PNG", "JEPG", "GIF"];
           if (arr.indexOf(type.toUpperCase()) == -1) {
             this.$Message.error('请上传jpg、png、jepg、gif图片文件');
             return false;
           }
+          return this.checkSize(size, 0.2, '图片大小不得超过200KB');
         }
-        if (this.material.t == '视频' && type.toUpperCase() != "MP4") {
-          this.$Message.error('请上传mp4视频文件');
-          return false;
+
+        if (this.material.t == '视频') {
+          t = 'VIDEO';
+          if (type.toUpperCase() != "MP4") {
+            this.$Message.error('请上传mp4视频文件');
+            return false;
+          }
+          return this.checkSize(size, 1.6, '视频大小不得超过1.6MB');
         }
-        if (this.material.t == '音频' && type.toUpperCase() != "MP3") {
-          this.$Message.error('请上传mp3音频文件');
-          return false;
+
+        if (this.material.t == '音频') {
+          t = 'AUDIO';
+          if (type.toUpperCase() != "MP3") {
+            this.$Message.error('请上传mp3音频文件');
+            return false;
+          }
+          return this.checkSize(size, 1.6, '音频大小不得超过1.6MB');
         }
-        this.extraParam.spaceUsage = (file.size / (1024 * 1024)).toFixed(2);
+        //上传前对额外参数进行处理
+        this.extraParam.type = t;
+        this.extraParam.txt = '';
+        this.extraParam.spaceUsage = size;
       },
       handleSuccess(res, file) {
         if (res.data) {
           console.log("res ->" + JSON.stringify(res.data));
           this.$Message.success('上传成功');
           this.material.id = res.data.id;
-          this.material.uploadValid = res.data.resource;
+          this.material.uploadValid = res.data.resource.substring(res.data.resource.lastIndexOf("/") + 1);
           this.material.size = parseFloat((file.size / (1024 * 1024)).toFixed(2));
           this.showMaterialInPhone(res.data.resource);
         } else {
@@ -421,32 +459,6 @@
       },
       change(val) {
         console.log("materialType:" + val);
-        this.extraParam.txt = '';
-        switch (val) {
-          case '文本':
-            this.format = [];
-            this.extraParam.type = 'TEXT';
-            break;
-          case '图片':
-            this.label = '上传图片';
-            this.format = ['jpg', 'jepg', 'png', 'gif'];
-            this.extraParam.type = 'PIC';
-            this.uploadTip = '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳';
-            break;
-          case '视频':
-            this.label = '上传视频';
-            this.format = ['mp4'];
-            this.extraParam.type = 'VIDEO';
-            this.uploadTip = '支持使用MP4文件，1.6MB以内，宽高640*480px，第一帧将作为视频封面。比特率800（超清）时长推荐15秒，比特率400（标清）不超过30秒为佳';
-            break;
-          case '音频':
-            this.label = '上传音频';
-            this.format = ['mp3'];
-            this.extraParam.type = 'AUDIO';
-            this.uploadTip = '支持使用MP3文件';
-            break;
-        }
-        console.log("format:" + this.format);
       },
       validateText(rule, value, callback) {
         if (value.trim() == "") {
@@ -509,6 +521,20 @@
       }
     },
     computed: {
+      getFormat() {
+        let t = this.material.t;
+        return t == '图片' ? ['jpg', 'jepg', 'png', 'gif'] : t == '视频' ? ['mp4'] : t == '音频' ? ['mp3'] : [];
+      },
+      getUploadTip() {
+        let t = this.material.t;
+        return t == '图片' ? '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳'
+          : t == '视频' ? '支持使用MP4文件，1.6MB以内，宽高640*480px，第一帧将作为视频封面。比特率800（超清）时长推荐15秒，比特率400（标清）不超过30秒为佳'
+            : t == '音频' ? '支持使用MP3文件' : '';
+      },
+      getLabel() {
+        let t = this.material.t;
+        return t != '文本' ? '上传' + t : '';
+      },
       getTotalCount() {
         return this.material.text.trim().length;
       },
@@ -532,109 +558,3 @@
     }
   }
 </script>
-<style lang="less">
-  .input_len {
-    width: 360px;
-  }
-
-  .radio_len {
-    width: 100px;
-    text-align: center;
-  }
-
-  .tip {
-    .input_len;
-    margin-top: 10px;
-    line-height: 20px;
-    color: gray;
-  }
-
-  .content_div {
-    width: 700px;
-    margin: 0 auto;
-    border: 1px solid #E6E6E6;
-    padding: 20px 0px;
-    border-radius: 5px;
-  }
-
-  .form {
-    width: 500px;
-    margin: 0 auto
-  }
-
-  .btn_div {
-    text-align: center;
-    width: 700px;
-    margin-top: 40px;
-  }
-
-  .add_div {
-    height: 40px;
-    line-height: 40px;
-    border: 1px solid #2D8CF0;
-    text-align: center;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .mobile {
-    background: rgba(0, 0, 0, 0) url("../../assets/images/Phone_03.png") no-repeat scroll 0 0;
-    height: 570px;
-    width: 272px;
-    display: inline-block;
-    float: right;
-    position: relative;
-  }
-
-  .mobile_content {
-    position: absolute;
-    /*border: 1px solid black;*/
-    width: 272px;
-    top: 90px;
-    height: 200px;
-  }
-
-  .c {
-    width: 220px;
-    margin: 0 auto;
-  }
-
-  .c_text {
-    .c;
-    word-wrap: break-word
-  }
-
-  .c_img, .c_video {
-    .c;
-    height: 124px;
-    display: block;
-  }
-
-  .c_audio {
-    width: 200px;
-    display: block;
-    margin: 0 auto;
-    position: relative;
-    left: -20px;
-  }
-
-  .parent_p {
-    word-wrap: break-word;
-    height: 150px;
-    background-color: #F2F2F2;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
-    color: #333333;
-    overflow: auto;
-  }
-
-  .bg {
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    padding: 16px;
-  }
-
-</style>

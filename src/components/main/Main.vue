@@ -13,13 +13,13 @@
     <Layout>
       <Header class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
-          <user username="admin"/>
+          <user/>
         </header-bar>
       </Header>
       <Content>
         <Layout>
           <!--<div class="tag-nav-wrapper">-->
-            <!--<tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>-->
+          <!--<tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>-->
           <!--</div>-->
           <Content class="content-wrapper">
             <keep-alive :include="cacheList">
@@ -44,6 +44,7 @@
   import minLogo from '@/assets/images/logo2.png'
   import maxLogo from '@/assets/images/logo1.png'
   import './main.less'
+
   export default {
     name: 'Main',
     components: {
@@ -54,7 +55,8 @@
     },
     data() {
       return {
-        collapsed: false,
+        collapsed:
+          false,
         minLogo,
         maxLogo
       }

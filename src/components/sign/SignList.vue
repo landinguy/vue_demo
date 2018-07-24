@@ -252,7 +252,7 @@
       },
       getSignList() {
         let params = this.params;
-        params.accountId = this.accountId;
+//        params.accountId = this.accountId;
         console.log("params:" + JSON.stringify(params));
         axios.post(this.baseUrl + url.getSigns, params).then(res => {
           if (res.data) {
@@ -263,7 +263,7 @@
       getTotal() {
         axios.post(this.baseUrl + url.getSignsCount, {
           status: this.params.status,
-          accountId: this.accountId
+//          accountId: this.accountId
         }).then(res => {
           if (res.data) {
             this.total = res.data.data;

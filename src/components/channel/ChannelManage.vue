@@ -52,19 +52,13 @@
         <Form ref="channelForm" :model="formData" :label-width="140" :rules="ruleValidate">
           <FormItem label="通道提供商" prop="supplierName">
             <Select v-model="formData.supplierName" class="input_len" multiple @on-change="changeSupplier">
-              <template v-for="item in supplierData">
-                <!--<template v-for="item in 2">-->
-                <Option :value="item.id" v-text="item.name"></Option>
-                <!--<Option :value="item" v-text="item"></Option>-->
-              </template>
+              <Option v-for="item in supplierData" :value="item.id" :key="item.id">{{item.name}}</Option>
             </Select>
           </FormItem>
 
           <FormItem label="发送通道号" prop="channelId">
             <Select v-model="formData.channelId" class="input_len">
-              <template v-for="c in channels">
-                <Option :value="c.id" v-text="c.channelNo"></Option>
-              </template>
+              <Option v-for="c in channels" :value="c.id" :key="c.id">{{c.channelNo}}</Option>
             </Select>
           </FormItem>
 
@@ -74,9 +68,9 @@
 
           <FormItem label="分配账号" prop="accountId">
             <Select v-model="formData.accountId" class="input_len">
-              <template v-for="a in accountData">
-                <Option :value="a.subaccountNumber" v-text="a.subaccountNumber"></Option>
-              </template>
+              <Option v-for="a in accountData" :value="a.subaccountNumber" :key="a.subaccountNumber">
+                {{a.subaccountNumber}}
+              </Option>
             </Select>
           </FormItem>
 
@@ -276,6 +270,7 @@
                   on: {
                     click: function () {
                       $vue.operation = '修改';
+                      $vue.setData(params.row);
                       $vue.addModal = true;
                     }
                   }
@@ -396,6 +391,21 @@
       }
     },
     methods: {
+      setData(obj) {
+        alert(JSON.stringify(obj));
+        let flag = false;
+        for (let s in this.supplierData) {
+          let chans = this.supplierData[s].chans;
+          for (let c in chans) {
+            if (chans[c].id == obj.channelId) {
+              this.formData.supplierName.push(this.supplierData[s].id);
+            }
+          }
+        }
+        this.formData.channelId = obj.channelId;
+        this.formData.accountId = obj.accountId;
+
+      },
       changeSupplier(val) {
         console.log("suppliers :" + val);
         this.channels = [];

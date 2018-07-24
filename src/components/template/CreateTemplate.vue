@@ -507,7 +507,7 @@
         }
       },
       getSignList() {
-        axios.post(this.baseUrl + url.getSigns, {accountId: this.accountId}).then(res => {
+        axios.post(this.baseUrl + url.getSigns, {}).then(res => {
           if (res.data.data) {
             res.data.data.forEach(item => {
               if (item.status == 'AUDIT_PASSED') {

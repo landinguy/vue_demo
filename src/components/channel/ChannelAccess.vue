@@ -309,21 +309,6 @@
       }
     },
     mounted() {
-//      axios.post(this.baseUrl + "/login", {username: 'admin', passwd: '123456'}).then(res => {
-//        if (res) {
-//          alert(JSON.stringify(res));
-//          axios.get(this.baseUrl + "/test", {}).then(r => {
-//            alert(JSON.stringify(r))
-//          }).catch(err => {
-//            alert(JSON.stringify(err))
-//          });
-//          axios.get(this.baseUrl + "/test", {}).then(r => {
-//            alert(JSON.stringify(r))
-//          }).catch(err => {
-//            alert(JSON.stringify(err))
-//          })
-//        }
-//      })
       this.getTotal();
       this.sendPost();
     }

@@ -3,7 +3,7 @@
     <Dropdown @on-click="handleClick">
       <Button type="ghost">
         <icon :size="18" type="person"></icon>
-        &nbsp;{{username}}&nbsp;
+        &nbsp;{{accountNumber}}&nbsp;
         <Icon :size="12" type="arrow-down-b"></Icon>
       </Button>
       <DropdownMenu slot="list">
@@ -15,10 +15,9 @@
 
 <script>
 import './user.less'
-import { mapActions } from 'vuex'
+import { mapActions,mapGetters } from 'vuex'
 export default {
   name: 'User',
-  props: ['username'],
   methods: {
     ...mapActions([
       'handleLogOut'
@@ -32,6 +31,9 @@ export default {
           break
       }
     }
+  },
+  computed:{
+    ...mapGetters(['accountNumber'])
   }
 }
 </script>

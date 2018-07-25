@@ -1,6 +1,6 @@
 <template>
   <Layout style="height: 100%" class="main">
-    <Sider hide-trigger collapsible :width="210" :collapsed-width="64" v-model="collapsed">
+    <Sider hide-trigger collapsible :width="210" :collapsed-width="64" v-model="collapsed" style="overflow: auto">
       <side-menu accordion :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage"
                  :menu-list="menuList">
         <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->

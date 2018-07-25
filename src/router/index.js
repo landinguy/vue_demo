@@ -13,20 +13,17 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
-  // console.log("to:" + to.name, store.getters.accountId )
-  if (to.name != "login" && store.getters.accountId == null) {
+  if(to.name != "login" && store.getters.accountId == null){
     next({
       replace: true,
       name: 'login'
     })
   }
-  else {
-    //   console.log("-------access-----------", store.commit('setRoleId', store.getters.roleId))
-    // console.log("-------access-----------",  store.getters.roleId)
-
-    store.commit('setRoleId', store.getters.roleId)
-    console.log("-------access-----------",  store.getters.roleId)
-    next();
+  else
+  {
+    store.getters.roleId
+    console.log("-------access-----------", store.getters.roleId)
+      next();
   }
   // store.dispatch('handleMainAccountInfo',"").then(user => {
   //   console.log("to:" + to.name, user.access)

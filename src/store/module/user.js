@@ -23,8 +23,9 @@ export default {
     },
     setRoleId (state, roleId) {
       state.roleId = roleId;
+      sessionStorage.setItem("roleId", roleId);
       state.access = roleId;
-    }
+    },
   },
   getters:{
       accountId:state=>{
@@ -32,7 +33,11 @@ export default {
       },
     accountNumber:state=>{
         return sessionStorage.getItem("accountNumber")
-      }
+      },
+    roleId:state=>{
+      state.access = sessionStorage.getItem("roleId");
+      return sessionStorage.getItem("roleId")
+    }
   },
 
   actions: {

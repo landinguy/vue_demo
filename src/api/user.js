@@ -1,6 +1,5 @@
 import axios from '@/libs/axios'
 import url from './url'
-// import axios from 'axios'
 
 export const login = ({ username, passwd }) => {
   const data = {
@@ -12,10 +11,13 @@ export const login = ({ username, passwd }) => {
     data:data,
     method: 'post'
   })
-  // axios.defaults.withCredentials = true;
-  // return axios.post("http://192.168.2.58:8090"+url.login, data)
-
-
-
 }
 
+export const logout = () => {
+  const data = {}
+  return axios.request({
+    url: url.logout,
+    data: data,
+    method: 'post'
+  })
+}

@@ -1,15 +1,16 @@
 var url = {
-  base: "",
+  base:"",
   //登录
-  login: "/login",
+  login:"/login",
+  logout:"/logout",
   //首页
-  homeTotal: "/index/total/",
-  homeTrend: "/index/trend/",
+  homeTotal:"/index/total/",
+  homeTrend:"/index/trend/",
   //账户
-  getAdmininfo: "/account/get/",
-  updateAdminNickname: "/account/info/base/update",
-  updateAdminPassword: "/account/pwd/update",
-  updateAdminProperty: "/account/info/property/update",
+  getAdmininfo:"/account/get/",
+  updateAdminNickname:"/account/info/base/update",
+  updateAdminPassword:"/account/pwd/update",
+  updateAdminProperty:"/account/info/property/update",
   //子账户
   subAccountList:"/subaccount/list/",
   disableOrDeleteSubAccount:"/subaccount/status/modify",
@@ -48,4 +49,4 @@ var url = {
 
 }
 
-export default url;
+export default  url;

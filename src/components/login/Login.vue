@@ -4,7 +4,7 @@
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <LoginForm @on-success-valid="handleSubmit"></LoginForm>
-          <p class="login-tip">输入任意用户名和密码即可</p>
+          <p class="login-tip">输入用户名和密码登录</p>
         </div>
       </Card>
     </div>

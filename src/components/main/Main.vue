@@ -55,8 +55,7 @@
     },
     data() {
       return {
-        collapsed:
-          false,
+        collapsed: false,
         minLogo,
         maxLogo
       }

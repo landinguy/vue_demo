@@ -392,8 +392,6 @@
     },
     methods: {
       setData(obj) {
-        alert(JSON.stringify(obj));
-        let flag = false;
         for (let s in this.supplierData) {
           let chans = this.supplierData[s].chans;
           for (let c in chans) {
@@ -404,7 +402,15 @@
         }
         this.formData.channelId = obj.channelId;
         this.formData.accountId = obj.accountId;
-
+        this.formData.remainder = obj.remainder;
+        this.formData.freeFlowSupport = obj.freeFlowSupport;
+        if (obj.costPrice1) {
+          this.formData.costPrice1 = obj.costPrice1;
+        }
+        if (obj.costPrice2) {
+          this.formData.costPrice2 = obj.costPrice2;
+        }
+        this.formData.desc = obj.desc;
       },
       changeSupplier(val) {
         console.log("suppliers :" + val);

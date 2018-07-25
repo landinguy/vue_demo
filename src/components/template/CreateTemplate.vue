@@ -170,7 +170,6 @@
   import axios from 'axios'
   import {mapGetters} from 'vuex'
   import url from '@/api/url'
-  import './createTmpl.less'
 
   export default {
     name: 'CreateTemplate',
@@ -275,7 +274,7 @@
           title: '删除',
           content: '确认删除该素材？',
           onOk() {
-            if ($vue.materials[index].mt == '文本') {
+            if ($vue.materials[index].mt == 'TEXT') {
               $vue.haveText--;
             }
             $vue.materials.splice(index, 1);
@@ -378,7 +377,7 @@
 
             this.addModal = false;
 
-            alert(JSON.stringify(this.materials));
+            console.log("materials:" + JSON.stringify(this.materials));
           }
         })
       },
@@ -558,3 +557,108 @@
     }
   }
 </script>
+<style lang="less">
+  .input_len {
+    width: 360px;
+  }
+
+  .radio_len {
+    width: 100px;
+    text-align: center;
+  }
+
+  .tip {
+    .input_len;
+    margin-top: 10px;
+    line-height: 20px;
+    color: gray;
+  }
+
+  .content_div {
+    width: 700px;
+    margin: 0 auto;
+    border: 1px solid #E6E6E6;
+    padding: 20px 0px;
+    border-radius: 5px;
+  }
+
+  .form {
+    width: 500px;
+    margin: 0 auto
+  }
+
+  .btn_div {
+    text-align: center;
+    width: 700px;
+    margin-top: 40px;
+  }
+
+  .add_div {
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #2D8CF0;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .mobile {
+    background: rgba(0, 0, 0, 0) url("../../assets/images/Phone_03.png") no-repeat scroll 0 0;
+    height: 570px;
+    width: 272px;
+    display: inline-block;
+    float: right;
+    position: relative;
+  }
+
+  .mobile_content {
+    position: absolute;
+    /*border: 1px solid black;*/
+    width: 272px;
+    top: 90px;
+    height: 200px;
+  }
+
+  .c {
+    width: 220px;
+    margin: 0 auto;
+  }
+
+  .c_text {
+    .c;
+    word-wrap: break-word
+  }
+
+  .c_img, .c_video {
+    .c;
+    height: 124px;
+    display: block;
+  }
+
+  .c_audio {
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    left: -20px;
+  }
+
+  .parent_p {
+    word-wrap: break-word;
+    height: 150px;
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333333;
+    overflow: auto;
+  }
+
+  .bg {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+  }
+</style>

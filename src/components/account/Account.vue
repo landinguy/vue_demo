@@ -184,7 +184,7 @@
           }
           this.handleUpdatePassword({accountNumber:this.accountNumber,oriPwd:this.pwd.current, pwd:this.pwd.confirm}).then(
             res =>{
-              if(res.data.code == 0){
+              if(res.code == 0){
                 this.$Message.info("修改成功");
                 this.changePwd = true;
               }

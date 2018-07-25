@@ -82,7 +82,7 @@
           console.log(data)
 
           this.handleDisableOrDeleteSubAccount(data).then(res=>{
-              if(res.data.code == 0){
+              if(res.code == 0){
                 this.$Message.info("账号已禁用或者删除");
                 this.querySubAccount();
               }
@@ -124,7 +124,7 @@
           columns:[
             {title:"子账户用户名",key:"subaccountNumber"},
             {title:"子账户账号",key:"subaccountNickname"},
-            {title:"子账户使用人",key:"owner"},
+            {title:"备注",key:"remark"},
             {title:"子账户状态",key:"statusName"},
             {title:"操作",key:"action",
               width: 200,

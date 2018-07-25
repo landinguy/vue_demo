@@ -39,24 +39,16 @@ export default {
           et,
           accountId
         }).then(res => {
-          console.log("@@@@@",res)
-          const send = res.data.data.send
+          const send = res.data.send
           commit('setSend', send)
 
-          const sendSuc = res.data.data.sendSuc
+          const sendSuc = res.data.sendSuc
           commit('setSendSuc', sendSuc)
 
-          const remain = res.data.data.remain
+          const remain = res.data.remain
           commit('setRemain', remain)
-          console.log("@@@@@",send, sendSuc, remain)
-          resolve()
+          resolve(res)
         }).catch(err => {
-
-          // commit('setSend', 5265)
-          //
-          // commit('setSendSuc', 52262)
-          //
-          // commit('setRemain', 5521265)
           reject(err)
         })
       })
@@ -69,44 +61,11 @@ export default {
           et,
           accountId
         }).then(res => {
-          console.log("@@@",res.data)
-          const statisticsRS = res.data.data
-          console.log("@@@",statisticsRS)
+          const statisticsRS = res.data
           commit('setStatisticsRS', statisticsRS)
           commit('setSortedData')
           resolve()
         }).catch(err => {
-         // var  statisticsRS=[
-         //    {
-         //      timePoint:  "2018-07-10 20:16:55",
-         //      sendSuc: 200,
-         //      tId: "1",
-         //      tName: "测试"
-         //    },
-         //
-         //    {
-         //      timePoint:  "2018-07-10 09:16:55",
-         //      sendSuc: 300,
-         //      tId: "1",
-         //      tName: "测试"
-         //    },
-         //    {
-         //      timePoint:  "2018-07-10 10:16:55",
-         //      sendSuc: 500,
-         //      tId: "1",
-         //      tName: "测试"
-         //    },
-         //    {
-         //      timePoint: "2018-07-10 02:16:55",
-         //      sendSuc: 700,
-         //      tId: "1",
-         //      tName: "测试"
-         //    },
-         //    ]
-         //  console.log(statisticsRS)
-         //  commit('setStatisticsRS', statisticsRS)
-          commit('setSortedData')
-
           reject(err)
         })
       })

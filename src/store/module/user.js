@@ -1,4 +1,4 @@
-import { login } from '@/api/user'
+import { login,logout } from '@/api/user'
 
 
 export default {
@@ -7,7 +7,7 @@ export default {
     accountNumber: '',
     accountNickname: '',
     roleId: '',
-    access:[],
+    access:"",
   },
   mutations: {
     setAccountId (state, accountId) {
@@ -22,7 +22,8 @@ export default {
       state.accountNickname = accountNickname;
     },
     setRoleId (state, roleId) {
-      state.roleId = roleId
+      state.roleId = roleId;
+      state.access = roleId;
     }
   },
   getters:{
@@ -37,18 +38,16 @@ export default {
   actions: {
     // 登录
     handleLogin ({ commit }, {username, passwd}) {
-      // userName = userName.trim()
-      console.log("%",username, passwd)
       return new Promise((resolve, reject) => {
         login({
           username,
           passwd
         }).then(res => {
           console.log(res)
-          commit('setAccountId', res.data.data.accountId);
-          commit('setAccountNumber', res.data.data.accountNumber);
-          commit('setAccountNickname', res.data.data.accountNickname);
-          commit('setRoleId', res.data.data.roleId);
+          commit('setAccountId', res.data.accountId);
+          commit('setAccountNumber', res.data.accountNumber);
+          commit('setAccountNickname', res.data.accountNickname);
+          commit('setRoleId', res.data.roleId);
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -58,16 +57,13 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('setToken', '')
-          resolve()
+        logout().then(res => {
+          commit('setAccountId', '');
+          commit('setAccountNumber',  '');
+          resolve(res)
         }).catch(err => {
           reject(err)
         })
-        // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
-        // commit('setToken', '')
-        // commit('setAccess', [])
-        // resolve()
       })
     },
 

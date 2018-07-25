@@ -28,7 +28,7 @@ export default {
         statisticsCount({
           st, et, accountId,taskId
         }).then(res => {
-          commit('setStatsCount', res.data.data)
+          commit('setStatsCount', res.data)
           resolve(res)
         }).catch(err => {
           commit('setStatsCount', 50)
@@ -41,7 +41,7 @@ export default {
       return new Promise((resolve, reject) => {
         statisticsList({st,et,page,pageSize,accountId,taskId}
         ).then(res => {
-          commit('setStatsList', res.data.data)
+          commit('setStatsList', res.data)
           resolve(res)
         }).catch(err => {
           // var data = [
@@ -106,7 +106,7 @@ export default {
     handleStatisticsDetailCount({commit}, {st, et, accountId}) {
       return new Promise((resolve, reject) => {
         statisticsDetailCount({st, et, accountId}).then(res => {
-          commit('setStatsDetailCount', res.data.data)
+          commit('setStatsDetailCount', res.data)
           resolve()
         }).catch(err => {
           commit('setStatsDetailCount', 50)
@@ -119,7 +119,7 @@ export default {
       return new Promise((resolve, reject) => {
         statisticsDetailList({st,et,page,pageSize,accountId}
         ).then(res => {
-          commit('setStatsDetailList', res.data.data);
+          commit('setStatsDetailList', res.data);
           resolve(res);
         }).catch(err => {
           // var data = [

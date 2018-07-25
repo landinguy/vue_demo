@@ -31,34 +31,32 @@ export default {
   actions: {
 
     handleMainAccountInfo ({ commit }, {accountNumber}) {
-      console.log("--"+accountNumber)
       return new Promise((resolve, reject) => {
         mainAccountInfo({
           accountNumber,
         }).then(res => {
 
-          const accountInfo = res.data.data;
-          console.log(accountInfo)
+          const accountInfo = res.data;
           commit('setAccountInfo', accountInfo)
 
           resolve()
         }).catch(err => {
 
-          const accountInfo = {
-            accountNumber:"admin",
-            companyName:"小沃科技",
-            createTs:"2018-07-06 14:12:00",
-            nickname:"测试",
-            email:"email",
-            tel:"110",
-            name:"姓名",
-            scopes:"科技",
-            companyWebsite:"www.111.c0m",
-            access:["super"]
-          }
-          commit('setAccountInfo', accountInfo)
-          resolve(accountInfo)
-          // reject(accountInfo)
+          // const accountInfo = {
+          //   accountNumber:"admin",
+          //   companyName:"小沃科技",
+          //   createTs:"2018-07-06 14:12:00",
+          //   nickname:"测试",
+          //   email:"email",
+          //   tel:"110",
+          //   name:"姓名",
+          //   scopes:"科技",
+          //   companyWebsite:"www.111.c0m",
+          //   access:["super"]
+          // }
+          // commit('setAccountInfo', accountInfo)
+          // resolve(accountInfo)
+          reject(err)
         })
       })
     },

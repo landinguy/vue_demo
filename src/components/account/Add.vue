@@ -24,8 +24,8 @@
     <FormItem label="重复密码："  prop="rePwd">
       <Input v-model="subAccountInfo.rePwd" type="password" placeholder="请重复输入账号密码"></Input>
     </FormItem>
-    <FormItem label="备注：" prop="owner">
-      <Input v-model="subAccountInfo.owner" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>
+    <FormItem label="备注：" prop="remark">
+      <Input v-model="subAccountInfo.remark" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>
     </FormItem>
     <FormItem>
       <Button type="primary" @click="handleSubmit('subAccountInfo')">保存并提交</Button>
@@ -49,7 +49,7 @@
           subaccountNumber:"",
           subaccountNickname:"",
           role:1,
-          owner:"",
+          remark:"",
           pwd:"",
           rePwd:""
         },
@@ -94,15 +94,17 @@
                 subaccountNumber:this.subAccountInfo.subaccountNumber,
                 subaccountId:this.$parent.modifyInfo.subaccountId,
                 subaccountNickname:this.subAccountInfo.subaccountNickname,
-                owner:this.subAccountInfo.owner,
+                remark:this.subAccountInfo.remark,
                 pwd:password,
                 roleId:this.subAccountInfo.role
               }
               console.log(params);
               this.handleModifySubAccount(params).then(res=>{
                 console.log(res)
-                if(res.data.code == 0){
+                if(res.code == 0){
                   this.$Message.info("修改成功");
+                  this.$parent.addAccount = false;
+                  this.$parent.querySubAccount();
                 }
               }, err=>{});
             }
@@ -115,14 +117,14 @@
               var data = {accountNumber:this.accountNumber,
                 subaccountNumber:this.subAccountInfo.subaccountNumber,
                 subaccountNickname:this.subAccountInfo.subaccountNickname,
-                owner:this.subAccountInfo.owner,
+                remark:this.subAccountInfo.remark,
                 pwd:this.subAccountInfo.pwd,
                 roleId:this.subAccountInfo.role
               };
               console.log(data)
               this.handleAddSubAccount(data).then(res=>{
                 console.log(res)
-                if(res.data.code == 0){
+                if(res.code == 0){
                   this.$Message.info("添加账号成功");
                   this.$parent.addAccount = false;
                   this.$parent.querySubAccount();
@@ -146,7 +148,7 @@
       if(this.$parent.index != -1){
         this.subAccountInfo.subaccountNumber = this.$parent.modifyInfo.subaccountNumber;
         this.subAccountInfo.subaccountNickname = this.$parent.modifyInfo.subaccountNickname;
-        this.subAccountInfo.owner = this.$parent.modifyInfo.owner;
+        this.subAccountInfo.remark = this.$parent.modifyInfo.remark;
         this.subAccountInfo.pwd = "000000";
         this.subAccountInfo.rePwd = "000000";
       }

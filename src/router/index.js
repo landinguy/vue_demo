@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import routes from './routers'
 import iView from 'iview'
 import store from '@/store'
-import { canTurnTo } from '@/libs/util'
+import {canTurnTo} from '@/libs/util'
 
 Vue.use(Router)
 
@@ -14,19 +14,19 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   // console.log("to:" + to.name, store.getters.accountId )
-  if(to.name != "login" && store.getters.accountId == null){
+  if (to.name != "login" && store.getters.accountId == null) {
     next({
       replace: true,
       name: 'login'
     })
   }
-  else
-  {
+  else {
     //   console.log("-------access-----------", store.commit('setRoleId', store.getters.roleId))
     // console.log("-------access-----------",  store.getters.roleId)
 
-      store.commit('setRoleId', store.getters.roleId)
-      next();
+    store.commit('setRoleId', store.getters.roleId)
+    console.log("-------access-----------",  store.getters.roleId)
+    next();
   }
   // store.dispatch('handleMainAccountInfo',"").then(user => {
   //   console.log("to:" + to.name, user.access)

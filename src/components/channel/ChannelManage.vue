@@ -51,7 +51,7 @@
       <div>
         <Form ref="channelForm" :model="formData" :label-width="140" :rules="ruleValidate">
           <FormItem label="通道提供商" prop="supplierName">
-            <Select v-model="formData.supplierName" class="input_len" multiple @on-change="changeSupplier">
+            <Select v-model="formData.supplierName" class="input_len" @on-change="changeSupplier">
               <Option v-for="item in supplierData" :value="item.id" :key="item.id">{{item.name}}</Option>
             </Select>
           </FormItem>
@@ -367,7 +367,7 @@
         total: 0,
         operation: '添加',
         formData: {
-          supplierName: [],
+          supplierName: '',
           channelId: '',
           yys: '',
           accountId: '',
@@ -379,7 +379,7 @@
           maxRate: 0
         },
         ruleValidate: {
-          supplierName: [{required: true, type: 'array', min: 1, message: '请选择通道供应商', trigger: 'change'}],
+          supplierName: [{required: true, message: '请选择通道供应商', trigger: 'change'}],
           channelId: [{required: true, message: '请选择通道号', trigger: 'change'}],
           accountId: [{required: true, message: '请选择分配账号', trigger: 'change'}],
           remainder: [{required: true, message: '请输入分配发送量', trigger: 'blur'}],
@@ -396,7 +396,7 @@
           let chans = this.supplierData[s].chans;
           for (let c in chans) {
             if (chans[c].id == obj.channelId) {
-              this.formData.supplierName.push(this.supplierData[s].id);
+              this.formData.supplierName = this.supplierData[s].id;
             }
           }
         }
@@ -417,6 +417,7 @@
         this.channels = [];
         const yys = [];
         let maxRate = 0;
+
         val.forEach(i => {
           this.supplierData.forEach(s => {
             if (i == s.id) {

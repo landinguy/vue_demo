@@ -144,7 +144,7 @@
                   </template>
                 </Form>
               </div>
-              <div class="mobile">
+              <div class="mobile" :style="{backgroundImage:'url(' + phone + ')'}">
                 <div class="mobile_content">
                   <p v-if="material.t=='文本'" class="c_text">{{material.text}}</p>
                   <img v-if="material.t=='图片'" class="c_img"/>
@@ -170,11 +170,13 @@
   import axios from 'axios'
   import {mapGetters} from 'vuex'
   import url from '@/api/url'
+  import phone from '@/assets/images/Phone_03.png'
 
   export default {
     name: 'CreateTemplate',
     data() {
       return {
+        phone,
         extraParam: {
           type: 'PIC',
           txt: '',
@@ -603,7 +605,7 @@
   }
 
   .mobile {
-    background: rgba(0, 0, 0, 0) url("../../assets/images/Phone_03.png") no-repeat scroll 0 0;
+    background: rgba(0, 0, 0, 0) no-repeat scroll 0 0;
     height: 570px;
     width: 272px;
     display: inline-block;

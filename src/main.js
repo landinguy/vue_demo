@@ -13,7 +13,7 @@ import axios from 'axios'
 Vue.use(iView);
 
 Vue.config.productionTip = false;
-Vue.prototype.baseUrl = "http://192.168.2.207:8090";
+Vue.prototype.baseUrl = "http://192.168.3.101:8090";
 // Vue.prototype.baseUrl = "";
 axios.defaults.withCredentials = true;
 

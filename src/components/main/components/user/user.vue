@@ -25,9 +25,12 @@ export default {
     handleClick (name) {
       switch (name) {
         case 'logout':
-            this.$router.push({
-              name: 'login'
-            })
+            this.handleLogOut().then(res=>{
+              this.$router.push({
+                name: 'login'
+              })
+            }, err=>{})
+
           break
       }
     }

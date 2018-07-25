@@ -63,8 +63,8 @@ export const disableOrDeleteSubAccount = ({subaccountId, status}) => {
   })
 }
 
-export const addSubAccount = ({accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}) => {
-  const data = {accountNumber,subaccountNumber, subaccountNickname,owner,pwd,roleId}
+export const addSubAccount = ({accountNumber,subaccountNumber, subaccountNickname,remark,pwd,roleId}) => {
+  const data = {accountNumber,subaccountNumber, subaccountNickname,remark,pwd,roleId}
   return axios.request({
     url:url.addSubAccount,
     data,
@@ -72,8 +72,8 @@ export const addSubAccount = ({accountNumber,subaccountNumber, subaccountNicknam
   })
 }
 
-export const modifySubAccount = ({accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}) => {
-  const data = {accountNumber,subaccountId,subaccountNumber, subaccountNickname,owner,pwd,roleId}
+export const modifySubAccount = ({accountNumber,subaccountId,subaccountNumber, subaccountNickname,remark,pwd,roleId}) => {
+  const data = {accountNumber,subaccountId,subaccountNumber, subaccountNickname,remark,pwd,roleId}
   return axios.request({
     url:url.modifySubAccount,
     data,

@@ -1,6 +1,4 @@
 import Main from '@/components/main/Main'
-import HelloWorld from '@/components/HelloWorld'
-
 export default [
   {
     path: '/login',
@@ -11,14 +9,9 @@ export default [
     },
     component: () => import('@/components/login/Login')
   },
-  // {
-  //   path: '/hello',
-  //   name: 'HelloWorld',
-  //   component: HelloWorld
-  // },
   {
     path: '/',
-    name: 'home',
+    name: 'index',
     redirect: '/login',
     component: Main,
     meta: {
@@ -49,7 +42,6 @@ export default [
         path: '/home',
         name: 'home',
         meta: {
-          // icon: 'ios-navigate',
           title: '首页'
         },
         component: () => import('@/components/home/Home')
@@ -60,9 +52,7 @@ export default [
     path: '/account',
     name: 'account',
     meta: {
-      // icon: 'ios-navigate',
       title: '账户管理',
-      // access:['normal']
     },
     component: Main,
     children: [
@@ -70,7 +60,6 @@ export default [
         path: 'account_info',
         name: 'account_info',
         meta: {
-          // icon: 'ios-navigate',
           title: '账户信息',
         },
         component: () => import('@/components/account/Account.vue')
@@ -79,8 +68,8 @@ export default [
         path: 'child_account',
         name: 'child_account',
         meta: {
-          // icon: 'ios-navigate',
-          title: '子账户管理'
+          title: '子账户管理',
+          access:['0']
         },
         component: () => import('@/components/account/SubAccount.vue')
       }
@@ -91,7 +80,6 @@ export default [
     path: '/template',
     name: 'template',
     meta: {
-      // icon: 'ios-navigate',
       title: '模板管理',
     },
     component: Main,
@@ -100,7 +88,6 @@ export default [
         path: 'create_template',
         name: 'create_template',
         meta: {
-          // icon: 'ios-navigate',
           title: '新建模板'
         },
         component: () => import('@/components/template/CreateTemplate')
@@ -109,7 +96,6 @@ export default [
         path: 'template_list',
         name: 'template_list',
         meta: {
-          // icon: 'ios-navigate',
           title: '我的模板'
         },
         component: () => import('@/components/template/TemplateList')
@@ -118,7 +104,6 @@ export default [
         path: 'sign_list',
         name: 'sign_list',
         meta: {
-          // icon: 'ios-navigate',
           title: '签名管理'
         },
         component: () => import('@/components/sign/SignList')
@@ -129,7 +114,6 @@ export default [
     path: '/send',
     name: 'send',
     meta: {
-      // icon: 'ios-navigate',
       title: '发送管理'
     },
     component: Main,
@@ -138,7 +122,6 @@ export default [
         path: 'new_task',
         name: 'new_task',
         meta: {
-          // icon: 'ios-navigate',
           title: '新建任务'
         },
         component: () => import('@/components/task/Task.vue')
@@ -147,7 +130,6 @@ export default [
         path: 'send_record',
         name: 'send_record',
         meta: {
-          // icon: 'ios-navigate',
           title: '发送记录'
         },
         component: () => import('@/components/task/Record.vue')
@@ -159,8 +141,8 @@ export default [
     path: '/contact',
     name: 'contact',
     meta: {
-      // icon: 'ios-navigate',
-      title: '联系人分组管理'
+      title: '联系人分组管理',
+      access:['0']
     },
     component: Main,
     children: [
@@ -168,7 +150,6 @@ export default [
         path: 'add',
         name: 'add',
         meta: {
-          // icon: 'ios-navigate',
           title: '添加联系人'
         },
         component: () => import('@/components/contact/AddContact.vue')
@@ -177,7 +158,6 @@ export default [
         path: 'group',
         name: 'group',
         meta: {
-          // icon: 'ios-navigate',
           title: '我的联系人分组'
         },
         component: () => import('@/components/contact/ContactGroup.vue')
@@ -189,8 +169,8 @@ export default [
     path: '/financial',
     name: 'financial',
     meta: {
-      // icon: 'ios-navigate',
-      title: '财务管理'
+      title: '财务管理',
+      access:['0']
     },
     component: Main,
     children: [
@@ -198,7 +178,6 @@ export default [
         path: 'recharge',
         name: 'recharge',
         meta: {
-          // icon: 'ios-navigate',
           title: '账户充值'
         },
         component: () => import('@/components/financial/Recharge.vue')
@@ -207,7 +186,6 @@ export default [
         path: 'group',
         name: 'group',
         meta: {
-          // icon: 'ios-navigate',
           title: '账单明细'
         },
         component: () => import('@/components/financial/Details.vue')
@@ -219,8 +197,8 @@ export default [
     path: '/examine',
     name: 'examine',
     meta: {
-      // icon: 'ios-navigate',
-      title: '审核管理'
+      title: '审核管理',
+      access:['0']
     },
     component: Main,
     children: [
@@ -228,7 +206,6 @@ export default [
         path: 'template',
         name: 'template',
         meta: {
-          // icon: 'ios-navigate',
           title: '模板审核'
         },
         component: () => import('@/components/examine/Template.vue')
@@ -237,7 +214,6 @@ export default [
         path: 'sign',
         name: 'sign',
         meta: {
-          // icon: 'ios-navigate',
           title: '签名审核'
         },
         component: () => import('@/components/examine/Sign.vue')
@@ -249,7 +225,6 @@ export default [
     path: '/data',
     name: 'statistics',
     meta: {
-      // icon: 'ios-navigate',
       title: '数据统计',
 
     },
@@ -259,7 +234,6 @@ export default [
         path: 'data_statistics',
         name: 'data_statistics',
         meta: {
-          // icon: 'ios-navigate',
           title: '发送统计',
           // access:['normal']
         },
@@ -269,7 +243,6 @@ export default [
         path: 'data_details',
         name: 'data_details',
         meta: {
-          // icon: 'ios-navigate',
           title: '发送详单'
         },
         component: () => import('@/components/statistics/Details.vue')
@@ -281,7 +254,6 @@ export default [
     path: '/channel',
     name: 'channel',
     meta: {
-      // icon: 'ios-navigate',
       title: '通道管理'
     },
     component: Main,
@@ -290,7 +262,6 @@ export default [
         path: 'channel_access',
         name: 'channel_access',
         meta: {
-          // icon: 'ios-navigate',
           title: '通道接入'
         },
         component: () => import('@/components/channel/ChannelAccess')
@@ -299,7 +270,6 @@ export default [
         path: 'channel_manage',
         name: 'channel_manage',
         meta: {
-          // icon: 'ios-navigate',
           title: '通道配置'
         },
         component: () => import('@/components/channel/ChannelManage')
@@ -311,8 +281,8 @@ export default [
     path: '/advance',
     name: 'advance',
     meta: {
-      // icon: 'ios-navigate',
-      title: '高级配置'
+      title: '高级配置',
+      access:['0']
     },
     component: Main,
     children: [
@@ -320,7 +290,6 @@ export default [
         path: 'sensitive',
         name: 'sensitive',
         meta: {
-          // icon: 'ios-navigate',
           title: '敏感词管理'
         },
         component: () => import('@/components/advance/Sensitive.vue')
@@ -329,7 +298,6 @@ export default [
         path: 'regular',
         name: 'regular',
         meta: {
-          // icon: 'ios-navigate',
           title: '规则配置管理'
         },
         component: () => import('@/components/advance/Regular.vue')
@@ -338,7 +306,6 @@ export default [
         path: 'variable',
         name: 'variable',
         meta: {
-          // icon: 'ios-navigate',
           title: '变量内容管理'
         },
         component: () => import('@/components/advance/Variable.vue')
@@ -350,7 +317,6 @@ export default [
     path: '/system',
     name: 'system',
     meta: {
-      // icon: 'ios-navigate',
       title: '系统管理'
     },
     component: Main,
@@ -359,7 +325,6 @@ export default [
         path: 'permission',
         name: 'permission',
         meta: {
-          // icon: 'ios-navigate',
           title: '用户权限'
         },
         component: () => import('@/components/permission/Permission')

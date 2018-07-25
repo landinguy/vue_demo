@@ -22,6 +22,10 @@ router.beforeEach((to, from, next) => {
   }
   else
   {
+    //   console.log("-------access-----------", store.commit('setRoleId', store.getters.roleId))
+    // console.log("-------access-----------",  store.getters.roleId)
+
+      store.commit('setRoleId', store.getters.roleId)
       next();
   }
   // store.dispatch('handleMainAccountInfo',"").then(user => {

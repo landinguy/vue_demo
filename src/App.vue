@@ -34,4 +34,10 @@ export default {
     height: 100%;
     background-color: rgba(255,255,255,.1);
   }
+  .ivu-spin {
+    /*color: #2d8cf0;*/
+    color: #c3c3c3;
+    vertical-align: middle;
+    text-align: center;
+  }
 </style>

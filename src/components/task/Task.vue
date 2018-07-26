@@ -39,10 +39,15 @@
         </RadioGroup>
       </FormItem>
 
-      <FormItem v-if="task.sendTime === 'sometime'" prop="customSendTime">
-        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="date" format="yyyy-MM-dd" placeholder="请选择发送日期" style="width: 200px"></DatePicker>
-        <TimePicker @on-change="handleTimeChange" :editable='false' format="HH:mm" confirm type="timerange" placement="bottom-start" placeholder="请选择发送时段" style="width: 168px"></TimePicker>
-      </FormItem>
+      <div v-if="task.sendTime === 'sometime'">
+        <FormItem label="开始时间" prop="customSendStartTime">
+          <DatePicker @on-change="handleStartDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false' :options="dateOption" placeholder="请选择开始时间" style="width: 200px"></DatePicker>
+        </FormItem>
+        <br>
+        <FormItem label="结束时间">
+          <DatePicker @on-change="handleEndDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false' :options="dateOption" placeholder="请选择结束时间" style="width: 200px"></DatePicker>
+        </FormItem>
+      </div>
 
       <!--<FormItem label="发送时段" prop="sendPeriod">
         <RadioGroup v-model="task.sendPeriod" type="button">
@@ -226,13 +231,14 @@
           template: '',
           templateId: '',
           receiver: '',
-          number: 10,
+          number: 0,
           sendTime: 'rightNow',
           sendSpeed: 'defaultSpeed',
           sendPeriod: 'dayTime',
           daySendLimit: 'notLimit',
           sendArea: 'everywhere',
-          customSendTime: '',
+          customSendStartTime: '',
+          customSendEndTime: '',
           customSendPeriod:'',
           customSendSpeed:'',
           customDaySendLimit: '',
@@ -250,7 +256,7 @@
           daySendLimit: [{ required: true, message: '请选择单日发送上限', trigger: 'change' }],
           sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],*/
 
-          customSendTime:[
+          customSendStartTime:[
             // { required: true, message: '发送时间不能为空', trigger: 'change' },
             {validator(rule, value, callback, source, options) {
                 let errors = [];
@@ -263,7 +269,6 @@
           customSendPeriod:[
             {validator(rule, value, callback, source, options) {
                 let errors = [];
-                console.log("valueaaa" + value + "aaa");
                 if (value === '' || value == ',') {
                   callback('发送时段不能为空');
                 }
@@ -277,8 +282,8 @@
     },
     methods: {
       rgChange() {
-        this.task.customSendPeriod = '';
-        this.task.customSendTime = '';
+        this.task.customSendEndTime = '';
+        this.task.customSendStartTime = '';
       },
       goBack() {
         this.$store.state.task.task_id = '';
@@ -294,14 +299,19 @@
       },
       handleSubmit (name) {
         console.log("form value : " + JSON.stringify(this.task));
-        if (this.task.sendTime === 'sometime' && (this.task.customSendPeriod === '' || this.task.customSendPeriod == ',')) {
-          this.$Message.error("发送时间段不能为空");
-          return;
-        }
+
         let vue = this;
         this.$refs[name].validate((valid) => {
           if (valid) {
-            console.log("form value : " + this.task.customSendTime + " " + this.task.customSendPeriod[0]);
+            let startTime = new Date(this.task.customSendStartTime).getTime();
+            let endTime = new Date(this.task.customSendEndTime).getTime();
+            if (this.task.customSendEndTime !== '') {
+              if (endTime < startTime) {
+                vue.$Message.error('结束时间不能大于开始时间!');
+                return;
+              }
+            }
+            console.log("aaa:"+endTime);
             let taskData = {
               accountId:this.accountId,
               name:this.task.name,
@@ -309,8 +319,8 @@
               templateName:this.task.template,
               receiverGroupId:this.task.receiver,
               receiverAmount:this.task.number,
-              startTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[0]).getTime(): '',
-              endTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[1]).getTime(): '',
+              startTs:this.task.sendTime === 'sometime' ? startTime: '',
+              endTs:this.task.sendTime === 'sometime' ? (this.task.customSendEndTime === '' ? '': endTime): '',
               // periodFrom:'',
               // periodTo:'',
               rateLimit:'',
@@ -320,6 +330,8 @@
             axios.post(this.baseUrl + "/task/create",taskData).then(function (response) {
               if (response.data.code === 0) {
                 vue.$Message.success('提交任务成功!');
+              } else if(response.data.code === 401){
+                vue.$Message.error('登录超时!');
               } else {
                 vue.$Message.error('提交任务失败!');
               }
@@ -336,13 +348,11 @@
       handleReset (name) {
         this.$refs[name].resetFields();
       },
-      handleDateChange(time) {
-        this.task.customSendTime = time;
+      handleStartDateChange(time) {
+        this.task.customSendStartTime = time;
       },
-      handleTimeChange(time) {
-        console.log("type: " + typeof time)
-        console.log("time change: " + JSON.stringify(time));
-        this.task.customSendPeriod = time;
+      handleEndDateChange(time) {
+        this.task.customSendEndTime = time;
       },
       handleBeforeUpload (file) {
         let fileName = file.name;

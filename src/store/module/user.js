@@ -29,12 +29,15 @@ export default {
   },
   getters:{
       accountId:state=>{
-        return sessionStorage.getItem("accountId")
+        state.accountId = state.accountId;
+        return sessionStorage.getItem("accountId");
       },
     accountNumber:state=>{
+        state.accountNumber = state.accountNumber;
         return sessionStorage.getItem("accountNumber")
       },
     roleId:state=>{
+        state.roleId = state.roleId;
       state.access = sessionStorage.getItem("roleId");
       return sessionStorage.getItem("roleId")
     }
@@ -48,7 +51,6 @@ export default {
           username,
           passwd
         }).then(res => {
-          console.log(res)
           commit('setAccountId', res.data.accountId);
           commit('setAccountNumber', res.data.accountNumber);
           commit('setAccountNickname', res.data.accountNickname);

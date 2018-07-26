@@ -68,7 +68,7 @@ export default [
         path: 'child_account',
         name: 'child_account',
         meta: {
-          title: '子账户管理',
+          title: '账户权限管理',
           access:['0']
         },
         component: () => import('@/components/account/SubAccount.vue')
@@ -81,6 +81,7 @@ export default [
     name: 'template',
     meta: {
       title: '模板管理',
+      access:['1']
     },
     component: Main,
     children: [
@@ -114,7 +115,8 @@ export default [
     path: '/send',
     name: 'send',
     meta: {
-      title: '发送管理'
+      title: '发送管理',
+      access:['1']
     },
     component: Main,
     children: [
@@ -142,7 +144,7 @@ export default [
     name: 'contact',
     meta: {
       title: '联系人分组管理',
-      access:['0']
+      access:['2']
     },
     component: Main,
     children: [
@@ -170,7 +172,7 @@ export default [
     name: 'financial',
     meta: {
       title: '财务管理',
-      access:['0']
+      access:['2']
     },
     component: Main,
     children: [
@@ -198,7 +200,7 @@ export default [
     name: 'examine',
     meta: {
       title: '审核管理',
-      access:['0']
+      access:['2']
     },
     component: Main,
     children: [
@@ -225,8 +227,7 @@ export default [
     path: '/data',
     name: 'statistics',
     meta: {
-      title: '数据统计',
-
+      title: '数据报表',
     },
     component: Main,
     children: [
@@ -243,7 +244,7 @@ export default [
         path: 'data_details',
         name: 'data_details',
         meta: {
-          title: '发送详单'
+          title: '发送明细'
         },
         component: () => import('@/components/statistics/Details.vue')
       }
@@ -254,7 +255,8 @@ export default [
     path: '/channel',
     name: 'channel',
     meta: {
-      title: '通道管理'
+      title: '通道管理',
+      access:['0']
     },
     component: Main,
     children: [
@@ -282,7 +284,7 @@ export default [
     name: 'advance',
     meta: {
       title: '高级配置',
-      access:['0']
+      access:['2']
     },
     component: Main,
     children: [
@@ -317,7 +319,8 @@ export default [
     path: '/system',
     name: 'system',
     meta: {
-      title: '系统管理'
+      title: '系统管理',
+      access:['2']
     },
     component: Main,
     children: [

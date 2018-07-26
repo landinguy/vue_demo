@@ -3,7 +3,7 @@
     <div class="query">
       <label>起始时间：</label><DatePicker v-model="startTime" type="date" placeholder="请选择开始时日期" style="width: 200px"></DatePicker>
       <label>截止时间：</label><DatePicker v-model="endTime" type="date" placeholder="请选择截止日期" style="width: 200px"></DatePicker>
-      <label>任务ID：</label><Input placeholder="账号名称" v-model="taskId" style="width: 200px;margin-right: 32px;"></Input>
+      <label>任务ID：</label><Input placeholder="任务ID" v-model="taskId" style="width: 200px;margin-right: 32px;"></Input>
       <Button type="primary" @click="queryTask()" >查询</Button>
     </div>
     <div>

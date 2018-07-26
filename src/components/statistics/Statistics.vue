@@ -21,16 +21,20 @@
     name:"stats",
     created(){
       this.queryTask();
-
-      this.columns = this.columnsNormal.concat(this.columnsAdmin).concat(this.action);
-
+      if(this.roleId == "0"){
+        this.columns = this.columnsNormal.concat(this.columnsAdmin).concat(this.action);
+      }
+      else
+      {
+        this.columns = this.columnsNormal.concat(this.action);
+      }
     },
     computed: {
       ...mapState({
         statsCount: state => state.statistics.statsCount,
         statsList: state => state.statistics.statsList,
       }),
-      ...mapGetters(['accountId']),
+      ...mapGetters(['accountId','roleId']),
     },
     methods:{
       ...mapActions([

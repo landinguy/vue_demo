@@ -3,7 +3,7 @@
     <Dropdown @on-click="handleClick">
       <Button type="ghost">
         <icon :size="18" type="person"></icon>
-        &nbsp;{{accountNumber}}&nbsp;
+        &nbsp;{{accountNickname}}&nbsp;
         <Icon :size="12" type="arrow-down-b"></Icon>
       </Button>
       <DropdownMenu slot="list">
@@ -100,7 +100,7 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['accountNumber','accountId'])
+    ...mapGetters(['accountNumber','accountId','accountNickname'])
   }
 }
 </script>

@@ -20,6 +20,7 @@ export default {
     },
     setAccountNickname (state, accountNickname) {
       state.accountNickname = accountNickname;
+      sessionStorage.setItem("accountNickname", accountNickname);
     },
     setRoleId (state, roleId) {
       state.roleId = roleId;
@@ -38,8 +39,12 @@ export default {
       },
     roleId:state=>{
         state.roleId = state.roleId;
-      state.access = sessionStorage.getItem("roleId");
-      return sessionStorage.getItem("roleId")
+        state.access = sessionStorage.getItem("roleId");
+        return sessionStorage.getItem("roleId")
+    },
+    accountNickname:state=>{
+      state.accountNickname = state.accountNickname;
+      return sessionStorage.getItem("accountNickname")
     }
   },
 

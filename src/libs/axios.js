@@ -1,6 +1,6 @@
 import Axios from 'axios'
 import baseUrl from "./url"
-import { Message } from 'iview'
+import { Message, Spin} from 'iview'
 
 class httpRequest {
   constructor () {
@@ -17,18 +17,35 @@ class httpRequest {
     const queue = Object.keys(this.queue)
     return queue.length
   }
+
+  handleSpinCustom () {
+    Spin.show({
+      render: (h) => {
+        return h('div', [
+          h('Icon', {
+            style: 'animation: ani-demo-spin 1s linear infinite',
+            props: {
+              type: 'load-c',
+              size: 72
+            }
+          }),
+          h('div', 'Loading')
+        ])
+      }
+    });
+  }
   interceptors (instance, url) {
     // 添加请求拦截器
-    // instance.interceptors.request.use(config => {
-    //   console.log("request:", config)
-    //   return config
-    // }, error => {
-    //   return Promise.reject(error)
-    // })
+    instance.interceptors.request.use(config => {
+      this.handleSpinCustom ();
+      console.log("request:", config)
+      return config
+    }, error => {
+      return Promise.reject(error)
+    })
     // 添加拦截器
     instance.interceptors.response.use(res=>{
       console.log("response:", res.data);
-
       if (res.code !== 200) {
         if (res.code === 401) {
           window.location.href = '/#/login'
@@ -37,11 +54,13 @@ class httpRequest {
           if(res.data.code == -1){
             Message.error(res.data.msg)
           }
+          Spin.hide()
           return res.data;
         }
-
       }
+      Spin.hide()
     }, err=>{
+      Spin.hide();
       Message.error('服务器内部错误')
       return Promise.reject(err)
     });

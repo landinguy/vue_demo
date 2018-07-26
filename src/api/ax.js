@@ -1,16 +1,26 @@
 import axios from '@/libs/axios'
 
-export const send = (url, data) => {
+export const send = (url, type, data) => {
   return axios.request({
-    url:url,
-    data:data,
-    method: 'post'
+    url: url,
+    data: data,
+    method: type
   })
 }
 
-export const post = (url, data) =>{
+export const post = (url, data) => {
   return new Promise((resolve, reject) => {
-    send(url, data).then(res => {
+    send(url, "post", data).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+export const get = (url, data) => {
+  return new Promise((resolve, reject) => {
+    send(url, "get", data).then(res => {
       resolve(res)
     }).catch(err => {
       reject(err)

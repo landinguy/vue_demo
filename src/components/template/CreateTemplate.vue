@@ -172,6 +172,7 @@
   import {mapGetters} from 'vuex'
   import url from '@/api/url'
   import phone from '@/assets/images/Phone_03.png'
+  import {post, get} from "@/api/ax";
 
   export default {
     name: 'CreateTemplate',
@@ -303,7 +304,7 @@
           if (valid) {
             this.clearData();
             const params = this.getParams();
-            axios.post(this.baseUrl + url.createTmpl, params).then(res => {
+            post(url.createTmpl, params).then(res => {
               if (res.data.code == 0) {
                 this.$Message.success({
                   content: '提交成功',
@@ -497,7 +498,7 @@
         this.$store.state.template.operation = 'default';
       },
       search(id) {
-        axios.get(this.baseUrl + url.getTmpl + id, {}).then(res => {
+        get(url.getTmpl + id, {}).then(res => {
           if (res.data) {
             console.log(JSON.stringify(res.data));
             this.setData(res.data.data);
@@ -521,7 +522,7 @@
         }
       },
       getSignList() {
-        axios.post(this.baseUrl + url.getSigns, {}).then(res => {
+        post(url.getSigns, {}).then(res => {
           if (res.data.data) {
             res.data.data.forEach(item => {
               if (item.status == 'AUDIT_PASSED') {

@@ -305,7 +305,7 @@
             this.clearData();
             const params = this.getParams();
             post(url.createTmpl, params).then(res => {
-              if (res.data.code == 0) {
+              if (res.code == 0) {
                 this.$Message.success({
                   content: '提交成功',
                   duration: 1,
@@ -523,8 +523,8 @@
       },
       getSignList() {
         post(url.getSigns, {}).then(res => {
-          if (res.data.data) {
-            res.data.data.forEach(item => {
+          if (res.data) {
+            res.data.forEach(item => {
               if (item.status == 'AUDIT_PASSED') {
                 this.signList.push({value: item.content, label: item.content})
               }

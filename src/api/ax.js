@@ -28,5 +28,15 @@ export const get = (url, data) => {
   })
 }
 
+export const $del = (url, data) => {
+  return new Promise((resolve, reject) => {
+    send(url, "delete", data).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
 
 

@@ -94,6 +94,8 @@
           statusStr = '等待开始';
         else if (str === 'SENT')
           statusStr = '发送完成';
+        else if (str === 'FAILED')
+          statusStr = '发送失败';
         else
           statusStr = '';
         return statusStr;

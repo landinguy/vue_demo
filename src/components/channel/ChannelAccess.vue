@@ -64,9 +64,10 @@
   </div>
 </template>
 <script>
-  import axios from 'axios'
+//  import axios from 'axios'
   import {showTip} from '@/libs/util'
   import url from '@/api/url'
+  import {post} from "@/api/ax"
 
   export default {
     name: 'ChannelAccess',
@@ -289,8 +290,8 @@
       },
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + url.getSuppliers, this.params).then(res => {
-          this.tableData = res.data.data;
+        post(url.getSuppliers, this.params).then(res => {
+          this.tableData = res.data;
         })
       },
       changePage(n) {
@@ -298,12 +299,12 @@
         this.sendPost();
       },
       getTotal() {
-        axios.post(this.baseUrl + url.getSupp1iersCount,
+        post(url.getSupp1iersCount,
           {
             supplierName: this.params.supplierName
           }).then(res => {
-          if (res.data) {
-            this.total = res.data.data;
+          if (res) {
+            this.total = res.data;
           }
         })
       }

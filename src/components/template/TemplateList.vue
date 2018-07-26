@@ -33,9 +33,10 @@
 </template>
 <script>
   import {mapMutations, mapGetters} from 'vuex'
-  import axios from 'axios'
+  //  import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
   import url from '@/api/url'
+  import {post, $del} from "@/api/ax";
 
   export default {
     name: 'TemplateList',
@@ -154,8 +155,8 @@
                       title: '删除',
                       content: '确认删除该模板？',
                       onOk() {
-                        axios.delete($vue.baseUrl + url.delTmpl + id, {accountId: this.accountId}).then(res => {
-                          if (res.data.code == 0) {
+                        $del(url.delTmpl + id, {accountId: this.accountId}).then(res => {
+                          if (res.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
                               duration: 1,
@@ -203,9 +204,9 @@
         let params = this.params;
 //        params.accountId = this.accountId;
         console.log("params:" + JSON.stringify(params));
-        axios.post(this.baseUrl + url.getTmpls, params).then(res => {
-          if (res.data) {
-            this.tableData = res.data.data
+        post(url.getTmpls, params).then(res => {
+          if (res) {
+            this.tableData = res.data
           }
         })
       },
@@ -215,12 +216,12 @@
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + url.getTmplsCount, {
+        post(url.getTmplsCount, {
           status: this.params.status,
 //          accountId: this.accountId
         }).then(res => {
-          if (res.data) {
-            this.total = res.data.data;
+          if (res) {
+            this.total = res.data;
           }
         })
       }

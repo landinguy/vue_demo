@@ -112,9 +112,10 @@
   </div>
 </template>
 <script>
-  import axios from 'axios'
+//  import axios from 'axios'
   import {showTip} from '@/libs/util'
   import url from '@/api/url'
+  import {post, $del} from "@/api/ax"
 
   export default {
     name: 'ChannelManage',
@@ -291,8 +292,8 @@
                         '<span style="color: red">提示：</span>' +
                         '如果该账户中有发送余量，将全部退回您的账号中，且该账号下已有的模板、发送任务及数据等将全部失效。</p>',
                         onOk() {
-                          axios.delete($vue.baseUrl + url.delChan + channelId).then(res => {
-                            if (res.data.code == 0) {
+                          $del(url.delChan + channelId).then(res => {
+                            if (res.code == 0) {
                               $vue.$Message.success({
                                 content: '删除成功',
                                 duration: 1,
@@ -326,8 +327,8 @@
                           '<span style="color: red">提示：</span>' +
                           '停用后该通道无法正常使用，确认是否停用？</p>',
                           onOk() {
-                            axios.post($vue.baseUrl + url.haltChan + channelId).then(res => {
-                              if (res.data.code == 0) {
+                            post(url.haltChan + channelId).then(res => {
+                              if (res.code == 0) {
                                 $vue.$Message.success({
                                   content: '已停用',
                                   duration: 1,
@@ -342,8 +343,8 @@
                           }
                         });
                       } else {
-                        axios.post($vue.baseUrl + url.enableChan + channelId).then(res => {
-                          if (res.data.code == 0) {
+                        post(url.enableChan + channelId).then(res => {
+                          if (res.code == 0) {
                             $vue.$Message.success({
                               content: '已启用',
                               duration: 1,
@@ -445,8 +446,8 @@
         this.$refs.channelForm.validate((valid) => {
           if (valid) {
             const param = this.getParams();
-            axios.post(this.baseUrl + url.bind, param).then(res => {
-              if (res.data.code == 0) {
+            post(url.bind, param).then(res => {
+              if (res.code == 0) {
                 this.addModal = false;
                 this.$Message.success({
                   content: '保存成功',
@@ -495,8 +496,8 @@
       },
       sendPost() {
         console.log("params:" + JSON.stringify(this.params));
-        axios.post(this.baseUrl + url.getChans, this.params).then(res => {
-          this.tableData = res.data.data;
+        post(url.getChans, this.params).then(res => {
+          this.tableData = res.data;
         })
       },
       changePage(n) {
@@ -504,7 +505,7 @@
         this.sendPost();
       },
       getTotal() {
-        axios.post(this.baseUrl + url.getChansCount,
+        post(url.getChansCount,
           {
             supplierName: this.params.supplierName,
             channelNo: this.params.channelNo,
@@ -512,20 +513,20 @@
             status: this.params.status,
 
           }).then(res => {
-          if (res.data) {
-            this.total = res.data.data;
+          if (res) {
+            this.total = res.data;
           }
         })
       },
       getSuppliersInfo() {
-        axios.post(this.baseUrl + url.getSuppliers, {}).then(res => {
-          this.supplierData = res.data.data;
+        post(url.getSuppliers, {}).then(res => {
+          this.supplierData = res.data;
 //          this.supplierData = res.data;
         })
       },
       getAccount() {
-        axios.post(this.baseUrl + url.subAccountList, {status: 'USE'}).then(res => {
-          this.accountData = res.data.data
+        post(url.subAccountList, {status: 'USE'}).then(res => {
+          this.accountData = res.data
         })
       }
     },

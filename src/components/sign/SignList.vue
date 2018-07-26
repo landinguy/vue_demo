@@ -63,10 +63,11 @@
   </div>
 </template>
 <script>
-  import axios from 'axios'
+  //  import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
   import {mapGetters} from 'vuex'
   import url from '@/api/url'
+  import {post, $del} from "@/api/ax"
 
   export default {
     name: 'SignList',
@@ -162,13 +163,13 @@
                       title: '删除',
                       content: '确认删除该签名？',
                       onOk() {
-                        axios.delete(this.baseUrl + url.delSign + id, {}).then(res => {
-                          if (res.data.code == 0) {
+                        $del(url.delSign + id, {}).then(res => {
+                          if (res.code == 0) {
                             $vue.$Message.success({
                               content: '已删除',
                               duration: 1,
                               onClose() {
-                                location.reload(true);
+                                location.reload(true)
                               }
                             });
                           } else {
@@ -215,14 +216,15 @@
       confirm() {
         this.$refs.signForm.validate((valid) => {
           if (valid) {
+            this.addModal = false;
             const params = this.getParams();
-            axios.post(this.baseUrl + url.createSign, params).then(res => {
-              if (res.data.code == 0) {
+            post(url.createSign, params).then(res => {
+              if (res.code == 0) {
                 this.$Message.success({
                   content: '添加成功',
                   duration: 1,
                   onClose() {
-                    location.reload(true);
+                    location.reload(true)
                   }
                 });
               } else {
@@ -255,19 +257,19 @@
         let params = this.params;
 //        params.accountId = this.accountId;
         console.log("params:" + JSON.stringify(params));
-        axios.post(this.baseUrl + url.getSigns, params).then(res => {
-          if (res.data) {
-            this.tableData = res.data.data
+        post(url.getSigns, params).then(res => {
+          if (res) {
+            this.tableData = res.data
           }
         })
       },
       getTotal() {
-        axios.post(this.baseUrl + url.getSignsCount, {
+        post(url.getSignsCount, {
           status: this.params.status,
 //          accountId: this.accountId
         }).then(res => {
-          if (res.data) {
-            this.total = res.data.data;
+          if (res) {
+            this.total = res.data;
           }
         })
       },
@@ -276,8 +278,8 @@
         this.getSignList();
       },
       getAccount() {
-        axios.post(this.baseUrl + url.subAccountList, {status: 'USE'}).then(res => {
-          this.accountData = res.data.data
+        post(url.subAccountList, {status: 'USE'}).then(res => {
+          this.accountData = res.data
         })
       }
     },

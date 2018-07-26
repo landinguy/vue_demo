@@ -336,6 +336,7 @@
       showModal() {
         this.$refs.materialForm.resetFields();
         this.tab1 = '新建素材';
+        this.resetExtraParam();
         this.addModal = true
       },
       save() {//保存一个文本素材时，haveText加1
@@ -412,14 +413,25 @@
         }
         return true
       },
+      resetExtraParam() {
+        this.extraParam.type = 'PIC';
+        this.extraParam.txt = '';
+        this.extraParam.spaceUsage = 0;
+        this.extraParam.name = '';
+      },
       handleBeforeUpload(file) {
         let index = file.name.lastIndexOf(".");
         let type = file.name.substring(index + 1);
         let size = (file.size / (1024 * 1024)).toFixed(2);
-        var t;
+        let m = this.material;
+        //上传前对额外参数进行处理
+        this.extraParam.type = m.t == '图片' ? 'PIC' : m.t == '视频' ? 'VIDEO' : m.t == '音频' ? 'AUDIO' : '';
+        this.extraParam.txt = '';
+        this.extraParam.name = m.name;
+        this.extraParam.spaceUsage = size;
+        console.log("before upload,extraParam:" + JSON.stringify(this.extraParam));
 
-        if (this.material.t == '图片') {
-          t = 'PIC';
+        if (m.t == '图片') {
           var arr = ["JPG", "PNG", "JEPG", "GIF"];
           if (arr.indexOf(type.toUpperCase()) == -1) {
             this.$Message.error('请上传jpg、png、jepg、gif图片文件');
@@ -428,8 +440,7 @@
           return this.checkSize(size, 0.2, '图片大小不得超过200KB');
         }
 
-        if (this.material.t == '视频') {
-          t = 'VIDEO';
+        if (m.t == '视频') {
           if (type.toUpperCase() != "MP4") {
             this.$Message.error('请上传mp4视频文件');
             return false;
@@ -437,20 +448,13 @@
           return this.checkSize(size, 1.6, '视频大小不得超过1.6MB');
         }
 
-        if (this.material.t == '音频') {
-          t = 'AUDIO';
+        if (m.t == '音频') {
           if (type.toUpperCase() != "MP3") {
             this.$Message.error('请上传mp3音频文件');
             return false;
           }
           return this.checkSize(size, 1.6, '音频大小不得超过1.6MB');
         }
-        //上传前对额外参数进行处理
-        this.extraParam.type = t;
-        this.extraParam.txt = '';
-        this.extraParam.name = this.material.name;
-        this.extraParam.spaceUsage = size;
-//        alert("before upload,extraParam:" + JSON.stringify(this.extraParam));
       },
       handleSuccess(res, file) {
         if (res.data) {

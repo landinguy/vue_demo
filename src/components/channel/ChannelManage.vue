@@ -68,7 +68,7 @@
 
           <FormItem label="分配账号" prop="accountId">
             <Select v-model="formData.accountId" class="input_len">
-              <Option v-for="a in accountData" :value="a.subaccountNumber" :key="a.subaccountNumber">
+              <Option v-for="a in accountData" :value="a.subaccountId" :key="a.subaccountId">
                 {{a.subaccountNumber}}
               </Option>
             </Select>

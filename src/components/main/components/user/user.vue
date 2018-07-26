@@ -82,8 +82,11 @@ export default {
       this.handleUpdatePassword({accountId:this.accountId,oriPwd:this.pwd.current, pwd:this.pwd.confirm}).then(
         res =>{
           if(res.code == 0){
-            this.$Message.info("修改成功");
+            this.$Message.info("密码修改成功，请重新登录");
             this.changePwd = true;
+            this.$router.push({
+              name: 'login'
+            })
           }
 
         },

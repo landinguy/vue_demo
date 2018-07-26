@@ -34,6 +34,9 @@ class httpRequest {
           window.location.href = '/#/login'
           Message.error('未登录，或登录失效，请登录')
         } else {
+          if(res.data.code == -1){
+            Message.error(res.data.msg)
+          }
           return res.data;
         }
 

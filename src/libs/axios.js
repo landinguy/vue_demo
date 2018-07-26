@@ -30,7 +30,7 @@ class httpRequest {
       console.log("response:", res.data);
       return res.data;
     }, err=>{
-      Message.error('服务内部错误')
+      Message.error('服务器内部错误')
       return Promise.reject(err)
     });
   }

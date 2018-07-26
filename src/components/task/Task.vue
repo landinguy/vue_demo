@@ -321,6 +321,7 @@
               receiverAmount:this.task.number,
               startTs:this.task.sendTime === 'sometime' ? startTime: '',
               endTs:this.task.sendTime === 'sometime' ? (this.task.customSendEndTime === '' ? '': endTime): '',
+              sendType:this.task.sendTime === 'sometime' ? 'RESERVATION' : 'IMMEDIATE',
               // periodFrom:'',
               // periodTo:'',
               rateLimit:'',

@@ -417,29 +417,27 @@
         this.channels = [];
         const yys = [];
         let maxRate = 0;
-
-        val.forEach(i => {
-          this.supplierData.forEach(s => {
-            if (i == s.id) {
-              s.chans.forEach(c => {
-                this.channels.push({id: c.id, channelNo: c.channelNo});
-                if (c.unicomSupport && yys.indexOf('联通') == -1) {
-                  yys.push('联通')
-                }
-                if (c.mobileSupport && yys.indexOf('移动') == -1) {
-                  yys.push('移动')
-                }
-                if (c.telcomSupport && yys.indexOf('电信') == -1) {
-                  yys.push('电信')
-                }
-                //获取最大发送速率
-                if (c.maxRate > maxRate) {
-                  maxRate = c.maxRate;
-                }
-              })
-            }
-          })
-        });
+        for (let s in this.supplierData) {
+          if (val == this.supplierData[s].id) {
+            let chans = this.supplierData[s].chans;
+            chans.forEach(c => {
+              this.channels.push({id: c.id, channelNo: c.channelNo});
+              if (c.unicomSupport && yys.indexOf('联通') == -1) {
+                yys.push('联通')
+              }
+              if (c.mobileSupport && yys.indexOf('移动') == -1) {
+                yys.push('移动')
+              }
+              if (c.telcomSupport && yys.indexOf('电信') == -1) {
+                yys.push('电信')
+              }
+              //获取最大发送速率
+              if (c.maxRate > maxRate) {
+                maxRate = c.maxRate;
+              }
+            })
+          }
+        }
         this.formData.yys = yys.join(" , ");
         this.formData.maxRate = maxRate;
       },

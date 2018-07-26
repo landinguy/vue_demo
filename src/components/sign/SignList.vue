@@ -29,9 +29,9 @@
         <Form ref="signForm" :model="signData" :rules="signValidate" :label-width="80">
           <FormItem label="广告主" prop="cp">
             <Select v-model="signData.cp" class="input_len">
-              <Option value="cp1">广告主1</Option>
-              <Option value="cp2">广告主2</Option>
-              <Option value="cp3">广告主3</Option>
+              <Option v-for="a in accountData" :value="a.subaccountNumber" :key="a.subaccountNumber">
+                {{a.subaccountNumber}}
+              </Option>
             </Select>
           </FormItem>
 
@@ -72,6 +72,7 @@
     name: 'SignList',
     data() {
       return {
+        accountData: [],
         params: {
           pageNo: 1,
           pageSize: 10,
@@ -274,10 +275,16 @@
         this.params.pageNo = 1;
         this.getSignList();
       },
+      getAccount() {
+        axios.post(this.baseUrl + url.subAccountList, {status: 'USE'}).then(res => {
+          this.accountData = res.data.data
+        })
+      }
     },
     mounted() {
       this.getTotal();
       this.getSignList();
+      this.getAccount();
     },
     computed: {
       ...mapGetters(['accountId'])

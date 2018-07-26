@@ -258,7 +258,7 @@
     methods: {
       setAccessInfo(obj) {
         this.accessData.cpid = obj.cpid;
-        this.accessData.billingType = obj.billingType;
+        this.accessData.billingType = obj.billingType == 'PRE' ? '预付费' : '后付费';
         this.accessData.remainder = obj.remainder;
         this.accessData.accountSecret = obj.accountSecret;
         this.accessData.token = obj.token;

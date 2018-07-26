@@ -86,7 +86,7 @@
       </div>
 
     </div>
-    <Modal v-model="addModal" width="800">
+    <Modal v-model="addModal" width="800" :closable="false">
       <div>
         <Tabs value="name1">
           <TabPane :label="tab1" name="name1">
@@ -128,6 +128,7 @@
                               :before-upload="handleBeforeUpload"
                               :on-success="handleSuccess"
                               :data="extraParam"
+                              :with-credentials="true"
                               style="display: inline-block">
                         <Button-Group>
                           <i-button type="ghost" icon="ios-cloud-upload-outline">
@@ -180,7 +181,8 @@
         extraParam: {
           type: 'PIC',
           txt: '',
-          spaceUsage: 0
+          spaceUsage: 0,
+          name: ''
         },
         index: null,
         signList: [],
@@ -222,7 +224,8 @@
           t: '图片',
           uploadValid: '',
           text: '',
-          size: 0
+          size: 0,
+          fileUrl: ''
         },
         materialValidate: {
           name: [{required: true, message: '请填写素材名称', trigger: 'blur'}],
@@ -301,7 +304,7 @@
             this.clearData();
             const params = this.getParams();
             axios.post(this.baseUrl + url.createTmpl, params).then(res => {
-              if (res.code == 0) {
+              if (res.data.code == 0) {
                 this.$Message.success({
                   content: '提交成功',
                   duration: 1,
@@ -339,7 +342,7 @@
         this.$refs.materialForm.validate((valid) => {
           if (valid) {
             let m = this.material;
-            let mc = m.uploadValid;
+            let mc = m.fileUrl;
             let ms = m.size;
             let mt = m.t == '文本' ? 'TEXT' : m.t == '图片' ? 'PIC' : m.t == '视频' ? 'VIDEO' : 'AUDIO';
 
@@ -347,6 +350,7 @@
               this.haveText++;
               this.extraParam.type = 'TEXT';
               this.extraParam.txt = m.text;
+              this.extraParam.name = m.name;
               this.extraParam.spaceUsage = 0;
               mc = m.text;
               ms = 0;
@@ -412,7 +416,8 @@
         let index = file.name.lastIndexOf(".");
         let type = file.name.substring(index + 1);
         let size = (file.size / (1024 * 1024)).toFixed(2);
-        let t;
+        var t;
+
         if (this.material.t == '图片') {
           t = 'PIC';
           var arr = ["JPG", "PNG", "JEPG", "GIF"];
@@ -443,18 +448,22 @@
         //上传前对额外参数进行处理
         this.extraParam.type = t;
         this.extraParam.txt = '';
+        this.extraParam.name = this.material.name;
         this.extraParam.spaceUsage = size;
+//        alert("before upload,extraParam:" + JSON.stringify(this.extraParam));
       },
       handleSuccess(res, file) {
         if (res.data) {
           console.log("res ->" + JSON.stringify(res.data));
+          let url = res.data.resource;
           this.$Message.success('上传成功');
           this.material.id = res.data.id;
-          this.material.uploadValid = res.data.resource.substring(res.data.resource.lastIndexOf("/") + 1);
+          this.material.uploadValid = url.substring(url.lastIndexOf("/") + 1);
+          this.material.fileUrl = url;
           this.material.size = parseFloat((file.size / (1024 * 1024)).toFixed(2));
-          this.showMaterialInPhone(res.data.resource);
+          this.showMaterialInPhone(url);
         } else {
-          this.$Message.error(res.msg);
+          this.$Message.error('上传失败');
           this.material.uploadValid = '';
         }
       },
@@ -528,8 +537,8 @@
       },
       getUploadTip() {
         let t = this.material.t;
-        return t == '图片' ? '支持JPG、JEPG、PNG、GIF格式的图片文件，单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳'
-          : t == '视频' ? '支持使用MP4文件，1.6MB以内，宽高640*480px，第一帧将作为视频封面。比特率800（超清）时长推荐15秒，比特率400（标清）不超过30秒为佳'
+        return t == '图片' ? '支持JPG、JEPG、PNG、GIF格式的图片文件，建议单个图片200KB以内，竖版宽高640*820px，横版宽高640*360px，效果最佳'
+          : t == '视频' ? '支持使用MP4文件，2MB以内，宽高640*480px，第一帧将作为视频封面。比特率800（超清）时长推荐15秒，比特率400（标清）不超过30秒为佳'
             : t == '音频' ? '支持使用MP3文件' : '';
       },
       getLabel() {

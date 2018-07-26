@@ -2,7 +2,8 @@
   <div class="bg">
     <Form id='task' ref="task" :model="task" :rules="ruleValidate" label-position="right" :label-width="100">
       <FormItem label="发送任务名称" prop="name">
-        <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength" :disabled="id !== ''"></Input>
+        <Input v-model="task.name" placeholder="助记用，不显示给用户；不超过20个汉字长度" :maxlength="maxLength"
+               :disabled="id !== ''"></Input>
       </FormItem>
       <FormItem label="发送模板" prop="template">
         <Row>
@@ -40,8 +41,10 @@
       </FormItem>
 
       <FormItem v-if="task.sendTime === 'sometime'" prop="customSendTime">
-        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="date" format="yyyy-MM-dd" placeholder="请选择发送日期" style="width: 200px"></DatePicker>
-        <TimePicker @on-change="handleTimeChange" :editable='false' format="HH:mm" confirm type="timerange" placement="bottom-start" placeholder="请选择发送时段" style="width: 168px"></TimePicker>
+        <DatePicker @on-change="handleDateChange" :editable='false' :options="dateOption" type="date"
+                    format="yyyy-MM-dd" placeholder="请选择发送日期" style="width: 200px"></DatePicker>
+        <TimePicker @on-change="handleTimeChange" :editable='false' format="HH:mm" confirm type="timerange"
+                    placement="bottom-start" placeholder="请选择发送时段" style="width: 168px"></TimePicker>
       </FormItem>
 
       <!--<FormItem label="发送时段" prop="sendPeriod">
@@ -164,12 +167,14 @@
         <h1 style="display: inline-block">{{uploadRightNumber}}</h1>个
         <div v-if="uploadWrongNumber > 0">
           <hr style="margin-top: 20px;margin-bottom: 20px">
-          <p>识别到错误信息{{uploadWrongNumber}}个，点击下载 <a :href="downloadErrorDetailUrl" >《错误详单》</a></p>
+          <p>识别到错误信息{{uploadWrongNumber}}个，点击下载 <a :href="downloadErrorDetailUrl">《错误详单》</a></p>
         </div>
       </div>
 
       <div slot="footer">
-        <Button v-if="!uploadComplete" type="primary" size="large" long :loading="loadingStatus" @click="upload">{{ loadingStatus ? '上传中' : '点击上传' }}</Button>
+        <Button v-if="!uploadComplete" type="primary" size="large" long :loading="loadingStatus" @click="upload">
+          {{ loadingStatus ? '上传中' : '点击上传' }}
+        </Button>
         <Button v-if="uploadComplete" type="primary" size="large" long @click="uploadFinish">完成</Button>
       </div>
     </Modal>
@@ -181,43 +186,54 @@
   import axios from 'axios';
   import citytree from '../../api/citytree';
   import {mapGetters} from 'vuex';
+
   export default {
     name: "Task",
     data() {
       const validateNumber = (rule, value, callback) => {
-        if (!value) {return callback(new Error('不能为空!'));}
-        if (!Number.isInteger(value)) {callback(new Error('请输入数字!'));}
-        else {if (value <= 0) {callback(new Error('请输入正整数'));} else {callback();}}
+        if (!value) {
+          return callback(new Error('不能为空!'));
+        }
+        if (!Number.isInteger(value)) {
+          callback(new Error('请输入数字!'));
+        }
+        else {
+          if (value <= 0) {
+            callback(new Error('请输入正整数'));
+          } else {
+            callback();
+          }
+        }
       };
       return {
-        downloadErrorDetailUrl:'',
-        uploadUrl:this.baseUrl + '/send/receiver/upload',
-        id:'',
-        modifyId:'',
-        copyId:'',
-        maxLength:20,
+        downloadErrorDetailUrl: '',
+        uploadUrl: this.baseUrl + '/receiver/upload',
+        id: '',
+        modifyId: '',
+        copyId: '',
+        maxLength: 20,
         file: null,
         loadingStatus: false,
-        chooseTemplateModal:false,
-        chooseReceiverModal:false,
-        newReceiverModal:false,
+        chooseTemplateModal: false,
+        chooseReceiverModal: false,
+        newReceiverModal: false,
         saveToContacts: true,
-        uploadComplete:false,
-        uploadRightNumber:-1,
-        uploadWrongNumber:-1,
-        customCityTree:JSON.parse(JSON.stringify(citytree)),
-        shieldCityTree:JSON.parse(JSON.stringify(citytree)),
+        uploadComplete: false,
+        uploadRightNumber: -1,
+        uploadWrongNumber: -1,
+        customCityTree: JSON.parse(JSON.stringify(citytree)),
+        shieldCityTree: JSON.parse(JSON.stringify(citytree)),
         chooseTemplateModalColumns: [],
         chooseReceiverModalColumns: [],
         templateData: [],
         receiverRS: [],
         dateOption: {
-          disabledDate (date) {
-            if(date === '') {
+          disabledDate(date) {
+            if (date === '') {
               return date;
             }
             let dayBefore = date.valueOf() < Date.now() - 86400000;
-            let dayAfter = date.valueOf() > Date.now() + 86400000*15;
+            let dayAfter = date.valueOf() > Date.now() + 86400000 * 15;
             return dayBefore || dayAfter;
           }
         },
@@ -233,42 +249,46 @@
           daySendLimit: 'notLimit',
           sendArea: 'everywhere',
           customSendTime: '',
-          customSendPeriod:'',
-          customSendSpeed:'',
+          customSendPeriod: '',
+          customSendSpeed: '',
           customDaySendLimit: '',
-          customSendArea:[],
-          customExcludeArea:[],
+          customSendArea: [],
+          customExcludeArea: [],
         },
         ruleValidate: {
-          name:[{ required: true, message: '发送任务名称不能为空', trigger: 'blur' }],
-          template:[{ required: true, message: '发送模板不能为空', trigger: 'blur' }],
-          receiver:[{ required: true, message: '收件人不能为空', trigger: 'blur' }],
-          number:[{ validator: validateNumber, trigger: 'blur' }],
-          sendTime: [{ required: true, message: '发送时间不能为空', trigger: 'change' }],
+          name: [{required: true, message: '发送任务名称不能为空', trigger: 'blur'}],
+          template: [{required: true, message: '发送模板不能为空', trigger: 'blur'}],
+          receiver: [{required: true, message: '收件人不能为空', trigger: 'blur'}],
+          number: [{validator: validateNumber, trigger: 'blur'}],
+          sendTime: [{required: true, message: '发送时间不能为空', trigger: 'change'}],
           /*sendPeriod: [{ required: true, message: '发送时段不能为空', trigger: 'change' }],
           sendSpeed: [{ required: true, message: '发送控速不能为空', trigger: 'change' }],
           daySendLimit: [{ required: true, message: '请选择单日发送上限', trigger: 'change' }],
           sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],*/
 
-          customSendTime:[
+          customSendTime: [
             // { required: true, message: '发送时间不能为空', trigger: 'change' },
-            {validator(rule, value, callback, source, options) {
+            {
+              validator(rule, value, callback, source, options) {
                 let errors = [];
                 if (value === '') {
                   callback('发送时间不能为空');
                 }
                 callback(errors);
-              }}
+              }
+            }
           ],
-          customSendPeriod:[
-            {validator(rule, value, callback, source, options) {
+          customSendPeriod: [
+            {
+              validator(rule, value, callback, source, options) {
                 let errors = [];
                 console.log("valueaaa" + value + "aaa");
                 if (value === '' || value == ',') {
                   callback('发送时段不能为空');
                 }
                 callback(errors);
-              }}
+              }
+            }
           ],
           /*customSendSpeed: [{ validator: validateNumber, trigger: 'blur' }],
           customDaySendLimit: [{ validator: validateNumber, trigger: 'blur' }],*/
@@ -286,13 +306,13 @@
         history.back();
       },
       newTemplate() {
-        this.$router.push({name:'create_template'})
+        this.$router.push({name: 'create_template'})
       },
       uploadFinish() {
         this.uploadComplete = false;
         this.newReceiverModal = false;
       },
-      handleSubmit (name) {
+      handleSubmit(name) {
         console.log("form value : " + JSON.stringify(this.task));
         if (this.task.sendTime === 'sometime' && (this.task.customSendPeriod === '' || this.task.customSendPeriod == ',')) {
           this.$Message.error("发送时间段不能为空");
@@ -303,21 +323,21 @@
           if (valid) {
             console.log("form value : " + this.task.customSendTime + " " + this.task.customSendPeriod[0]);
             let taskData = {
-              accountId:this.accountId,
-              name:this.task.name,
-              templateId:this.task.templateId,
-              templateName:this.task.template,
-              receiverGroupId:this.task.receiver,
-              receiverAmount:this.task.number,
-              startTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[0]).getTime(): '',
-              endTs:this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[1]).getTime(): '',
+              accountId: this.accountId,
+              name: this.task.name,
+              templateId: this.task.templateId,
+              templateName: this.task.template,
+              receiverGroupId: this.task.receiver,
+              receiverAmount: this.task.number,
+              startTs: this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[0]).getTime() : '',
+              endTs: this.task.sendTime === 'sometime' ? new Date(this.task.customSendTime + " " + this.task.customSendPeriod[1]).getTime() : '',
               // periodFrom:'',
               // periodTo:'',
-              rateLimit:'',
+              rateLimit: '',
               // region:'',
             };
             console.log("post task data: " + JSON.stringify(taskData));
-            axios.post(this.baseUrl + "/task/create",taskData).then(function (response) {
+            axios.post(this.baseUrl + "/task/create", taskData).then(function (response) {
               if (response.data.code === 0) {
                 vue.$Message.success('提交任务成功!');
               } else {
@@ -333,7 +353,7 @@
           }
         })
       },
-      handleReset (name) {
+      handleReset(name) {
         this.$refs[name].resetFields();
       },
       handleDateChange(time) {
@@ -344,7 +364,7 @@
         console.log("time change: " + JSON.stringify(time));
         this.task.customSendPeriod = time;
       },
-      handleBeforeUpload (file) {
+      handleBeforeUpload(file) {
         let fileName = file.name;
         if (fileName.endsWith(".txt") || fileName.endsWith(".csv") || fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
           this.file = file;
@@ -356,7 +376,7 @@
         }
         return false;
       },
-      upload () {
+      upload() {
         console.log(this.file);
         if (this.file !== null) {
           this.loadingStatus = true;
@@ -365,7 +385,7 @@
           data.append('accountNo', this.accountId);
           data.append('save', this.saveToContacts.toString());
           data.append('file', this.file);
-          axios.post(this.uploadUrl,data,{
+          axios.post(this.uploadUrl, data, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -373,7 +393,7 @@
             console.log("upload success response: " + JSON.stringify(value));
             vue.uploadRightNumber = value.data.data.amount;
             vue.uploadWrongNumber = value.data.data.errorAmount;
-            vue.downloadErrorDetailUrl = vue.baseUrl + '/send/receiver/' + value.data.data.group_id + '/error_details_download/';
+            vue.downloadErrorDetailUrl = vue.baseUrl + '/receiver/download/error/' + value.data.data.group_id;
             this.file = null;
             this.loadingStatus = false;
             this.uploadComplete = true;
@@ -394,12 +414,12 @@
         this.chooseTemplateModal = true;
         let vue = this;
         let param = {
-          status:'AUDIT_PASS',
-          pageNo:'1',
-          pageSize:'20',
-          accountId:this.accountId
+          status: 'AUDIT_PASS',
+          pageNo: '1',
+          pageSize: '20',
+          accountId: this.accountId
         };
-        axios.post(this.baseUrl + "/tmpls",param)
+        axios.post(this.baseUrl + "/tmpls", param)
           .then(function (response) {
             console.log(response.data.data);
             vue.templateData = response.data.data;
@@ -420,50 +440,75 @@
             console.log(error);
           });
       },
-      chooseTemlate (index) {
+      chooseTemlate(index) {
         console.log(index);
         this.chooseTemplateModal = false;
         this.task.template = this.templateData[index].name;
         this.task.templateId = this.templateData[index].id;
       },
-      chooseReceiver (index) {
+      chooseReceiver(index) {
         console.log(index);
         this.chooseReceiverModal = false;
         this.task.receiver = this.receiverRS[index].name;
         this.task.number = this.receiverRS[index].cover;
       },
-      geTemplateTableColumns () {
+      geTemplateTableColumns() {
         return [
           {title: '模板编号', key: 'id',},
           {title: '模板名称', key: 'name'},
-          {title: '状态', key: 'status',render: (h, params) => {return h('div', '审核通过')}},
-          {title: '操作', key: 'action', width: 150, align: 'center',
+          {
+            title: '状态', key: 'status', render: (h, params) => {
+            return h('div', '审核通过')
+          }
+          },
+          {
+            title: '操作', key: 'action', width: 150, align: 'center',
             render: (h, params) => {
               let newVar = [];
               let status = params.row.status;
               if (status !== '审核失败' && status !== '已失效') {
-                newVar.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.chooseTemlate(params.index)}}}, '选择'));
+                newVar.push(h('Button', {
+                  props: {type: 'primary', size: 'small'},
+                  style: {marginRight: '5px'},
+                  on: {
+                    click: () => {
+                      this.chooseTemlate(params.index)
+                    }
+                  }
+                }, '选择'));
               }
               return h('div', newVar);
             }
           }
         ];
       },
-      getReceiverTableColumns () {
+      getReceiverTableColumns() {
         return [
           {title: '收件人组名称', key: 'name',},
           {title: '提交数量', key: 'cover'},
           {title: '创建时间', key: 'createTS'},
-          {title: '操作', key: 'action', width: 150, align: 'center', render: (h, params) => {return h('div', [h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.chooseReceiver(params.index)}}}, '选择')]);}}
+          {
+            title: '操作', key: 'action', width: 150, align: 'center', render: (h, params) => {
+            return h('div', [h('Button', {
+              props: {type: 'primary', size: 'small'},
+              style: {marginRight: '5px'},
+              on: {
+                click: () => {
+                  this.chooseReceiver(params.index)
+                }
+              }
+            }, '选择')]);
+          }
+          }
         ];
       },
-      changeTableColumns () {
+      changeTableColumns() {
         this.chooseReceiverModalColumns = this.getReceiverTableColumns();
         this.chooseTemplateModalColumns = this.geTemplateTableColumns();
       },
-      getTaskDetail (id) {
+      getTaskDetail(id) {
         let vue = this;
-        axios.post(this.baseUrl + "/task/get/" + id,{accountId:this.accountId}).then(value => {
+        axios.post(this.baseUrl + "/task/get/" + id, {accountId: this.accountId}).then(value => {
           let data = value.data.data;
           console.log(data);
           vue.task.name = data.name;
@@ -475,10 +520,10 @@
         })
       }
     },
-    computed:{
+    computed: {
       ...mapGetters(['accountId'])
     },
-    mounted () {
+    mounted() {
       this.id = this.$store.state.task.task_id;
       this.modifyId = this.$store.state.task.task_operation;
       this.copyId = this.$store.state.task.task_operation;
@@ -501,13 +546,14 @@
 </script>
 
 <style scoped>
-#task {
-  max-width: 80%;
-}
-.bg{
-  background-color: white;
-  width: 100%;
-  height: 100%;
-  padding: 16px;
-}
+  #task {
+    max-width: 80%;
+  }
+
+  .bg {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+  }
 </style>

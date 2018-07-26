@@ -24,35 +24,7 @@
       </div>
     </div>
 
-    <div class="outer">
-      <p v-if="changePwd">账户安全</p>
-      <p v-if="!changePwd">修改密码</p>
-      <div class="inner">
-        <Form v-if="changePwd" :label-width="120">
-          <FormItem label="账户密码：" >
-            <Input value="********"></Input> <Button type="text" @click="updatePwd()">修改</Button>
-          </FormItem>
-        </Form>
-
-        <Form v-if="!changePwd" ref="pwd" :model="pwd" :label-width="120">
-          <FormItem label="当前登录密码：" prop="currentPwd">
-            <Input v-model="pwd.current" type="password" placeholder="请填写当前登录密码"></Input>
-          </FormItem>
-          <FormItem label="新的登录密码：" prop="newPwd">
-            <Input v-model="pwd.newPwd" type="password" placeholder="请填写新的登录密码"></Input>
-          </FormItem>
-          <FormItem label="确认登录密码：" prop="confirm">
-            <Input v-model="pwd.confirm" type="password" placeholder="请确认登录密码"></Input>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="handleSubmit('pwd')">保存</Button>
-            <Button type="ghost" @click="handleReset('pwd')" style="margin-left: 8px">取消</Button>
-          </FormItem>
-        </Form>
-
-      </div>
-    </div>
-    <div class="outer">
+    <div class="outer" v-if="roleId == '0'">
       <p>补充信息</p>
       <div class="inner">
         <Form ref="more" :model="more" :label-width="120">
@@ -167,34 +139,6 @@
             }
             );
         }
-
-        if(name=='pwd'){
-          console.log("-------", this.pwd.current, this.pwd.newPwd, this.pwd.confirm)
-          if(this.pwd.current == ""){
-            this.$Message.info("当前密码不能为空");
-            return;
-          }
-          if(this.pwd.confirm == "" || this.pwd.newPwd == ""){
-            this.$Message.info("新密码密码不能为空");
-            return;
-          }
-          if(this.pwd.newPwd != this.pwd.confirm){
-            this.$Message.info("两次输入密码不一致");
-            return;
-          }
-          this.handleUpdatePassword({accountNumber:this.accountNumber,oriPwd:this.pwd.current, pwd:this.pwd.confirm}).then(
-            res =>{
-              if(res.code == 0){
-                this.$Message.info("修改成功");
-                this.changePwd = true;
-              }
-
-            },
-            err =>{
-              this.$Message.info("修改失败");
-            }
-          );
-        }
       },
 
       handleReset (name) {
@@ -224,7 +168,7 @@
         scopes: state => state.account.scopes,
         companyWebsite: state => state.account.companyWebsite,
       }),
-      ...mapGetters(['accountId','accountNumber']),
+      ...mapGetters(['accountId','accountNumber','roleId']),
     },
     created(){
       console.log("accountId:"+ this.accountId)

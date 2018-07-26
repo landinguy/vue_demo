@@ -54,7 +54,7 @@ class httpRequest {
           if(res.data.code == -1){
             Message.error(res.data.msg)
           }
-          Spin.hide()
+          Spin.hide();
           return res.data;
         }
       }

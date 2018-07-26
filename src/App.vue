@@ -32,7 +32,7 @@ export default {
     z-index: 8;
     width: 100%;
     height: 100%;
-    background-color: rgba(255,255,255,.1);
+    background-color: rgba(255,255,255,0);
   }
   .ivu-spin {
     /*color: #2d8cf0;*/

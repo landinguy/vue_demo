@@ -391,7 +391,7 @@
           this.loadingStatus = true;
           let vue = this;
           let data = new FormData();
-          data.append('accountNo', this.accountId);
+          data.append('accountId', this.accountId);
           data.append('save', this.saveToContacts.toString());
           data.append('file', this.file);
           axios.post(this.uploadUrl, data, {

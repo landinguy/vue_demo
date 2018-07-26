@@ -61,9 +61,9 @@ export default {
       })
     },
 
-    handleUpdateNickName ({ commit }, { accountNumber, nickname}) {
+    handleUpdateNickName ({ commit }, { accountId, nickname}) {
       return new Promise((resolve, reject) => {
-        updateNickName({ accountNumber, nickname}
+        updateNickName({ accountId, nickname}
         ).then(res => {
           resolve()
         }).catch(err => {
@@ -73,9 +73,9 @@ export default {
       })
     },
 
-    handleUpdatePassword ({ commit }, {accountNumber,oriPwd, pwd}) {
+    handleUpdatePassword ({ commit }, {accountId,oriPwd, pwd}) {
       return new Promise((resolve, reject) => {
-        updatePassword({accountNumber,oriPwd,pwd}
+        updatePassword({accountId,oriPwd,pwd}
         ).then(res => {
           resolve(res)
         }).catch(err => {

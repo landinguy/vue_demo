@@ -119,7 +119,7 @@
 
       handleSubmit(name){
         if(name=='basic'){
-          this.handleUpdateNickName({accountNumber:this.basic.accountNumber, nickname:this.basic.nickname}).then(
+          this.handleUpdateNickName({accountId:this.accountId, nickname:this.basic.nickname}).then(
             res =>{
               this.$Message.info("保存成功");
             },
@@ -172,7 +172,7 @@
     },
     created(){
       console.log("accountId:"+ this.accountId)
-      this.handleMainAccountInfo({accountNumber:this.accountNumber}).then(
+      this.handleMainAccountInfo({accountNumber:this.accountId}).then(
         res=>{
           this.setBasicInfo();
           this.setMoreInfo();

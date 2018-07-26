@@ -501,7 +501,7 @@
         get(url.getTmpl + id, {}).then(res => {
           if (res.data) {
             console.log(JSON.stringify(res.data));
-            this.setData(res.data.data);
+            this.setData(res.data);
           } else {
             this.$Message.error('获取模板数据失败');
           }

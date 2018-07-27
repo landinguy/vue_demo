@@ -1,5 +1,5 @@
 <template>
-  <div class="login" @keydown.enter="handleLogin">
+  <div class="login" >
     <div class="login-con">
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
@@ -19,13 +19,23 @@ export default {
     LoginForm
   },
   methods: {
-    // ...mapActions([
-    //   'handleLogin'
-    // ]),
+    ...mapActions([
+      'handleLogin'
+    ]),
     handleSubmit ({ userName, password }) {
-      this.$router.push({
-        name: 'home'
-      })
+      this.handleLogin({ username:userName, passwd:password}).then(
+        res=>{
+          console.log(res.data)
+          if(res.code == 0){
+            this.$router.push({
+              name: 'home'
+            })
+          }
+        },
+        err=>{
+          console.log(err)
+        }
+      );
     }
   }
 }

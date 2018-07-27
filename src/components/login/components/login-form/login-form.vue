@@ -63,29 +63,29 @@ export default {
     ]),
     handleSubmit () {
       console.log("--------",this.form.userName, this.form.password)
-      this.handleLogin({ username:this.form.userName, passwd:this.form.password}).then(
-        res=>{
-          console.log(res.data)
-          if(res.code == 0){
-            this.$emit('on-success-valid', {
-                    userName: this.form.userName,
-                    password: this.form.password
-                  })
-          }
-        },
-        err=>{
-          console.log(err)
-        }
-      );
-
-      // this.$refs.loginForm.validate((valid) => {
-      //   if (valid) {
-      //     this.$emit('on-success-valid', {
-      //       userName: this.form.userName,
-      //       password: this.form.password
-      //     })
+      // this.handleLogin({ username:this.form.userName, passwd:this.form.password}).then(
+      //   res=>{
+      //     console.log(res.data)
+      //     if(res.code == 0){
+      //       this.$emit('on-success-valid', {
+      //               userName: this.form.userName,
+      //               password: this.form.password
+      //             })
+      //     }
+      //   },
+      //   err=>{
+      //     console.log(err)
       //   }
-      // })
+      // );
+
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          this.$emit('on-success-valid', {
+            userName: this.form.userName,
+            password: this.form.password
+          })
+        }
+      })
     },
 
   }

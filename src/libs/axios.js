@@ -45,18 +45,17 @@ class httpRequest {
     })
     // 添加拦截器
     instance.interceptors.response.use(res=>{
-      console.log("response:", res.data);
-      if (res.code !== 200) {
-        if (res.code === 401) {
-          window.location.href = '/#/login'
-          Message.error('未登录，或登录失效，请登录')
-        } else {
-          if(res.data.code == -1){
-            Message.error(res.data.msg)
-          }
-          Spin.hide();
-          return res.data;
+      console.log("response:", res);
+      if (res.status == 200) {
+        if(res.data.code == -1){
+          Message.error(res.data.msg)
         }
+        Spin.hide();
+        return res.data;
+      }
+      else if (res.status === 401) {
+        window.location.href = '/#/login'
+        Message.error('未登录，或登录失效，请登录')
       }
       Spin.hide()
     }, err=>{

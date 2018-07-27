@@ -8,7 +8,7 @@
       </Input>
     </FormItem>
     <FormItem prop="password">
-      <Input type="password" v-model="form.password" placeholder="请输入密码">
+      <Input type="password" v-model="form.password" @on-enter="handleSubmit" placeholder="请输入密码">
         <span slot="prepend">
           <Icon :size="14" type="locked"></Icon>
         </span>

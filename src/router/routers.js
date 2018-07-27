@@ -81,7 +81,6 @@ export default [
     name: 'template',
     meta: {
       title: '模板管理',
-      access:['1']
     },
     component: Main,
     children: [
@@ -89,7 +88,8 @@ export default [
         path: 'create_template',
         name: 'create_template',
         meta: {
-          title: '新建模板'
+          title: '新建模板',
+          access:['1']
         },
         component: () => import('@/components/template/CreateTemplate')
       },
@@ -97,7 +97,7 @@ export default [
         path: 'template_list',
         name: 'template_list',
         meta: {
-          title: '我的模板'
+          title: '我的模板',
         },
         component: () => import('@/components/template/TemplateList')
       },
@@ -105,7 +105,7 @@ export default [
         path: 'sign_list',
         name: 'sign_list',
         meta: {
-          title: '签名管理'
+          title: '签名管理',
         },
         component: () => import('@/components/sign/SignList')
       }

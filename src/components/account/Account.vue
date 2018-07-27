@@ -13,7 +13,7 @@
           <FormItem label="创建时间：" prop="createTs">
             <Input v-model="basic.createTs" disabled></Input>
           </FormItem>
-          <FormItem label="账户内显示名称：" prop="nickname">
+          <FormItem label="昵称：" prop="nickname">
             <Input v-model="basic.nickname"></Input>
           </FormItem>
           <FormItem>

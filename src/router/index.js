@@ -21,8 +21,8 @@ router.beforeEach((to, from, next) => {
   }
   else {
     store.getters.roleId
-    console.log("-------access-----------", store.getters.roleId)
-    next();
+    // console.log("-------access-----------", store.getters.roleId)
+      next();
   }
   // store.dispatch('handleMainAccountInfo',"").then(user => {
   //   console.log("to:" + to.name, user.access)

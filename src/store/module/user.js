@@ -46,6 +46,7 @@ export default {
       state.accountNickname = state.accountNickname;
       return sessionStorage.getItem("accountNickname")
     }
+
   },
 
   actions: {

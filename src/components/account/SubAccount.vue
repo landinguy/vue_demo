@@ -7,7 +7,7 @@
       <div v-if="!addAccount" class="sub">
         <div  class="query">
           <label>用户名称</label>
-          <Input v-model="accountNickName" placeholder="账号名称" style="width: 200px;margin-right: 32px;"></Input>
+          <Input v-model="accountNickName" placeholder="用户名称" style="width: 200px;margin-right: 32px;"></Input>
           <label>用户状态</label>
           <Select v-model="accountState" style="width:200px;margin-right: 32px;">
             <Option v-for="item in selectedState" :value="item.value" :key="item.value">{{ item.label }}</Option>

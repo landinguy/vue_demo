@@ -4,11 +4,11 @@
       <Input v-model="subAccountInfo.subaccountNumber" placeholder="4-20个字符，字母或者数组成"></Input>
     </FormItem>
     <FormItem label="用户名称：" prop="subaccountNickname">
-      <Input v-model="subAccountInfo.subaccountNickname" placeholder="账户名称"></Input>
+      <Input v-model="subAccountInfo.subaccountNickname" placeholder="用户名称"></Input>
     </FormItem>
     <FormItem label="用户角色：" prop="role">
       <Select v-model="subAccountInfo.role">
-        <Option value="1">推广子账号</Option>
+        <Option value="1">普通用户</Option>
         <!--<Option value="shanghai">广告审核</Option>-->
         <!--<Option value="shenzhen">内部运营</Option>-->
       </Select>

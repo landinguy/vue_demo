@@ -49,7 +49,7 @@
     data() {
       return {
         total:0,
-        pageSize:2,
+        pageSize:20,
         currentPage:1,
         status:'',
         fastSearchContent:'',

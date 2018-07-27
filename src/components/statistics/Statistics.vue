@@ -88,7 +88,7 @@
           },
           {
             title: '提交数量',
-            key: 'preSend'
+            key: 'cover'
           },
           {
             title: '发送量',

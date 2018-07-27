@@ -3,10 +3,10 @@
     <FormItem label="用户名：" prop="subaccountNumber">
       <Input v-model="subAccountInfo.subaccountNumber" placeholder="4-20个字符，字母或者数组成"></Input>
     </FormItem>
-    <FormItem label="子账户名称：" prop="subaccountNickname">
+    <FormItem label="用户名称：" prop="subaccountNickname">
       <Input v-model="subAccountInfo.subaccountNickname" placeholder="账户名称"></Input>
     </FormItem>
-    <FormItem label="角色：" prop="role">
+    <FormItem label="用户角色：" prop="role">
       <Select v-model="subAccountInfo.role">
         <Option value="1">推广子账号</Option>
         <!--<Option value="shanghai">广告审核</Option>-->
@@ -18,14 +18,14 @@
       <!--<Input v-model="subAccountInfo.owner" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>-->
     <!--</FormItem>-->
 
-    <FormItem label="账号密码：" prop="pwd">
+    <FormItem label="密码：" prop="pwd">
       <Input v-model="subAccountInfo.pwd" type="password" placeholder="请输入8-20位密码"></Input>
     </FormItem>
-    <FormItem label="重复密码："  prop="rePwd">
+    <FormItem label="确认密码："  prop="rePwd">
       <Input v-model="subAccountInfo.rePwd" type="password" placeholder="请重复输入账号密码"></Input>
     </FormItem>
     <FormItem label="备注：" prop="remark">
-      <Input v-model="subAccountInfo.remark" placeholder="请填写子账户的使用人，比如xx部门xx人员"></Input>
+      <Input v-model="subAccountInfo.remark" placeholder="请填备注信息，如合同编号，有效期等"></Input>
     </FormItem>
     <FormItem>
       <Button type="primary" @click="handleSubmit('subAccountInfo')">保存并提交</Button>

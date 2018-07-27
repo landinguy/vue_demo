@@ -6,15 +6,15 @@
       </div>
       <div v-if="!addAccount" class="sub">
         <div  class="query">
-          <label>子账号名称</label>
+          <label>用户名称</label>
           <Input v-model="accountNickName" placeholder="账号名称" style="width: 200px;margin-right: 32px;"></Input>
-          <label>账号状态</label>
+          <label>用户状态</label>
           <Select v-model="accountState" style="width:200px;margin-right: 32px;">
             <Option v-for="item in selectedState" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <Button type="primary" @click="querySubAccount()" >查询</Button>
         </div>
-        <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加新账号</Button>
+        <Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加用户</Button>
         <!--<Button type="primary" style="margin-top: 16px;margin-bottom: 16px;" @click="addSubAccount()">+添加用户组</Button>-->
         <Table border :columns="columns" :data="subAccountList"></Table>
       </div>
@@ -63,14 +63,14 @@
         addSubAccount(){
           this.addAccount = true;
           this.index = -1;
-          this.title = "新建子账户";
+          this.title = "添加用户";
         },
         modifySubAccount(index){
 
           this.index = index;
           this.modifyInfo = this.subAccountList[index];
           this.addAccount = true;
-          this.title = "修改子账户";
+          this.title = "修改用户";
         },
         querySubAccount(){
           var data = {subaccountNickname:this.accountNickName,status:this.accountState}
@@ -122,10 +122,12 @@
             }
           ],
           columns:[
-            {title:"子账户用户名",key:"subaccountNumber"},
-            {title:"子账户账号",key:"subaccountNickname"},
-            {title:"备注",key:"remark"},
-            {title:"子账户状态",key:"statusName"},
+            {title:"用户Id",key:"subaccountId"},
+            {title:"用户名（登录名）",key:"subaccountNumber"},
+            {title:"用户名称",key:"subaccountNickname"},
+            {title:"用户角色",key:"roleId"},
+            {title:"创建时间",key:"createTs"},
+            {title:"用户状态",key:"statusName"},
             {title:"操作",key:"action",
               width: 200,
               align: 'center',

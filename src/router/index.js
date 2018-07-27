@@ -13,16 +13,15 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
-  if(to.name != "login" && store.getters.accountId == null){
+  if (to.name != "login" && store.getters.accountId == null) {
     next({
       replace: true,
       name: 'login'
     })
   }
-  else
-  {
+  else {
     store.getters.roleId
-    console.log("-------access-----------", store.getters.roleId)
+    // console.log("-------access-----------", store.getters.roleId)
       next();
   }
   // store.dispatch('handleMainAccountInfo',"").then(user => {

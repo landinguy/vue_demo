@@ -51,7 +51,7 @@ export const getBreadCrumbList = (routeMetched) => {
     return !item.meta.hideInMenu
   })
   return [{
-    name: 'home',
+    name: '首页',
     to: '/home'
   }, ...res]
 }

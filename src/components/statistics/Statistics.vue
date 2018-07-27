@@ -76,45 +76,59 @@
         columnsNormal: [
           {
             title: '任务ID',
-            key: 'taskId'
+            key: 'taskId',
+            "width": 200,
+             "align":"center"
           },
           {
             title: '开始发送时间',
-            key: 'st'
+            key: 'st',
+            "width": 150,
+            "align":"center"
           },
           {
             title: '发送任务名称',
-            key: 'taskName'
+            key: 'taskName',
+            "width": 200,
+            "align":"center"
           },
           {
             title: '提交数量',
-            key: 'cover'
+            key: 'cover',
+            "align":"center"
           },
           {
             title: '发送量',
-            key: 'send'
+            key: 'send',
+            "align":"center"
           },
           {
             title: '发送成功',
-            key: 'sendSuc'
+            key: 'sendSuc',
+            "align":"center"
           },
           {
             title: '发送状态',
-            key: 'statusName'
+            key: 'statusName',
+            "align":"center"
           }
         ],
         columnsAdmin: [
           {
             title: '点击量',
-            key: 'click'
+            key: 'click',
+            "align":"center"
+
           },
           {
             title: '点击用户数',
-            key: 'clickUV'
+            key: 'clickUV',
+            "align":"center"
           },
           {
             title: '结算消耗',
-            key: 'cost'
+            key: 'cost',
+            "align":"center"
           },
         ],
         action:{title:"操作",

@@ -77,27 +77,33 @@
         columns: [
           {
             title: '手机号码',
-            key: 'tel'
+            key: 'tel',
+            "align":"center"
           },
           {
             title: '提交时间',
-            key: 'commitTs'
+            key: 'commitTs',
+            "align":"center"
           },
           {
             title: '发送时间',
-            key: 'sendTs'
+            key: 'sendTs',
+            "align":"center"
           },
           {
             title: '发送任务名称',
-            key: 'taskName'
+            key: 'taskName',
+            "align":"center"
           },
           {
             title: '模板主题',
-            key: 'mouldTopic'
+            key: 'mouldTopic',
+            "align":"center"
           },
           {
             title: '发送结果',
-            key: 'result'
+            key: 'result',
+            "align":"center"
           }
         ],
 

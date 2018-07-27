@@ -41,8 +41,9 @@
 </template>
 
 <script>
-  import axios from "axios";
   import {mapMutations,mapGetters} from 'vuex';
+  import {post} from "@/api/ax"
+
   export default {
     name: "record",
     data() {
@@ -120,9 +121,9 @@
           taskCount = {status: this.status};
         }
         let vue = this;
-        axios.post(this.baseUrl + "/task/count/" + this.accountId, taskCount).then(function (response) {
-          console.log(response.data.data);
-          vue.total = response.data.data.amount;
+        post(this.baseUrl + "/task/count/" + this.accountId, taskCount).then(function (response) {
+          console.log(response.data);
+          vue.total = response.data.amount;
         })
           .catch(function (error) {
             console.log(error);
@@ -144,9 +145,9 @@
           pagingData.status = this.status;
         }
         console.log("paging data: " + JSON.stringify(pagingData));
-        axios.post(this.baseUrl + "/task/list/" + this.accountId, pagingData).then(function (response) {
-          console.log(response.data.data);
-          temp.recordData = response.data.data;
+        post(this.baseUrl + "/task/list/" + this.accountId, pagingData).then(function (response) {
+          console.log(response.data);
+          temp.recordData = response.data;
         })
           .catch(function (error) {
             console.log(error);
@@ -182,10 +183,10 @@
       },
       decideDeleteTask() {
         let vue = this;
-        axios.post(this.baseUrl + "/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post(this.baseUrl + "/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(function (response) {
             console.log(response.data);
-            if (response.data.code === 0) {
+            if (response.code === 0) {
               // vue.getRecordInfo(1);
               vue.$Message.success('任务删除成功!');
               // vue.current = 1;
@@ -205,9 +206,9 @@
       },
       decideTerminateTask() {
         let vue = this;
-        axios.post(this.baseUrl + "/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post(this.baseUrl + "/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(value => {
-            let result = value.data.code;
+            let result = value.code;
             if (result >= 0) {
               vue.recordData[vue.modalIndex].status = 'ABORT';
               vue.$Message.success('终止任务成功')

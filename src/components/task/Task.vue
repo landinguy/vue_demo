@@ -189,6 +189,7 @@
   import axios from 'axios';
   import citytree from '../../api/citytree';
   import {mapGetters} from 'vuex';
+  import {post} from "@/api/ax"
 
   export default {
     name: "Task",
@@ -346,11 +347,9 @@
               // region:'',
             };
             console.log("post task data: " + JSON.stringify(taskData));
-            axios.post(this.baseUrl + "/task/create", taskData).then(function (response) {
-              if (response.data.code === 0) {
+            post(this.baseUrl + "/task/create", taskData).then(function (response) {
+              if (response.code === 0) {
                 vue.$Message.success('提交任务成功!');
-              } else if(response.data.code === 401){
-                vue.$Message.error('登录超时!');
               } else {
                 vue.$Message.error('提交任务失败!');
               }
@@ -428,10 +427,10 @@
           pageSize: '20',
           accountId: this.accountId
         };
-        axios.post(this.baseUrl + "/tmpls", param)
+        post(this.baseUrl + "/tmpls", param)
           .then(function (response) {
-            console.log(response.data.data);
-            vue.templateData = response.data.data;
+            console.log(response.data);
+            vue.templateData = response.data;
           })
           .catch(function (error) {
             console.log(error);
@@ -440,10 +439,10 @@
       showChooseReceiverModal() {
         this.chooseReceiverModal = true;
         let vue = this;
-        axios.post(this.baseUrl + "/send/receiver/get/" + this.accountId)
+        post(this.baseUrl + "/send/receiver/get/" + this.accountId)
           .then(function (response) {
             // console.log(response.data.receiverRS);
-            vue.receiverRS = response.data.receiverRS;
+            vue.receiverRS = response.receiverRS;
           })
           .catch(function (error) {
             console.log(error);
@@ -517,8 +516,8 @@
       },
       getTaskDetail(id) {
         let vue = this;
-        axios.post(this.baseUrl + "/task/get/" + id, {accountId: this.accountId}).then(value => {
-          let data = value.data.data;
+        post(this.baseUrl + "/task/get/" + id, {accountId: this.accountId}).then(value => {
+          let data = value.data;
           console.log(data);
           vue.task.name = data.name;
           vue.task.template = data.templateName;

@@ -9,7 +9,7 @@
       </Input>
       </Col>
       <Col span="4" offset="16" style="text-align: right">
-      <Button type="primary" @click="showModal">
+      <Button type="primary" @click="showModal" v-if="roleId=='0'">
         <Icon type="plus"></Icon>
         运营添加签名
       </Button>
@@ -289,7 +289,7 @@
       this.getAccount();
     },
     computed: {
-      ...mapGetters(['accountId'])
+      ...mapGetters(['accountId', 'roleId'])
     }
   }
 </script>

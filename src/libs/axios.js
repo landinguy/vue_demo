@@ -60,7 +60,15 @@ class httpRequest {
       Spin.hide()
     }, err=>{
       Spin.hide();
-      Message.error('服务器内部错误')
+      console.log("err:",err)
+
+      if( err.toString().search("401") != -1){
+        window.location.href = '/#/login'
+        Message.error('未登录，或登录失效，请登录')
+      }
+      else {
+        Message.error('服务器内部错误')
+      }
       return Promise.reject(err)
     });
   }

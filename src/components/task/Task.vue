@@ -347,7 +347,7 @@
               // region:'',
             };
             console.log("post task data: " + JSON.stringify(taskData));
-            post(this.baseUrl + "/task/create", taskData).then(function (response) {
+            post("/task/create", taskData).then(function (response) {
               if (response.code === 0) {
                 vue.$Message.success('提交任务成功!');
               } else {
@@ -427,7 +427,7 @@
           pageSize: '20',
           accountId: this.accountId
         };
-        post(this.baseUrl + "/tmpls", param)
+        post("/tmpls", param)
           .then(function (response) {
             console.log(response.data);
             vue.templateData = response.data;
@@ -439,7 +439,7 @@
       showChooseReceiverModal() {
         this.chooseReceiverModal = true;
         let vue = this;
-        post(this.baseUrl + "/send/receiver/get/" + this.accountId)
+        post("/send/receiver/get/" + this.accountId)
           .then(function (response) {
             // console.log(response.data.receiverRS);
             vue.receiverRS = response.receiverRS;
@@ -516,7 +516,7 @@
       },
       getTaskDetail(id) {
         let vue = this;
-        post(this.baseUrl + "/task/get/" + id, {accountId: this.accountId}).then(value => {
+        post("/task/get/" + id, {accountId: this.accountId}).then(value => {
           let data = value.data;
           console.log(data);
           vue.task.name = data.name;

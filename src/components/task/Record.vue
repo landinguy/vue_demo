@@ -121,7 +121,7 @@
           taskCount = {status: this.status};
         }
         let vue = this;
-        post(this.baseUrl + "/task/count/" + this.accountId, taskCount).then(function (response) {
+        post("/task/count/" + this.accountId, taskCount).then(function (response) {
           console.log(response.data);
           vue.total = response.data.amount;
         })
@@ -145,7 +145,7 @@
           pagingData.status = this.status;
         }
         console.log("paging data: " + JSON.stringify(pagingData));
-        post(this.baseUrl + "/task/list/" + this.accountId, pagingData).then(function (response) {
+        post("/task/list/" + this.accountId, pagingData).then(function (response) {
           console.log(response.data);
           temp.recordData = response.data;
         })
@@ -183,7 +183,7 @@
       },
       decideDeleteTask() {
         let vue = this;
-        post(this.baseUrl + "/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post("/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(function (response) {
             console.log(response.data);
             if (response.code === 0) {
@@ -206,7 +206,7 @@
       },
       decideTerminateTask() {
         let vue = this;
-        post(this.baseUrl + "/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post("/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
           .then(value => {
             let result = value.code;
             if (result >= 0) {

@@ -175,7 +175,7 @@
               }, '删除');
               const op = [];
               op.push(view);
-              if (status == '审核中' || status == '审核失败') {
+              if (status == 'AUDITING' || status == 'AUDIT_FAILED') {
                 op.push(edit)
               }
               op.push(del);

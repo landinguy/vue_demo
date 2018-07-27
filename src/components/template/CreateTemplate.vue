@@ -1,7 +1,7 @@
 <template>
   <div class="bg">
     <div class="content_div">
-      <Form ref="templateForm" :model="formData" :rules="ruleValidate" :label-width="120" class="form">
+      <Form ref="templateForm" :model="formData" :rules="ruleValidate" :label-width="120">
         <FormItem label="模板名称" prop="name">
           <Input v-model="formData.name" placeholder="不超过20个汉字长度" :maxlength="20" class="input_len"
                  :disabled="op=='view'"/>
@@ -570,6 +570,9 @@
         console.log("op:" + this.op + ", id:" + this.id);
         this.search(this.id);
       }
+    },
+    beforeDestroy() {
+      this.clearData();
     }
   }
 </script>
@@ -591,21 +594,13 @@
   }
 
   .content_div {
-    width: 700px;
-    margin: 0 auto;
-    border: 1px solid #E6E6E6;
-    padding: 20px 0px;
-    border-radius: 5px;
-  }
-
-  .form {
     width: 500px;
-    margin: 0 auto
+    padding: 20px 0px;
   }
 
   .btn_div {
     text-align: center;
-    width: 700px;
+    width: 500px;
     margin-top: 40px;
   }
 

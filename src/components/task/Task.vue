@@ -549,6 +549,10 @@
         this.getTaskDetail(this.copyId);
       }
       this.changeTableColumns();
+    },
+    beforeDestroy() {
+      this.$store.state.task.task_id = '';
+      this.$store.state.task.task_operation = '';
     }
   }
 </script>

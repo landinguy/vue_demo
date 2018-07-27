@@ -112,7 +112,7 @@
   </div>
 </template>
 <script>
-//  import axios from 'axios'
+  //  import axios from 'axios'
   import {showTip} from '@/libs/util'
   import url from '@/api/url'
   import {post, $del} from "@/api/ax"
@@ -393,14 +393,27 @@
     },
     methods: {
       setData(obj) {
+        const yys = [];
+        this.channels = [];
         for (let s in this.supplierData) {
           let chans = this.supplierData[s].chans;
           for (let c in chans) {
             if (chans[c].id == obj.channelId) {
               this.formData.supplierName = this.supplierData[s].id;
+              if (chans[c].unicomSupport && yys.indexOf('联通') == -1) {
+                yys.push('联通')
+              }
+              if (chans[c].mobileSupport && yys.indexOf('移动') == -1) {
+                yys.push('移动')
+              }
+              if (chans[c].telcomSupport && yys.indexOf('电信') == -1) {
+                yys.push('电信')
+              }
             }
+            this.channels.push({id: chans[c].id, channelNo: chans[c].channelNo});
           }
         }
+        this.formData.yys = yys.join(",");
         this.formData.channelId = obj.channelId;
         this.formData.accountId = obj.accountId;
         this.formData.remainder = obj.remainder;

@@ -19,11 +19,11 @@
       <FormItem label="上传号码" prop="receiver">
         <Row>
           <Col :span="id === '' ? 10 : 24">
-          <Input v-model="task.receiver" placeholder="请选择已创建的联系人组" disabled></Input>
+          <Input v-model="task.receiver" placeholder="请上传手机号码" disabled></Input>
           </Col>
           <Col span="10" style="margin-left: 10px" v-if="id === ''">
           <!--<Button type="primary" @click="showChooseReceiverModal">选择联系人组</Button>-->
-          <Button type="ghost" @click="newReceiverModal = true">新建联系人</Button>
+          <Button type="ghost" @click="newReceiverModal = true">导入文件</Button>
           </Col>
         </Row>
       </FormItem>
@@ -151,7 +151,7 @@
       v-model="newReceiverModal">
       <p slot="header">
         <Icon type="information-circled"></Icon>
-        <span>新建收件人</span>
+        <span>导入文件</span>
       </p>
 
       <div v-if="!uploadComplete">

@@ -229,7 +229,7 @@
           fileUrl: ''
         },
         materialValidate: {
-          name: [{required: true, message: '请填写素材名称', trigger: 'blur'}],
+//          name: [{required: true, message: '请填写素材名称', trigger: 'blur'}],
           t: [{required: true, message: '请选择素材类型', trigger: 'change'}],
           uploadValid: [{required: true, message: '请上传素材文件', trigger: 'blur'}],
           text: [
@@ -314,7 +314,7 @@
                   }
                 })
               } else {
-                this.$Message.error('提交失败')
+                this.$Message.error(res.msg ? res.msg : '提交失败')
               }
             });
           }
@@ -446,7 +446,7 @@
             this.$Message.error('请上传mp4视频文件');
             return false;
           }
-          return this.checkSize(size, 1.6, '视频大小不得超过1.6MB');
+          return this.checkSize(size, 2, '视频大小不得超过2MB');
         }
 
         if (m.t == '音频') {
@@ -454,7 +454,7 @@
             this.$Message.error('请上传mp3音频文件');
             return false;
           }
-          return this.checkSize(size, 1.6, '音频大小不得超过1.6MB');
+          return this.checkSize(size, 2, '音频大小不得超过2MB');
         }
       },
       handleSuccess(res, file) {

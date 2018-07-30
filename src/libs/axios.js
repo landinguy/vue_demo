@@ -67,7 +67,7 @@ class httpRequest {
         Message.error('未登录，或登录失效，请登录')
       }
       else {
-        Message.error('服务器内部错误')
+        Message.error('服务器无响应')
       }
       return Promise.reject(err)
     });

@@ -7,7 +7,7 @@
           <FormItem label="账户登录名：" prop="accountNumber">
             <Input v-model="basic.accountNumber" disabled></Input>
           </FormItem>
-          <FormItem label="公司名称：" prop="companyName" >
+          <FormItem label="账户名称：" prop="companyName" >
             <Input v-model="basic.companyName" disabled></Input>
           </FormItem>
           <FormItem label="创建时间：" prop="createTs">

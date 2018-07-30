@@ -114,6 +114,10 @@
                 this.$Message.info("两次输入密码不一致");
                 return;
               }
+              if(this.subAccountInfo.pwd.length < 8){
+                this.$Message.info("密码长度不低于8位");
+                return;
+              }
               var data = {accountNumber:this.accountNumber,
                 subaccountNumber:this.subAccountInfo.subaccountNumber,
                 subaccountNickname:this.subAccountInfo.subaccountNickname,

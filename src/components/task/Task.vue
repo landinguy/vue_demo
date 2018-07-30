@@ -161,7 +161,7 @@
           <Button type="ghost" icon="ios-cloud-upload-outline">点击从本地选择文件</Button>
         </Upload>
         <div v-if="file !== null" style="margin-top: 20px">待上传文件: {{ file.name }}</div>
-        <p style="margin-top: 20px">请上传 TXT、CSV、XLS、XLSX文件，第1列填手机号，2-5列填参数，最多使用5个参数，无参数留空，文件不多于10万行数据。</p>
+        <p style="margin-top: 20px">请上传 TXT、CSV文件，第1列填手机号，2-5列填参数，最多使用5个参数，无参数留空，文件不多于10万行数据。</p>
         <Checkbox v-model="saveToContacts" style="margin-top: 20px">保存至我的联系人</Checkbox>
       </div>
 
@@ -374,12 +374,12 @@
       },
       handleBeforeUpload(file) {
         let fileName = file.name;
-        if (fileName.endsWith(".txt") || fileName.endsWith(".csv") || fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
+        if (fileName.endsWith(".txt") || fileName.endsWith(".csv")) {
           this.file = file;
         } else {
           this.$Notice.warning({
             title: '文件格式不正确',
-            desc: file.name + '文件格式不正确, 请选择txt、csv、xls、xlsx格式的文件!'
+            desc: file.name + '文件格式不正确, 请选择txt、csv格式的文件!'
           });
         }
         return false;

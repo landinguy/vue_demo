@@ -102,7 +102,7 @@
                       <Radio label="文本"></Radio>
                       <Radio label="图片"></Radio>
                       <Radio label="视频"></Radio>
-                      <Radio label="音频"></Radio>
+                      <!--<Radio label="音频"></Radio>-->
                     </RadioGroup>
                   </FormItem>
 
@@ -157,7 +157,7 @@
               </div>
             </div>
           </TabPane>
-          <TabPane label="我用过的素材" name="name2" disabled>标签二的内容</TabPane>
+          <!--<TabPane label="我用过的素材" name="name2" disabled>标签二的内容</TabPane>-->
         </Tabs>
       </div>
       <div slot="footer" style="text-align: center">
@@ -517,7 +517,10 @@
         if (res.mats != []) {
           this.formData.contentValid = "contentValid";
           res.mats.forEach(item => {
-            this.materials.push({mid: item.id, mc: item.resource, mt: item.type, ms: parseFloat(item.spaceUsage)})
+            this.materials.push({mid: item.id, mc: item.resource, mt: item.type, ms: parseFloat(item.spaceUsage)});
+            if (item.type == 'TEXT') {
+              this.haveText++;
+            }
           })
         }
       },

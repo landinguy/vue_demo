@@ -184,11 +184,11 @@
           },
           {
             title: '分配账号',
-            key: 'accountId',
+            key: 'userName',
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              return showTip(h, params.row.accountId);
+              return showTip(h, params.row.userName);
             }
           },
           {
@@ -470,7 +470,7 @@
                   }
                 });
               } else {
-                this.$Message.error('保存失败');
+                this.$Message.error(res.msg ? res.msg : '保存失败');
               }
             })
           }

@@ -11,7 +11,7 @@
       <Col span="4" offset="16" style="text-align: right">
       <Button type="primary" @click="showModal" v-if="roleId=='0'">
         <Icon type="plus"></Icon>
-        运营添加签名
+        添加签名
       </Button>
       </Col>
     </Row>
@@ -98,36 +98,39 @@
               return showTip(h, params.row.content);
             }
           }, {
-            title: '广告主',
+            title: '用户名称',
             key: 'cp',
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
               return showTip(h, params.row.cp);
             }
-          }, {
-            title: '类型',
-            key: 'source',
-            align: 'center',
-            render: (h, params) => {
-              const text = params.row.source == 'ADD_BY_OPERATOR' ? '运营添加' : '广告主添加';
-              return h('span', text)
-            }
-          }, {
-            title: '签名状态',
-            key: 'status',
-            align: 'center',
-            render: (h, params) => {
-              const row = params.row;
-              const color = row.status == 'AUDIT_PASSED' ? 'green' : row.status == 'DELETED' ? 'red' : 'gray';
-              const text = row.status == 'AUDIT_PASSED' ? '审核通过' : row.status == 'DELETED' ? '已删除' : '未知';
-              return h('span', {
-                style: {
-                  color: color
-                }
-              }, text)
-            }
-          }, {
+          },
+//          {
+//            title: '类型',
+//            key: 'source',
+//            align: 'center',
+//            render: (h, params) => {
+//              const text = params.row.source == 'ADD_BY_OPERATOR' ? '运营添加' : '广告主添加';
+//              return h('span', text)
+//            }
+//          },
+//          {
+//            title: '签名状态',
+//            key: 'status',
+//            align: 'center',
+//            render: (h, params) => {
+//              const row = params.row;
+//              const color = row.status == 'AUDIT_PASSED' ? 'green' : row.status == 'DELETED' ? 'red' : 'gray';
+//              const text = row.status == 'AUDIT_PASSED' ? '审核通过' : row.status == 'DELETED' ? '已删除' : '未知';
+//              return h('span', {
+//                style: {
+//                  color: color
+//                }
+//              }, text)
+//            }
+//          },
+          {
             title: '最后操作人',
             key: 'updater',
             align: 'center',
@@ -241,6 +244,7 @@
         params.source = this.signData.source;
         params.status = this.signData.status;
         params.updater = "admin";
+        params.accountId = this.accountId;
         return params;
       },
       showModal() {
@@ -287,6 +291,9 @@
       this.getTotal();
       this.getSignList();
       this.getAccount();
+      if (this.roleId != 0) {//子账户隐藏用户名称一栏
+        this.columns.splice(2, 1)
+      }
     },
     computed: {
       ...mapGetters(['accountId', 'roleId'])

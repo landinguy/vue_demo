@@ -16,7 +16,7 @@
         <p class="ptitle">发送余量</p>
         <br>
         <div class="inner">
-          <div class="pNum">{{remain}}</div>
+          <div class="pNum" style="color: darkgrey">{{remain}}</div>
           <div>剩余</div>
         </div>
       </div>

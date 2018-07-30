@@ -68,15 +68,19 @@ export default {
     ok () {
       console.log("-------", this.pwd.current, this.pwd.newPwd, this.pwd.confirm)
       if(this.pwd.current == ""){
-        this.$Message.info("当前密码不能为空");
+        this.$Message.error("当前密码不能为空");
         return;
       }
       if(this.pwd.confirm == "" || this.pwd.newPwd == ""){
-        this.$Message.info("新密码密码不能为空");
+        this.$Message.error("新密码密码不能为空");
         return;
       }
       if(this.pwd.newPwd != this.pwd.confirm){
-        this.$Message.info("两次输入密码不一致");
+        this.$Message.error("两次输入密码不一致");
+        return;
+      }
+      if(this.pwd.newPwd.length < 8){
+        this.$Message.error("密码长度不能低于8位");
         return;
       }
       this.handleUpdatePassword({accountId:this.accountId,oriPwd:this.pwd.current, pwd:this.pwd.confirm}).then(

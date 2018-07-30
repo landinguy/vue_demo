@@ -16,7 +16,7 @@
           </Col>
         </Row>
       </FormItem>
-      <FormItem label="发送人群" prop="receiver">
+      <FormItem label="上传号码" prop="receiver">
         <Row>
           <Col :span="id === '' ? 10 : 24">
           <Input v-model="task.receiver" placeholder="请选择已创建的联系人组" disabled></Input>
@@ -162,7 +162,7 @@
         </Upload>
         <div v-if="file !== null" style="margin-top: 20px">待上传文件: {{ file.name }}</div>
         <p style="margin-top: 20px">请上传 TXT、CSV文件，第1列填手机号，2-5列填参数，最多使用5个参数，无参数留空，文件不多于10万行数据。</p>
-        <Checkbox v-model="saveToContacts" style="margin-top: 20px">保存至我的联系人</Checkbox>
+        <!--<Checkbox v-model="saveToContacts" style="margin-top: 20px">保存至我的联系人</Checkbox>-->
       </div>
 
       <div v-if="uploadComplete" style="text-align: center">
@@ -221,7 +221,7 @@
         chooseTemplateModal: false,
         chooseReceiverModal: false,
         newReceiverModal: false,
-        saveToContacts: true,
+        // saveToContacts: true,
         uploadComplete: false,
         uploadRightNumber: -1,
         uploadWrongNumber: -1,
@@ -391,7 +391,7 @@
           let vue = this;
           let data = new FormData();
           data.append('accountId', this.accountId);
-          data.append('save', this.saveToContacts.toString());
+          // data.append('save', this.saveToContacts.toString());
           data.append('file', this.file);
           axios.post(this.uploadUrl, data, {
             headers: {

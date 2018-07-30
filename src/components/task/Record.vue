@@ -226,7 +226,7 @@
     },
     mounted() {
       this.recordColumns = [
-        {title: '发送编号', key: 'id',},
+        {title: '任务id', key: 'id',},
         {title: '发送任务名称', key: 'name'},
         {title: '模板名称', key: 'templateName'},
         {title: '提交数量', key: 'receiverAmount'},
@@ -251,10 +251,10 @@
             if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING') {
               btnArray.push(h('Button', {props: {type: 'warning', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showModify(params.index)}}}, '修改'))
             }
-            btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showCopy(params.index)}}}, '复制'));
+            /*btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showCopy(params.index)}}}, '复制'));
             if (status === 'SENDING' || status === '暂停中' || status === 'SENT' || status === 'ABORT') {
               btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showSendStatistics(params.index)}}}, '数据'))
-            }
+            }*/
             if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING' || status === 'SENT' || status === 'ABORT') {
               btnArray.push(h('Button', {props: {type: 'error', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showDeleteModal(params.index)}}}, '删除'))
             }

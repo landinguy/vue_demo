@@ -17,7 +17,7 @@
       </Input>
       </Col>
       <Col span="4" offset="10" style="text-align: right">
-      <Button type="primary" @click="toCreatePage">
+      <Button type="primary" @click="toCreatePage" v-if="roleId!='0'">
         <Icon type="plus"></Icon>
         创建模板
       </Button>
@@ -175,10 +175,13 @@
               }, '删除');
               const op = [];
               op.push(view);
-              if (status == 'AUDITING' || status == 'AUDIT_FAILED') {
-                op.push(edit)
+
+              if (this.roleId != '0') {
+                if (status == 'AUDITING' || status == 'AUDIT_FAILED') {
+                  op.push(edit)
+                }
+                op.push(del);
               }
-              op.push(del);
               return h('div', op);
             }
           }
@@ -231,7 +234,7 @@
       this.getTmplList();
     },
     computed: {
-      ...mapGetters(['accountId'])
+      ...mapGetters(['accountId', 'roleId'])
     }
   }
 </script>

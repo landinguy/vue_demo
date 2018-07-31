@@ -42,7 +42,7 @@
       }),
       ...mapGetters(['accountId','accountNumber']),
       disabled:function () {
-        return this.$parent.index == 0
+        return this.$parent.index != -1
       }
     },
     data () {

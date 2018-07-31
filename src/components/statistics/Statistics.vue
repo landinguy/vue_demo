@@ -22,7 +22,8 @@
     created(){
       this.queryTask();
       if(this.roleId == "0"){
-        this.columns = this.columnsNormal.concat(this.columnsAdmin).concat(this.action);
+        // this.columns = this.columnsNormal.concat(this.columnsAdmin).concat(this.action);
+        this.columns = this.columnsNormal.concat(this.action);
       }
       else
       {

@@ -29,7 +29,7 @@ class httpRequest {
               size: 72
             }
           }),
-          h('div', 'Loading')
+          h('div', '正在加载中......')
         ])
       }
     });
@@ -53,10 +53,6 @@ class httpRequest {
         Spin.hide();
         return res.data;
       }
-      else if (res.status === 401) {
-        window.location.href = '/#/login'
-        Message.error('未登录，或登录失效，请登录')
-      }
       Spin.hide()
     }, err=>{
       Spin.hide();
@@ -64,7 +60,7 @@ class httpRequest {
 
       if( err.toString().search("401") != -1){
         window.location.href = '/#/login'
-        Message.error('未登录，或登录失效，请登录')
+        // Message.error('未登录，或登录失效，请登录')
       }
       else {
         Message.error('服务器无响应')
@@ -77,7 +73,7 @@ class httpRequest {
   create () {
     let conf = {
       baseURL: baseUrl.base,//baseUrl
-      timeout: 3000,
+      timeout: 5000,
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',

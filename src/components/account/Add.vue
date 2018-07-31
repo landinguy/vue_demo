@@ -1,7 +1,7 @@
 <template>
   <Form ref="subAccountInfo" :model="subAccountInfo" :rules="ruleValidate" :label-width="120">
     <FormItem label="用户名：" prop="subaccountNumber">
-      <Input v-model="subAccountInfo.subaccountNumber" placeholder="4-20个字符，字母或者数组成"></Input>
+      <Input ref="account" v-model="subAccountInfo.subaccountNumber" :disabled = "disabled" placeholder="4-20个字符，字母或者数组成"></Input>
     </FormItem>
     <FormItem label="用户名称：" prop="subaccountNickname">
       <Input v-model="subAccountInfo.subaccountNickname" placeholder="用户名称"></Input>
@@ -41,6 +41,9 @@
         subAccountList:state => state.subAccount.subAccountList,
       }),
       ...mapGetters(['accountId','accountNumber']),
+      disabled:function () {
+        return this.$parent.index == 0
+      }
     },
     data () {
       return {
@@ -147,7 +150,7 @@
         this.$parent.addAccount = false;
       }
     },
-    created(){
+    mounted(){
       console.log("index:"+this.$parent.index)
       if(this.$parent.index != -1){
         this.subAccountInfo.subaccountNumber = this.$parent.modifyInfo.subaccountNumber;

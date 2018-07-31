@@ -125,7 +125,7 @@
             {title:"用户Id",key:"subaccountId","width": 200,"align":"center"},
             {title:"用户名（登录名）",key:"subaccountNumber","align":"center"},
             {title:"用户名称",key:"subaccountNickname","align":"center"},
-            {title:"用户角色",key:"roleId","align":"center"},
+            {title:"用户角色",key:"roleName","align":"center"},
             {title:"创建时间",key:"createTs","align":"center"},
             {title:"用户状态",key:"statusName","align":"center"},
             {title:"操作",key:"action",

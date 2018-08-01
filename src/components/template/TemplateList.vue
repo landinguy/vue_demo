@@ -10,7 +10,7 @@
       </Select>
       </Col>
       <Col span="4" offset="2">
-      <Input placeholder="快速查找">
+      <Input v-model="params.find" placeholder="快速查找">
       <span slot="append">
         <Button icon="ios-search" @click="search"></Button>
       </span>
@@ -44,7 +44,7 @@
       return {
         params: {
           status: '',
-//          key: '',
+          find: '',
           pageNo: 1,
           pageSize: 10
         },
@@ -177,9 +177,9 @@
               op.push(view);
 
               if (this.roleId != '0') {
-                if (status == 'AUDITING' || status == 'AUDIT_FAILED') {
-                  op.push(edit)
-                }
+//                if (status == 'AUDITING' || status == 'AUDIT_FAILED') {
+//                  op.push(edit)
+//                }
                 op.push(del);
               }
               return h('div', op);
@@ -221,6 +221,7 @@
       getTotal() {
         post(url.getTmplsCount, {
           status: this.params.status,
+          find: this.params.find,
 //          accountId: this.accountId
         }).then(res => {
           if (res) {

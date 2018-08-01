@@ -2,7 +2,7 @@
   <div class="bg">
     <Row type="flex" justify="space-between">
       <Col span="4">
-      <Input v-model="params.key" placeholder="快速查找">
+      <Input v-model="params.find" placeholder="快速查找">
       <span slot="append">
         <Button icon="ios-search" @click="search"></Button>
       </span>
@@ -77,7 +77,7 @@
         params: {
           pageNo: 1,
           pageSize: 10,
-          key: ''
+          find: ''
         },
         uploadUrl: '',
         columns: [
@@ -270,6 +270,7 @@
       getTotal() {
         post(url.getSignsCount, {
           status: this.params.status,
+          find: this.params.find,
 //          accountId: this.accountId
         }).then(res => {
           if (res) {

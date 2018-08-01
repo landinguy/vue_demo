@@ -244,7 +244,11 @@
         params.source = this.signData.source;
         params.status = this.signData.status;
         params.updater = "admin";
-        params.accountId = this.accountId;
+        for (let a of this.accountData) {
+          if (a.subaccountNumber == this.signData.cp) {
+            params.accountId = a.subaccountId;
+          }
+        }
         return params;
       },
       showModal() {

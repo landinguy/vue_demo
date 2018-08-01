@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-//  import axios from 'axios'
+  //  import axios from 'axios'
   import {showTip} from '@/libs/util'
   import url from '@/api/url'
   import {post} from "@/api/ax"
@@ -101,23 +101,19 @@
             align: 'center',
             ellipsis: true,
             render: (h, params) => {
-              const text = [];
-              params.row.chans.forEach(function (item, index) {
-                if (item.unicomSupport && text.indexOf('联通') == -1) {
-                  text.push('联通')
-                }
-                if (item.mobileSupport && text.indexOf('移动') == -1) {
-                  text.push('移动')
-                }
-                if (item.telcomSupport && text.indexOf('电信') == -1) {
-                  text.push('电信')
-                }
+              const arr = [];
+              params.row.chans.forEach(item => {
+                let text = [];
+                if (item.unicomSupport) text.push('联通');
+                if (item.mobileSupport) text.push('移动');
+                if (item.telcomSupport) text.push('电信');
+                arr.push(h('p', {
+                  attrs: {
+                    title: text.join("、")
+                  }
+                }, text.join('、')))
               });
-              return h('span', {
-                attrs: {
-                  title: text.join("、")
-                }
-              }, text.join('、'))
+              return h('div', arr)
             }
           }, {
             title: '接入通道号',

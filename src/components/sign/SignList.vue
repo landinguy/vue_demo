@@ -247,6 +247,7 @@
         for (let a of this.accountData) {
           if (a.subaccountNumber == this.signData.cp) {
             params.accountId = a.subaccountId;
+            break
           }
         }
         return params;

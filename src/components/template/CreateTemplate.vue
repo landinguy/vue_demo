@@ -243,7 +243,7 @@
     methods: {
       back() {
         this.clearData();
-        history.back();
+        this.$parent.content = 1;
       },
       edit(index) {
         this.index = index;

@@ -42,11 +42,13 @@
 
       <div v-if="task.sendTime === 'sometime'">
         <FormItem label="开始时间" prop="customSendStartTime">
-          <DatePicker @on-change="handleStartDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false' :options="dateOption" placeholder="请选择开始时间" style="width: 200px"></DatePicker>
+          <DatePicker @on-change="handleStartDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false'
+                      :options="dateOption" placeholder="请选择开始时间" style="width: 200px"></DatePicker>
         </FormItem>
         <br>
         <FormItem label="结束时间">
-          <DatePicker @on-change="handleEndDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false' :options="dateOption" placeholder="请选择结束时间" style="width: 200px"></DatePicker>
+          <DatePicker @on-change="handleEndDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false'
+                      :options="dateOption" placeholder="请选择结束时间" style="width: 200px"></DatePicker>
         </FormItem>
       </div>
 
@@ -254,8 +256,8 @@
           sendArea: 'everywhere',
           customSendStartTime: '',
           customSendEndTime: '',
-          customSendPeriod:'',
-          customSendSpeed:'',
+          customSendPeriod: '',
+          customSendSpeed: '',
           customDaySendLimit: '',
           customSendArea: [],
           customExcludeArea: [],
@@ -271,7 +273,7 @@
           daySendLimit: [{ required: true, message: '请选择单日发送上限', trigger: 'change' }],
           sendArea: [{ required: true, message: '请选择发送地域', trigger: 'change' }],*/
 
-          customSendStartTime:[
+          customSendStartTime: [
             // { required: true, message: '发送时间不能为空', trigger: 'change' },
             {
               validator(rule, value, callback, source, options) {
@@ -307,7 +309,7 @@
       goBack() {
         this.$store.state.task.task_id = '';
         this.$store.state.task.task_operation = '';
-        history.back();
+        this.$parent.content = 1;
       },
       newTemplate() {
         this.$router.push({name: 'create_template'})
@@ -330,17 +332,17 @@
                 return;
               }
             }
-            console.log("aaa:"+endTime);
+            console.log("aaa:" + endTime);
             let taskData = {
-              accountId:this.accountId,
-              name:this.task.name,
-              templateId:this.task.templateId,
-              templateName:this.task.template,
-              receiverGroupId:this.task.receiver,
-              receiverAmount:this.task.number,
-              startTs:this.task.sendTime === 'sometime' ? startTime: '',
-              endTs:this.task.sendTime === 'sometime' ? (this.task.customSendEndTime === '' ? '': endTime): '',
-              sendType:this.task.sendTime === 'sometime' ? 'RESERVATION' : 'IMMEDIATE',
+              accountId: this.accountId,
+              name: this.task.name,
+              templateId: this.task.templateId,
+              templateName: this.task.template,
+              receiverGroupId: this.task.receiver,
+              receiverAmount: this.task.number,
+              startTs: this.task.sendTime === 'sometime' ? startTime : '',
+              endTs: this.task.sendTime === 'sometime' ? (this.task.customSendEndTime === '' ? '' : endTime) : '',
+              sendType: this.task.sendTime === 'sometime' ? 'RESERVATION' : 'IMMEDIATE',
               // periodFrom:'',
               // periodTo:'',
               rateLimit: '',

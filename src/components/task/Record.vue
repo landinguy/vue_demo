@@ -1,7 +1,11 @@
 <template>
   <div class="bg">
-    <Row>
-      <Col span="12">
+    <div v-if="content==2">
+      <Task></Task>
+    </div>
+    <div v-if="content==1">
+      <Row>
+        <Col span="12">
         <Input v-model="fastSearchContent" placeholder="快速查询">
         <Select v-model="fastSearchContentStatus" slot="prepend" style="width: 100px">
           <Option value="INVALID">已失效</Option>
@@ -12,20 +16,22 @@
         </Select>
         <Button slot="append" icon="ios-search" @click="searchByStatus"></Button>
         </Input>
-      </Col>
-      <Col span="4" offset="8" style="text-align: right">
-      <Button type="primary" @click="toTaskPage">
-        <Icon type="plus"></Icon>
-        新建发送
-      </Button>
-      </Col>
-    </Row>
+        </Col>
+        <Col span="4" offset="8" style="text-align: right">
+        <Button type="primary" @click="toTaskPage">
+          <Icon type="plus"></Icon>
+          新建发送
+        </Button>
+        </Col>
+      </Row>
 
-    <br>
-    <Table border :columns="recordColumns" :data="recordData" stripe></Table>
-    <div style="margin: 10px;overflow: hidden">
-      <div style="float: right;">
-        <Page :total="total" :page-size="pageSize" :current="currentPage" @on-change="changePage" show-elevator></Page>
+      <br>
+      <Table border :columns="recordColumns" :data="recordData" stripe></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right;">
+          <Page :total="total" :page-size="pageSize" :current="currentPage" @on-change="changePage"
+                show-elevator></Page>
+        </div>
       </div>
     </div>
 
@@ -41,52 +47,57 @@
 </template>
 
 <script>
-  import {mapMutations,mapGetters} from 'vuex';
+  import {mapMutations, mapGetters} from 'vuex';
   import {post} from "@/api/ax"
+  import Task from './Task.vue'
 
   export default {
     name: "record",
     data() {
       return {
-        total:0,
-        pageSize:20,
-        currentPage:1,
-        status:'',
-        fastSearchContent:'',
-        fastSearchContentStatus:'',
+        content: 1,
+        total: 0,
+        pageSize: 20,
+        currentPage: 1,
+        status: '',
+        fastSearchContent: '',
+        fastSearchContentStatus: '',
         recordColumns: [],
-        deleteModal:false,
-        showDeleteHint:false,
+        deleteModal: false,
+        showDeleteHint: false,
         terminateModal: false,
-        modalIndex:-1,
-        modalTaskName:'',
+        modalIndex: -1,
+        modalTaskName: '',
         recordData: [],
       };
     },
+    components: {
+      Task
+    },
     methods: {
-       searchByStatus() {
-          if (this.fastSearchContentStatus === '') {
-            this.$Message.error("请选择需要查询的状态");
-            return;
-          }
-         console.log("fastSearchContentStatus: " + this.fastSearchContentStatus);
-         this.status = this.fastSearchContentStatus;
-         this.getRecordInfo();
-       },
+      searchByStatus() {
+        if (this.fastSearchContentStatus === '') {
+          this.$Message.error("请选择需要查询的状态");
+          return;
+        }
+        console.log("fastSearchContentStatus: " + this.fastSearchContentStatus);
+        this.status = this.fastSearchContentStatus;
+        this.getRecordInfo();
+      },
       ...mapMutations([
         'setTaskId',
         'setTaskOperation'
       ]),
-      reload () {
+      reload() {
         window.location.reload(true);
       },
       toTaskPage() {
-        this.$router.push({name:'new_task'})
+        this.$router.push({name: 'new_task'})
       },
       formatStatus(str) {
         let statusStr = '';
         if (str === 'SENDING')
-          statusStr =  '正在发送';
+          statusStr = '正在发送';
         else if (str === 'INVALID')
           statusStr = '已失效';
         else if (str === 'ABORT')
@@ -101,7 +112,7 @@
           statusStr = '';
         return statusStr;
       },
-      formatDate (str) {
+      formatDate(str) {
         let date = new Date(str);
         const y = date.getFullYear();
         let m = date.getMonth() + 1;
@@ -129,7 +140,7 @@
             console.log(error);
           });
       },
-      changePage (index) {
+      changePage(index) {
         // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
         console.log("change page: " + index);
         this.getSendRecordData(index);
@@ -154,17 +165,18 @@
           });
       },
       showModify(index) {
-        console.log("showModify: "+index);
+        console.log("showModify: " + index);
         this.setTaskOperation(this.recordData[index].id);
-        this.$router.push({name:'new_task'})
+        this.content=2;
+//        this.$router.push({name: 'new_task'})
       },
       showCopy(index) {
-        console.log("showCopy: "+index);
+        console.log("showCopy: " + index);
         this.setTaskOperation(this.recordData[index].id);
-        this.$router.push({name:'new_task'})
+        this.$router.push({name: 'new_task'})
       },
       showSendStatistics(index) {
-        this.$router.push({name:'data_statistics'})
+        this.$router.push({name: 'data_statistics'})
       },
       showDetail(index) {
         let message = this.recordData[index].id;
@@ -172,7 +184,8 @@
         console.log(index + " : " + message);
         console.log(message);
         this.setTaskId(this.recordData[index].id);
-        this.$router.push({name:'new_task'})
+        this.content = 2;
+//        this.$router.push({name: 'new_task'})
       },
       showDeleteModal(index) {
         this.deleteModal = true;
@@ -183,7 +196,7 @@
       },
       decideDeleteTask() {
         let vue = this;
-        post("/task/delete/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post("/task/delete/" + vue.recordData[vue.modalIndex].id, {accountId: this.accountId})
           .then(function (response) {
             console.log(response.data);
             if (response.code === 0) {
@@ -206,7 +219,7 @@
       },
       decideTerminateTask() {
         let vue = this;
-        post("/task/stop/" + vue.recordData[vue.modalIndex].id,{accountId:this.accountId})
+        post("/task/stop/" + vue.recordData[vue.modalIndex].id, {accountId: this.accountId})
           .then(value => {
             let result = value.code;
             if (result >= 0) {
@@ -221,7 +234,7 @@
           });
       }
     },
-    computed:{
+    computed: {
       ...mapGetters(['accountId'])
     },
     mounted() {
@@ -230,36 +243,85 @@
         {title: '发送任务名称', key: 'name'},
         {title: '模板名称', key: 'templateName'},
         {title: '提交数量', key: 'receiverAmount'},
-        {title: '预定发送时间', key: 'startTs', render: (h, params) => {return h('div', this.formatDate(this.recordData[params.index].startTs));}},
-        {title: '状态', key: 'status',render: (h, params) => {return h('div', this.formatStatus(this.recordData[params.index].status))}},
-        {title: '操作', key: 'action', width: 350, align: 'center',
+        {
+          title: '预定发送时间', key: 'startTs', render: (h, params) => {
+          return h('div', this.formatDate(this.recordData[params.index].startTs));
+        }
+        },
+        {
+          title: '状态', key: 'status', render: (h, params) => {
+          return h('div', this.formatStatus(this.recordData[params.index].status))
+        }
+        },
+        {
+          title: '操作', key: 'action', width: 350, align: 'center',
           render: (h, params) => {
             let status = params.row.status;
             // console.log("aaaaaa: "+status);
             let hint = '';
             let btnArray = [];
             if (status === '暂停中' || status === '审核中' || status === '审核失败' || status === 'INVALID') {
-              if (status === '暂停中') {hint = '此刻不在发送时段内，发送自动暂停或今日发送已达上限，发送自动暂停';}
-              if(status === '审核中') {hint = '该任务所用模板正在审核中，审核通过后该任务将自动生效执行';}
-              if(status === '审核失败') {hint = '该任务所用模板未能通过审核，请修改模板重新审核';}
-              if(status === 'INVALID') {hint = '该任务所用模板已失效，请换用其他模板或发送时间已过期';}
-              btnArray.push(h('Poptip',{props: {trigger:'hover',content:hint}, style: {marginRight: '10px'}},[
-                h('Icon',{props: {type: 'information-circled'}, style: {color:'green',cursor:'pointer'}}),
+              if (status === '暂停中') {
+                hint = '此刻不在发送时段内，发送自动暂停或今日发送已达上限，发送自动暂停';
+              }
+              if (status === '审核中') {
+                hint = '该任务所用模板正在审核中，审核通过后该任务将自动生效执行';
+              }
+              if (status === '审核失败') {
+                hint = '该任务所用模板未能通过审核，请修改模板重新审核';
+              }
+              if (status === 'INVALID') {
+                hint = '该任务所用模板已失效，请换用其他模板或发送时间已过期';
+              }
+              btnArray.push(h('Poptip', {props: {trigger: 'hover', content: hint}, style: {marginRight: '10px'}}, [
+                h('Icon', {props: {type: 'information-circled'}, style: {color: 'green', cursor: 'pointer'}}),
               ]))
             }
-            btnArray.push(h('Button', {props: {type: 'success', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showDetail(params.index)}}}, '查看'));
+            btnArray.push(h('Button', {
+              props: {type: 'success', size: 'small'},
+              style: {marginRight: '5px'},
+              on: {
+                click: () => {
+                  this.showDetail(params.index)
+                }
+              }
+            }, '查看'));
             if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING') {
-              btnArray.push(h('Button', {props: {type: 'warning', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showModify(params.index)}}}, '修改'))
+              btnArray.push(h('Button', {
+                props: {type: 'warning', size: 'small'},
+                style: {marginRight: '5px'},
+                on: {
+                  click: () => {
+                    this.showModify(params.index)
+                  }
+                }
+              }, '修改'))
             }
             /*btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showCopy(params.index)}}}, '复制'));
             if (status === 'SENDING' || status === '暂停中' || status === 'SENT' || status === 'ABORT') {
               btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showSendStatistics(params.index)}}}, '数据'))
             }*/
             if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING' || status === 'SENT' || status === 'ABORT') {
-              btnArray.push(h('Button', {props: {type: 'error', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showDeleteModal(params.index)}}}, '删除'))
+              btnArray.push(h('Button', {
+                props: {type: 'error', size: 'small'},
+                style: {marginRight: '5px'},
+                on: {
+                  click: () => {
+                    this.showDeleteModal(params.index)
+                  }
+                }
+              }, '删除'))
             }
             if (status === 'SENDING' || status === '暂停中') {
-              btnArray.push(h('Button', {props: {type: 'ghost', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showTerminateModal(params.index)}}}, '终止'))
+              btnArray.push(h('Button', {
+                props: {type: 'ghost', size: 'small'},
+                style: {marginRight: '5px'},
+                on: {
+                  click: () => {
+                    this.showTerminateModal(params.index)
+                  }
+                }
+              }, '终止'))
             }
             return h('div', btnArray);
           }
@@ -271,7 +333,7 @@
 </script>
 
 <style scoped>
-  .bg{
+  .bg {
     background-color: white;
     width: 100%;
     height: 100%;

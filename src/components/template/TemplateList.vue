@@ -1,32 +1,37 @@
 <template>
   <div class="bg">
-    <Row type="flex" justify="space-between">
-      <Col span="4">
-      <Select v-model="params.status" clearable>
-        <Option value="AUDITING">审核中</Option>
-        <Option value="AUDIT_PASS">审核通过</Option>
-        <Option value="AUDIT_FAILED">审核失败</Option>
-        <Option value="OBSOLETED">已失效</Option>
-      </Select>
-      </Col>
-      <Col span="4" offset="2">
-      <Input v-model="params.find" placeholder="快速查找">
-      <span slot="append">
+    <div v-if="content==2">
+      <CreateTemplate></CreateTemplate>
+    </div>
+    <div v-if="content==1">
+      <Row type="flex" justify="space-between">
+        <Col span="4">
+        <Select v-model="params.status" clearable>
+          <Option value="AUDITING">审核中</Option>
+          <Option value="AUDIT_PASS">审核通过</Option>
+          <Option value="AUDIT_FAILED">审核失败</Option>
+          <Option value="OBSOLETED">已失效</Option>
+        </Select>
+        </Col>
+        <Col span="4" offset="2">
+        <Input v-model="params.find" placeholder="快速查找">
+        <span slot="append">
         <Button icon="ios-search" @click="search"></Button>
       </span>
-      </Input>
-      </Col>
-      <Col span="4" offset="10" style="text-align: right">
-      <Button type="primary" @click="toCreatePage" v-if="roleId!='0'">
-        <Icon type="plus"></Icon>
-        创建模板
-      </Button>
-      </Col>
-    </Row>
-    <div style="margin-top: 40px">
-      <Table stripe border :columns="columns" :data="tableData"></Table>
-      <div style="margin-top: 20px;text-align: right">
-        <Page :total="total" show-elevator @on-change="changePage"></Page>
+        </Input>
+        </Col>
+        <Col span="4" offset="10" style="text-align: right">
+        <Button type="primary" @click="toCreatePage" v-if="roleId!='0'">
+          <Icon type="plus"></Icon>
+          创建模板
+        </Button>
+        </Col>
+      </Row>
+      <div style="margin-top: 40px">
+        <Table stripe border :columns="columns" :data="tableData"></Table>
+        <div style="margin-top: 20px;text-align: right">
+          <Page :total="total" show-elevator @on-change="changePage"></Page>
+        </div>
       </div>
     </div>
   </div>
@@ -36,12 +41,14 @@
   //  import axios from 'axios'
   import {showTip, timestampToTime} from '@/libs/util'
   import url from '@/api/url'
-  import {post, $del} from "@/api/ax";
+  import {post, $del} from "@/api/ax"
+  import CreateTemplate from './CreateTemplate.vue'
 
   export default {
     name: 'TemplateList',
     data() {
       return {
+        content: 1,
         params: {
           status: '',
           find: '',
@@ -117,9 +124,7 @@
                   click: function () {
                     $vue.setOperation('view');
                     $vue.setId(id);
-                    $vue.$router.push({
-                      name: 'create_template'
-                    })
+                    $vue.content = 2;
                   }
                 },
               }, '查看');
@@ -135,9 +140,7 @@
                   click: function () {
                     $vue.setOperation('modify');
                     $vue.setId(id);
-                    $vue.$router.push({
-                      name: 'create_template'
-                    })
+                    $vue.content = 2;
                   }
                 }
               }, '修改');
@@ -189,6 +192,9 @@
         tableData: [],
         total: 0
       }
+    },
+    components: {
+      CreateTemplate
     },
     methods: {
       ...mapMutations([

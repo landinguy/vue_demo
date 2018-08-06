@@ -42,12 +42,14 @@
 
       <div v-if="task.sendTime === 'sometime'">
         <FormItem label="开始时间" prop="customSendStartTime">
-          <DatePicker @on-change="handleStartDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false'
+          <DatePicker v-model="task.customSendStartTime" @on-change="handleStartDateChange" type="datetime"
+                      format="yyyy-MM-dd HH:mm" :editable='false'
                       :options="dateOption" placeholder="请选择开始时间" style="width: 200px"></DatePicker>
         </FormItem>
         <br>
         <FormItem label="结束时间">
-          <DatePicker @on-change="handleEndDateChange" type="datetime" format="yyyy-MM-dd HH:mm" :editable='false'
+          <DatePicker v-model="task.customSendEndTime" @on-change="handleEndDateChange" type="datetime"
+                      format="yyyy-MM-dd HH:mm" :editable='false'
                       :options="dateOption" placeholder="请选择结束时间" style="width: 200px"></DatePicker>
         </FormItem>
       </div>
@@ -525,6 +527,11 @@
           vue.task.template = data.templateName;
           vue.task.receiver = data.receiverGroupId;
           vue.task.number = data.receiverAmount;
+          vue.task.sendTime = data.sendType == 'RESERVATION' ? 'sometime' : 'rightNow';
+          if (data.sendType == 'RESERVATION') {
+            vue.task.customSendStartTime = new Date(data.startTs);
+            vue.task.customSendEndTime = new Date(data.endTs);
+          }
         }).catch(reason => {
           console.log(reason);
         })

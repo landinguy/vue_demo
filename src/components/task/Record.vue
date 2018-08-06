@@ -8,11 +8,12 @@
         <Col span="12">
         <Input v-model="fastSearchContent" placeholder="快速查询">
         <Select v-model="fastSearchContentStatus" slot="prepend" style="width: 100px">
-          <Option value="INVALID">已失效</Option>
-          <Option value="WAITING">等待开始</Option>
-          <Option value="SENT">发送完成</Option>
+          <!--<Option value="INVALID">已失效</Option>-->
+          <Option value="WAITING">待发送</Option>
+          <Option value="SENDING">发送中</Option>
+          <Option value="SENT">已发送</Option>
+          <Option value="FAILED">发送失败</Option>
           <Option value="ABORT">发送终止</Option>
-          <Option value="SENDING">正在发送</Option>
         </Select>
         <Button slot="append" icon="ios-search" @click="searchByStatus"></Button>
         </Input>
@@ -97,15 +98,15 @@
       formatStatus(str) {
         let statusStr = '';
         if (str === 'SENDING')
-          statusStr = '正在发送';
+          statusStr = '发送中';
         else if (str === 'INVALID')
           statusStr = '已失效';
         else if (str === 'ABORT')
           statusStr = '发送终止';
         else if (str === 'WAITING')
-          statusStr = '等待开始';
+          statusStr = '待发送';
         else if (str === 'SENT')
-          statusStr = '发送完成';
+          statusStr = '已发送';
         else if (str === 'FAILED')
           statusStr = '发送失败';
         else
@@ -167,7 +168,7 @@
       showModify(index) {
         console.log("showModify: " + index);
         this.setTaskOperation(this.recordData[index].id);
-        this.content=2;
+        this.content = 2;
 //        this.$router.push({name: 'new_task'})
       },
       showCopy(index) {

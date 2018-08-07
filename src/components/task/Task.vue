@@ -43,13 +43,13 @@
       <div v-if="task.sendTime === 'sometime'">
         <FormItem label="开始时间" prop="customSendStartTime">
           <DatePicker v-model="task.customSendStartTime" @on-change="handleStartDateChange" type="datetime"
-                      format="yyyy-MM-dd HH:mm" :editable='false'
+                      format="yyyy-MM-dd HH:mm" :editable='false' :disabled="id !== ''"
                       :options="dateOption" placeholder="请选择开始时间" style="width: 200px"></DatePicker>
         </FormItem>
         <br>
         <FormItem label="结束时间">
           <DatePicker v-model="task.customSendEndTime" @on-change="handleEndDateChange" type="datetime"
-                      format="yyyy-MM-dd HH:mm" :editable='false'
+                      format="yyyy-MM-dd HH:mm" :editable='false' :disabled="id !== ''"
                       :options="dateOption" placeholder="请选择结束时间" style="width: 200px"></DatePicker>
         </FormItem>
       </div>

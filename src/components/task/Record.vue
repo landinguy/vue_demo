@@ -287,17 +287,17 @@
                 }
               }
             }, '查看'));
-            if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING') {
-              btnArray.push(h('Button', {
-                props: {type: 'warning', size: 'small'},
-                style: {marginRight: '5px'},
-                on: {
-                  click: () => {
-                    this.showModify(params.index)
-                  }
-                }
-              }, '修改'))
-            }
+//            if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING') {
+//              btnArray.push(h('Button', {
+//                props: {type: 'warning', size: 'small'},
+//                style: {marginRight: '5px'},
+//                on: {
+//                  click: () => {
+//                    this.showModify(params.index)
+//                  }
+//                }
+//              }, '修改'))
+//            }
             /*btnArray.push(h('Button', {props: {type: 'primary', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showCopy(params.index)}}}, '复制'));
             if (status === 'SENDING' || status === '暂停中' || status === 'SENT' || status === 'ABORT') {
               btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showSendStatistics(params.index)}}}, '数据'))

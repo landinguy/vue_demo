@@ -51,6 +51,7 @@
   import {mapMutations, mapGetters} from 'vuex';
   import {post} from "@/api/ax"
   import Task from './Task.vue'
+  import {timestampToTime} from '@/libs/util'
 
   export default {
     name: "record",
@@ -77,10 +78,10 @@
     },
     methods: {
       searchByStatus() {
-        if (this.fastSearchContentStatus === '') {
-          this.$Message.error("请选择需要查询的状态");
-          return;
-        }
+//        if (this.fastSearchContentStatus === '') {
+//          this.$Message.error("请选择需要查询的状态");
+//          return;
+//        }
         console.log("fastSearchContentStatus: " + this.fastSearchContentStatus);
         this.status = this.fastSearchContentStatus;
         this.getRecordInfo();
@@ -112,15 +113,6 @@
         else
           statusStr = '';
         return statusStr;
-      },
-      formatDate(str) {
-        let date = new Date(str);
-        const y = date.getFullYear();
-        let m = date.getMonth() + 1;
-        m = m < 10 ? '0' + m : m;
-        let d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        return y + '-' + m + '-' + d;
       },
       getRecordInfo() {
         this.currentPage = 1;
@@ -246,7 +238,7 @@
         {title: '提交数量', key: 'receiverAmount'},
         {
           title: '预定发送时间', key: 'startTs', render: (h, params) => {
-          return h('div', this.formatDate(this.recordData[params.index].startTs));
+          return h('div', timestampToTime(this.recordData[params.index].startTs));
         }
         },
         {
@@ -302,7 +294,7 @@
             if (status === 'SENDING' || status === '暂停中' || status === 'SENT' || status === 'ABORT') {
               btnArray.push(h('Button', {props: {type: 'info', size: 'small'}, style: {marginRight: '5px'}, on: {click: () => {this.showSendStatistics(params.index)}}}, '数据'))
             }*/
-            if (status === '审核中' || status === '审核失败' || status === 'INVALID' || status === 'WAITING' || status === 'SENT' || status === 'ABORT') {
+            if (status === 'FAILED') {
               btnArray.push(h('Button', {
                 props: {type: 'error', size: 'small'},
                 style: {marginRight: '5px'},

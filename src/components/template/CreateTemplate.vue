@@ -440,7 +440,7 @@
             this.$Message.error('请上传jpg、png、jepg、gif图片文件');
             return false;
           }
-          return this.checkSize(size, 0.2, '图片大小不得超过200KB');
+          return this.checkSize(size, 2, '图片大小不得超过2MB');
         }
 
         if (m.t == '视频') {

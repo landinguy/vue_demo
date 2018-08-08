@@ -353,7 +353,13 @@
             console.log("post task data: " + JSON.stringify(taskData));
             post("/task/create", taskData).then(function (response) {
               if (response.code === 0) {
-                vue.$Message.success('提交任务成功!');
+                vue.$Message.success({
+                  content: '提交任务成功',
+                  duration: 1,
+                  onClose() {
+                    vue.$router.push({name: 'send_record'});
+                  }
+                });
               } else {
                 vue.$Message.error('提交任务失败!');
               }

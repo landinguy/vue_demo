@@ -305,7 +305,7 @@
                 }
               }, '删除'))
             }
-            if (status === 'SENDING' || status === '暂停中') {
+            if (status === 'SENDING' || status === 'WAITING') {
               btnArray.push(h('Button', {
                 props: {type: 'ghost', size: 'small'},
                 style: {marginRight: '5px'},

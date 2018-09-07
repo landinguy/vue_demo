@@ -1,5 +1,5 @@
 <template>
-  <div class="login" @keyup.enter="handleEnter">
+  <div class="login" @keyup.enter="handleEnter" :style="{backgroundImage:'url(' + bg + ')'}">
     <div class="login-con">
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
@@ -14,7 +14,13 @@
 <script>
 import LoginForm from './components/login-form'
 import { mapActions } from 'vuex'
+import bg from '@/assets/images/login_bg.jpg'
 export default {
+  data() {
+    return {
+      bg
+    }
+  },
   components: {
     LoginForm
   },

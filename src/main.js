@@ -14,7 +14,7 @@ Vue.use(iView);
 
 Vue.config.productionTip = false;
 // Vue.prototype.baseUrl = "http://192.168.3.101:8090";
-Vue.prototype.baseUrl = "http://27.115.67.203:40026";
+Vue.prototype.baseUrl = "http://180.169.57.196:18131";
 axios.defaults.withCredentials = true;
 
 /* eslint-disable no-new */

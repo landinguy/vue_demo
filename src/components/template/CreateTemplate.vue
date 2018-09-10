@@ -301,6 +301,7 @@
           this.$Message.warning('模板内容应不大于2M');
           return
         }
+        let $vue = this;
         this.$refs.templateForm.validate((valid) => {
           if (valid) {
             this.clearData();
@@ -311,7 +312,7 @@
                   content: '提交成功',
                   duration: 1,
                   onClose() {
-                    history.back();
+                    $vue.$router.push({name: 'template_list'})
                   }
                 })
               } else {

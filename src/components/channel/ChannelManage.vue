@@ -298,7 +298,7 @@
                                 content: '删除成功',
                                 duration: 1,
                                 onClose() {
-                                  location.reload(true)
+                                  $vue.search();
                                 }
                               })
                             } else {
@@ -333,7 +333,7 @@
                                   content: '已停用',
                                   duration: 1,
                                   onClose() {
-                                    location.reload(true)
+                                    $vue.search();
                                   }
                                 })
                               } else {
@@ -349,7 +349,7 @@
                               content: '已启用',
                               duration: 1,
                               onClose() {
-                                location.reload(true)
+                                $vue.search();
                               }
                             })
                           } else {
@@ -456,6 +456,7 @@
         this.formData.maxRate = maxRate;
       },
       save() {
+        let $vue = this;
         this.$refs.channelForm.validate((valid) => {
           if (valid) {
             const param = this.getParams();
@@ -466,7 +467,7 @@
                   content: '保存成功',
                   duration: 1,
                   onClose() {
-                    location.reload(true)
+                    $vue.search();
                   }
                 });
               } else {
@@ -505,6 +506,7 @@
       },
       search() {
         this.params.pageNo = 1;
+        this.getTotal();
         this.sendPost();
       },
       sendPost() {
@@ -544,8 +546,7 @@
       }
     },
     mounted() {
-      this.getTotal();
-      this.sendPost();
+      this.search();
       this.getSuppliersInfo();
       this.getAccount();
     }

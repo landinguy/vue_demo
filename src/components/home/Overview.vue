@@ -48,7 +48,7 @@
           var et = formatDate(new Date().getTime());
           st = st.split(" ")[0]+" 00:00:00";
           console.log("------"+this.accountId)
-          this.handleTotal( {accountId:this.accountId, st:st, et:et});
+//          this.handleTotal( {accountId:this.accountId, st:st, et:et});
         }
     }
 </script>

@@ -569,13 +569,13 @@
       ...mapGetters(['accountId'])
     },
     mounted() {
-      this.getSignList();
-      this.id = this.$store.state.template.id;
-      this.op = this.$store.state.template.operation;
-      if (this.id != '' && this.op != '') {//根据id查询模板
-        console.log("op:" + this.op + ", id:" + this.id);
-        this.search(this.id);
-      }
+//      this.getSignList();
+//      this.id = this.$store.state.template.id;
+//      this.op = this.$store.state.template.operation;
+//      if (this.id != '' && this.op != '') {//根据id查询模板
+//        console.log("op:" + this.op + ", id:" + this.id);
+//        this.search(this.id);
+//      }
     },
     beforeDestroy() {
       this.clearData();

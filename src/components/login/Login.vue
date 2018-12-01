@@ -12,43 +12,43 @@
 </template>
 
 <script>
-import LoginForm from './components/login-form'
-import { mapActions } from 'vuex'
-import bg from '@/assets/images/login_bg.jpg'
-export default {
-  data() {
-    return {
-      bg
-    }
-  },
-  components: {
-    LoginForm
-  },
-  methods: {
-    ...mapActions([
-      'handleLogin'
-    ]),
-    handleEnter(){
-      console.log("enter login")
-      this.$refs.loginForm.handleSubmit()
+  import LoginForm from './components/login-form'
+  import {mapActions} from 'vuex'
+  import bg from '@/assets/images/login_bg.jpg'
+  export default {
+    data() {
+      return {
+        bg
+      }
     },
-    handleSubmit ({ userName, password }) {
-      this.handleLogin({ username:userName, passwd:password}).then(
-        res=>{
-          console.log(res.data)
-          if(res.code == 0){
-            this.$router.push({
-              name: 'home'
-            })
-          }
-        },
-        err=>{
-          console.log(err)
-        }
-      );
+    components: {
+      LoginForm
+    },
+    methods: {
+      ...mapActions([
+        'handleLogin'
+      ]),
+      handleEnter(){
+        console.log("enter login")
+        this.$refs.loginForm.handleSubmit()
+      },
+      handleSubmit ({userName, password}) {
+//      this.handleLogin({ username:userName, passwd:password}).then(
+//        res=>{
+//          console.log(res.data)
+//          if(res.code == 0){
+        this.$router.push({
+          name: 'home'
+        })
+//          }
+//        },
+//        err=>{
+//          console.log(err)
+//        }
+//      );
+      }
     }
   }
-}
 </script>
 
 <style lang="less">

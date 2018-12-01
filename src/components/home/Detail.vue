@@ -64,7 +64,7 @@
           },
       },
       created(){
-          this.refreshData(0)
+//          this.refreshData(0)
       }
     }
 

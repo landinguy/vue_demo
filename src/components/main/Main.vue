@@ -28,9 +28,9 @@
           </Content>
         </Layout>
       </Content>
-      <Footer style="text-align: center">
-        <p>&copy; 2018 <a href="http://store.wo.com.cn/" target="_blank">小沃科技有限公司</a></p>
-      </Footer>
+      <!--<Footer style="text-align: center">-->
+        <!--<p>&copy; 2018 <a href="http://store.wo.com.cn/" target="_blank">小沃科技有限公司</a></p>-->
+      <!--</Footer>-->
     </Layout>
   </Layout>
 </template>
@@ -106,7 +106,7 @@
     },
     watch: {
       '$route'(newRoute) {
-        this.setBreadCrumb(newRoute.matched)
+//        this.setBreadCrumb(newRoute.matched)
         this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
       }
     },
@@ -116,7 +116,7 @@
        */
       this.setTagNavList()
       this.addTag(this.$store.state.app.homeRoute)
-      this.setBreadCrumb(this.$route.matched)
+//      this.setBreadCrumb(this.$route.matched)
     }
   }
 </script>

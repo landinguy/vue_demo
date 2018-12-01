@@ -61,6 +61,7 @@
             key: 'id',
             align: 'center',
             ellipsis: true,
+            minWidth: 150,
             render: (h, params) => {
               return showTip(h, params.row.id)
             }
@@ -70,6 +71,7 @@
             key: 'name',
             align: 'center',
             ellipsis: true,
+            minWidth: 150,
             render: (h, params) => {
               return showTip(h, params.row.name)
             }
@@ -79,6 +81,7 @@
             key: 'subject',
             align: 'center',
             ellipsis: true,
+            minWidth: 150,
             render: (h, params) => {
               return showTip(h, params.row.subject)
             }
@@ -88,6 +91,7 @@
             key: 'createTs',
             align: 'center',
             ellipsis: true,
+            minWidth: 150,
             render: (h, params) => {
               return showTip(h, timestampToTime(params.row.createTs))
             }
@@ -96,6 +100,7 @@
             title: '状态',
             key: 'status',
             align: 'center',
+            minWidth: 150,
             render: (h, params) => {
               const row = params.row;
               const color = row.status == 'AUDITING' ? 'blue' : row.status == 'AUDIT_PASS' ? 'green' : row.status == 'AUDIT_FAILED' ? 'red' : 'gray';
@@ -237,8 +242,8 @@
       }
     },
     mounted() {
-      this.getTotal();
-      this.getTmplList();
+//      this.getTotal();
+//      this.getTmplList();
     },
     computed: {
       ...mapGetters(['accountId', 'roleId'])

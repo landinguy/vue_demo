@@ -76,6 +76,24 @@ export default [
     ]
   },
   {
+    path: '/user',
+    name: 'user',
+    meta: {
+      title: '用户管理',
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user_list',
+        name: 'user_list',
+        meta: {
+          title: '用户列表',
+        },
+        component: () => import('@/components/user/UserList')
+      }
+    ]
+  },
+  {
     path: '/error404',
     name: 'error404',
     component: () => import('@/components/error/error404.vue')

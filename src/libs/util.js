@@ -254,10 +254,9 @@ export const getTableDataFromArray = (array) => {
  * @returns {*}
  */
 export const showTip = (h, t) => {
+  if (!t) t = '----';
   return h("div", {
-    attrs: {
-      title: t
-    }
+    attrs: {title: t}
   }, t)
 };
 /**
@@ -266,6 +265,7 @@ export const showTip = (h, t) => {
  * @returns {*}
  */
 export const timestampToTime = (timestamp) => {
+  if (!timestamp) return "----";
   var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
   var y = date.getFullYear();
   var m = date.getMonth() + 1;
